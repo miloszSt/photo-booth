@@ -1,6 +1,9 @@
 package com.photobooth;
 
+import com.photobooth.camera.CameraService;
 import com.photobooth.controller.AppController;
+
+import java.io.IOException;
 
 /**
  * Entry point of application
@@ -9,9 +12,12 @@ import com.photobooth.controller.AppController;
  */
 public class Main {
 
-    public static void main(String[] args)
-    {
+    private final static CameraService cameraService = new CameraService();
+
+    public static void main(String[] args) throws IOException, InterruptedException {
        AppController controller = new AppController();
        controller.startApp();
+
+//        cameraService.takeImageForUser("Janusz");
     }
 }

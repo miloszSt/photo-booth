@@ -12,22 +12,32 @@ import java.io.IOException;
  */
 public class MainView extends JFrame {
 
+    private JLabel animatedGif;
+
     public MainView() {
+
         super();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // this will hide close button
         setUndecorated(true);
-        JLabel animatedGif = new JLabel();
 
-        animatedGif.setIcon(new ImageIcon("src/Main/resources/countdown.gif"));
-        Image image = Toolkit.getDefaultToolkit().createImage("src/Main/resources/countdown.gif");
-        animatedGif.setIcon(new ImageIcon(image));
-        add(animatedGif);
         initComponents();
-        pack();
+        setSize(new Dimension(300, 300));
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
+
     }
+
+    public void setAnimatedGif(JLabel animatedGif) {
+        if(this.animatedGif != null) {
+            remove(this.animatedGif);
+        }
+        this.animatedGif = animatedGif;
+        add(animatedGif);
+        revalidate();
+    }
+
+
 
     /**
      * Inits all view components

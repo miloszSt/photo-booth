@@ -29,7 +29,7 @@ public class WaitingForInputAnimationState implements StateInterface {
 
     private void replaceAnimation(String animationName) {
         JLabel animatedGif = new JLabel();
-        Image image = Toolkit.getDefaultToolkit().createImage(GIF_FOLDER + animationName + ".gif");
+        Image image = Toolkit.getDefaultToolkit().createImage(GIF_FOLDER + animationName);
         animatedGif.setIcon(new ImageIcon(image));
 
         animatedGif.addMouseListener(onClickAction);

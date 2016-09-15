@@ -9,6 +9,13 @@ public class StateMachine {
     private Iterator<StateInterface> currentStateIterator;
     private StateInterface currentState;
 
+    public StateMachine() {
+    }
+
+    public void setStates(List<StateInterface> states) {
+        this.states = states;
+    }
+
     public StateMachine(List<StateInterface> states) {
         this.states = states;
         currentStateIterator = states.iterator();

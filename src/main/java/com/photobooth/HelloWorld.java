@@ -1,6 +1,7 @@
 package com.photobooth;
 
 import com.photobooth.camera.CameraService;
+import com.photobooth.templateEdytor.TemplateMainView;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -101,8 +102,11 @@ public class HelloWorld extends Application {
         });
         root.getChildren().add(button);
 
-        primaryStage.setScene(costam);
-        primaryStage.show();
+//        primaryStage.setScene(costam);
+//        primaryStage.show();
+
+
+        TemplateMainView templateMainView = new TemplateMainView(primaryStage);
 
 
 

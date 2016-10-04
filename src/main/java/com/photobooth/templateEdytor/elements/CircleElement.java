@@ -2,37 +2,23 @@ package com.photobooth.templateEdytor.elements;
 
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 
-public class TextElement extends StackPane implements TemplateElementInterface{
+public class CircleElement extends StackPane implements TemplateElementInterface{
 
-    private Rectangle rectangle;
-    private Text text;
+    private Circle circle;
 
-    public TextElement() {
-        setId("Text Element");
-        rectangle = new Rectangle(100, 100, Color.BROWN);
-        text = new Text("Text");
-        getChildren().addAll(rectangle, text);
-    }
-
-    public void setText(Text text) {
-        this.text = text;
-        getChildren().set(1, text);
-    }
-
-    public Rectangle getRectangle() {
-        return (Rectangle) getChildren().get(0);
-    }
-
-    public Text getText() {
-        return (Text) getChildren().get(1);
+    public CircleElement(int width, Paint fill) {
+        super();
+        setId("Circle Element");
+        circle = new Circle(width, fill);
+        getChildren().addAll(circle);
     }
 
     @Override
     public void select() {
-        rectangle.setStrokeWidth(10);
         setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID,null, new BorderWidths(5))));
     }
 

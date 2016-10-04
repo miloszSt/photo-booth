@@ -1,11 +1,15 @@
 package com.photobooth.templateEdytor;
 
 import com.photobooth.templateEdytor.elements.ImageElement;
+import com.photobooth.templateEdytor.elements.TemplateElementInterface;
 import com.photobooth.templateEdytor.panels.*;
+import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -28,7 +32,15 @@ public class TemplateMainView {
 
     private Object template = new Object();
     private List<Node> layers = new ArrayList<>();
+    private List<String> layersAString = new ArrayList<>();
     private Node currentSelection;
+
+    private final EventHandler<MouseEvent> deselectAllOnClick = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+            deselect();
+        }
+    };
 
     public TemplateMainView(Stage primaryStage) {
         Group root = new Group();
@@ -42,6 +54,10 @@ public class TemplateMainView {
         optionsPanel = new OptionsPanel(this);
         this.infoSelectedPanel = new InfoSelectedPanel(this);
         centerPanel = new CenterPanel(this);
+
+
+        centerPanel.getBackgroundPanel().setOnMouseClicked(deselectAllOnClick);
+
         topPanel = new TopPanel(this);
 
         border.setTop(topPanel);
@@ -81,7 +97,29 @@ public class TemplateMainView {
 
     public void addNewLayer(Node layer) {
         layers.add(layer);
+        layersAString.add(layer.getId());
+        layersPanel.getLayersList().setItems(FXCollections.observableArrayList(layersAString));
         centerPanel.addNewElement(layer);
+        setOnClickListenerForSelection(layer);
     }
+
+    private void setOnClickListenerForSelection(Node node) {
+        node.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                deselect();
+                ((TemplateElementInterface) node).select();
+
+            }
+        });
+    }
+
+    private void deselect() {
+        for (Node node : layers) {
+            ((TemplateElementInterface) node).deselect();
+        }
+    }
+
+
 }
 

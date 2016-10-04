@@ -6,17 +6,23 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 import java.io.File;
 
-public class ImageElement extends Rectangle{
 
+public class ImageElement extends StackPane implements TemplateElementInterface{
+
+    Rectangle rectangle;
     public ImageElement(double width, double height, Paint fill) {
-        super(width, height, fill);
-
+        super();
+        setId("Image Element");
+        rectangle = new Rectangle(width, height, fill);
+        getChildren().addAll(rectangle);
         setOnDragOver(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
@@ -43,7 +49,7 @@ public class ImageElement extends Rectangle{
                         ImageView dbImageView = new ImageView();
                         dbImageView.setImage(dbimage);
 
-                        setFill(new ImagePattern(dbimage, 0, 0, 1, 1, true));
+                        rectangle.setFill(new ImagePattern(dbimage, 0, 0, 1, 1, true));
                     }
 
                     event.setDropCompleted(true);
@@ -53,6 +59,46 @@ public class ImageElement extends Rectangle{
                 event.consume();
             }
         });
+    }
+
+    @Override
+    public void select() {
+        setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID,null, new BorderWidths(5))));
+    }
+
+    @Override
+    public void deselect() {
+        setBorder(new Border(new BorderStroke(null,null,null, BorderWidths.EMPTY)));
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getElementTop() {
+        return null;
+    }
+
+    @Override
+    public String getElementLeft() {
+        return null;
+    }
+
+    @Override
+    public String getElementWidth() {
+        return null;
+    }
+
+    @Override
+    public String getElementHeight() {
+        return null;
+    }
+
+    @Override
+    public String getElementRotation() {
+        return null;
     }
 
 

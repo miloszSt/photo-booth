@@ -1,9 +1,7 @@
 package com.photobooth.templateEdytor.panels;
 
-import com.photobooth.templateEdytor.elements.ImageElement;
+import com.photobooth.templateEdytor.elements.*;
 import com.photobooth.templateEdytor.TemplateMainView;
-import com.photobooth.templateEdytor.elements.PhotoElement;
-import com.photobooth.templateEdytor.elements.TextElement;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -11,13 +9,10 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class AddLayerPanel extends VBox{
 
@@ -25,6 +20,8 @@ public class AddLayerPanel extends VBox{
     private final Button addImageButton;
     private final Button addPhotoButton;
     private final Button addTextButton;
+    private final Button addRectangleButton;
+    private final Button addCircleButton;
     private  Integer counter = 1;
 
     public AddLayerPanel(TemplateMainView templateMainView) {
@@ -41,8 +38,14 @@ public class AddLayerPanel extends VBox{
 
         addTextButton = new Button("addTextButton");
         initAddTextButtonListeners();
-        Button addRectangleButton = new Button("addRectangleButton");
-        Button addCircleButton = new Button("addCircleButton");
+
+        addRectangleButton = new Button("addRectangleButton");
+        initAddRectangleButtonListener();
+
+        addCircleButton = new Button("addCircleButton");
+        initAddCircleButtonListener();
+
+
         Button addQrCodeButton = new Button("addQrCodeButton");
 
         setSpacing(5);
@@ -52,6 +55,27 @@ public class AddLayerPanel extends VBox{
 
         getChildren().addAll(addLabel, addImageButton, addPhotoButton, addTextButton,
                 addRectangleButton, addCircleButton, addQrCodeButton);
+    }
+
+    private void initAddCircleButtonListener() {
+        addCircleButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                CircleElement circle = new CircleElement(30, Color.YELLOWGREEN);
+                circle.relocate(300,300);
+                templateMainView.addNewLayer(circle);
+            }
+        });
+    }
+
+    private void initAddRectangleButtonListener() {
+        addRectangleButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                RectangleElement rectangle = new RectangleElement(300,200, Color.GREEN);
+                templateMainView.addNewLayer(rectangle);
+            }
+        });
     }
 
     private void initAddTextButtonListeners() {
@@ -68,13 +92,8 @@ public class AddLayerPanel extends VBox{
             @Override
             public void handle(MouseEvent event) {
                 PhotoElement photoElement = new PhotoElement(300,200, Color.RED, counter);
-
-                Text text = new Text(counter.toString());
                 counter++;
-                text.setFont(Font.font ("Verdana", 50));
-
-                StackPane stackPane = new StackPane(photoElement, text);
-                templateMainView.addNewLayer(stackPane);
+                templateMainView.addNewLayer(photoElement);
             }
         });
     }

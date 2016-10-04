@@ -6,28 +6,29 @@ import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 /**
- *  ************* How to use ************************
- *
+ * ************* How to use ************************
+ * <p>
  * Rectangle rectangle = new Rectangle(50, 50);
  * rectangle.setFill(Color.BLACK);
  * DragResizeMod.makeResizable(rectangle, null);
- *
+ * <p>
  * Pane root = new Pane();
  * root.getChildren().add(rectangle);
- *
+ * <p>
  * primaryStage.setScene(new Scene(root, 300, 275));
  * primaryStage.show();
- *
+ * <p>
  * ************* OnDragResizeEventListener **********
- *
+ * <p>
  * You need to override OnDragResizeEventListener and
  * 1) preform out of main field bounds check
  * 2) make changes to the node
  * (this class will not change anything in node coordinates)
- *
+ * <p>
  * There is defaultListener and it works only with Canvas nad Rectangle
  */
 
@@ -38,6 +39,8 @@ public class DragResizeMod {
         void onResize(Node node, double x, double y, double h, double w);
     }
 
+    private static final int WIDTH = 1200;
+    private static final int HEIGHT = 900;
     private static final OnDragResizeEventListener defaultListener = new OnDragResizeEventListener() {
         @Override
         public void onDrag(Node node, double x, double y, double h, double w) {
@@ -49,6 +52,11 @@ public class DragResizeMod {
             if (x < 0) x = 0;
             if (y < 0) y = 0;
             */
+            if (x > WIDTH - w ) x = WIDTH - w;
+            if (y > HEIGHT - h) y = HEIGHT - h;
+            if (x < 0) x = 0;
+            if (y < 0) y = 0;
+
             setNodeSize(node, x, y, h, w);
         }
 
@@ -62,6 +70,11 @@ public class DragResizeMod {
             if (x < 0) x = 0;
             if (y < 0) y = 0;
             */
+            if (w > WIDTH - x) w = WIDTH - x;
+            if (h > HEIGHT - y) h = HEIGHT - y;
+            if (x < 0) x = 0;
+            if (y < 0) y = 0;
+
             setNodeSize(node, x, y, h, w);
         }
 
@@ -79,9 +92,14 @@ public class DragResizeMod {
             } else if (node instanceof Rectangle) {
                 ((Rectangle) node).setWidth(w);
                 ((Rectangle) node).setHeight(h);
-            } else if (node instanceof StackPane) {
+            } else if (node instanceof ImageElement
+                    || node instanceof PhotoElement
+                    || node instanceof RectangleElement
+                    || node instanceof TextElement) {
                 ((Rectangle) ((StackPane) node).getChildren().get(0)).setWidth(w);
                 ((Rectangle) ((StackPane) node).getChildren().get(0)).setHeight(h);
+            } else if (node instanceof CircleElement) {
+//                ((Circle) ((StackPane) node).getChildren().get(0)).setRadius();
             }
         }
     };

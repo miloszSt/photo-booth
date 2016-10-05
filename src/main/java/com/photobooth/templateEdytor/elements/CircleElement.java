@@ -1,12 +1,14 @@
 package com.photobooth.templateEdytor.elements;
 
+import com.photobooth.IdCreator;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 
 public class CircleElement extends StackPane implements TemplateElementInterface{
+
+    private final Integer elementId;
 
     private Circle circle;
 
@@ -15,11 +17,12 @@ public class CircleElement extends StackPane implements TemplateElementInterface
         setId("Circle Element");
         circle = new Circle(width, fill);
         getChildren().addAll(circle);
+        elementId = IdCreator.getCounter();
     }
 
     @Override
     public void select() {
-        setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID,null, new BorderWidths(5))));
+        setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.DASHED,null, new BorderWidths(1))));;
     }
 
     @Override
@@ -28,8 +31,13 @@ public class CircleElement extends StackPane implements TemplateElementInterface
     }
 
     @Override
+    public Integer getElementId() {
+        return elementId;
+    }
+
+    @Override
     public String getName() {
-        return null;
+        return getId();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.photobooth.templateEdytor.panels;
 
+import com.photobooth.templateEdytor.Layer;
 import com.photobooth.templateEdytor.TemplateMainView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,14 +14,14 @@ public class LayersPanel extends VBox{
 
     private final TemplateMainView templateMainView;
 
-    private final ListView<String> layersList;
+    private final ListView<Layer> layersList;
     public LayersPanel(TemplateMainView templateMainView) {
         super();
         this.templateMainView = templateMainView;
 
         Label infoLabel = new Label("LAYERS");
 
-        layersList = new ListView<String>();
+        layersList = new ListView<Layer>();
         Button copyLayer = new Button("Copy layer");
         Button removeLayer = new Button("Remove layer");
 
@@ -31,7 +32,7 @@ public class LayersPanel extends VBox{
     }
 
 
-    public ListView<String> getLayersList() {
+    public ListView<Layer> getLayersList() {
         return layersList;
     }
 }

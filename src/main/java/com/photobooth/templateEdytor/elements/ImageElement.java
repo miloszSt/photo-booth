@@ -1,5 +1,6 @@
 package com.photobooth.templateEdytor.elements;
 
+import com.photobooth.IdCreator;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -17,12 +18,16 @@ import java.io.File;
 
 public class ImageElement extends StackPane implements TemplateElementInterface{
 
-    Rectangle rectangle;
+    private final Integer elementId;
+    private Rectangle rectangle;
+
     public ImageElement(double width, double height, Paint fill) {
         super();
-        setId("Image Element");
+
+        elementId = IdCreator.getCounter();
         rectangle = new Rectangle(width, height, fill);
         getChildren().addAll(rectangle);
+        setId("Image Element");
         setOnDragOver(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
@@ -63,7 +68,7 @@ public class ImageElement extends StackPane implements TemplateElementInterface{
 
     @Override
     public void select() {
-        setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID,null, new BorderWidths(5))));
+        setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.DASHED,null, new BorderWidths(1))));;
     }
 
     @Override
@@ -73,7 +78,7 @@ public class ImageElement extends StackPane implements TemplateElementInterface{
 
     @Override
     public String getName() {
-        return null;
+        return getId();
     }
 
     @Override
@@ -99,6 +104,11 @@ public class ImageElement extends StackPane implements TemplateElementInterface{
     @Override
     public String getElementRotation() {
         return null;
+    }
+
+    @Override
+    public Integer getElementId() {
+        return elementId;
     }
 
 

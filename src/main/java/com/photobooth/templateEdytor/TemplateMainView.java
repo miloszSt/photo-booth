@@ -3,7 +3,10 @@ package com.photobooth.templateEdytor;
 import com.photobooth.templateEdytor.elements.ImageElement;
 import com.photobooth.templateEdytor.elements.TemplateElementInterface;
 import com.photobooth.templateEdytor.panels.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -32,7 +35,7 @@ public class TemplateMainView {
 
     private Object template = new Object();
     private List<Node> layers = new ArrayList<>();
-    private List<String> layersAString = new ArrayList<>();
+    private List<Layer> layersAString = new ArrayList<>();
     private Node currentSelection;
 
     private final EventHandler<MouseEvent> deselectAllOnClick = new EventHandler<MouseEvent>() {
@@ -97,7 +100,7 @@ public class TemplateMainView {
 
     public void addNewLayer(Node layer) {
         layers.add(layer);
-        layersAString.add(layer.getId());
+        layersAString.add(new Layer((TemplateElementInterface) layer));
         layersPanel.getLayersList().setItems(FXCollections.observableArrayList(layersAString));
         centerPanel.addNewElement(layer);
         setOnClickListenerForSelection(layer);
@@ -108,11 +111,29 @@ public class TemplateMainView {
             @Override
             public void handle(MouseEvent event) {
                 deselect();
+                layersPanel.getLayersList().getSelectionModel().select(new Layer((TemplateElementInterface) node));
                 ((TemplateElementInterface) node).select();
-
+                infoSelectedPanel.setTemplateElementInterface((StackPane) node);
             }
         });
+
+        layersPanel.getLayersList().getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Layer>() {
+            @Override
+            public void changed(ObservableValue<? extends Layer> observable, Layer oldValue, Layer newValue) {
+                deselect();
+                for(Node node1 : layers){
+                    TemplateElementInterface node11 = (TemplateElementInterface) node1;
+                    if(node11.getElementId().equals(newValue.getElementId())){
+                        node11.select();
+                        infoSelectedPanel.setTemplateElementInterface((StackPane) node1);
+                    }
+                }
+            }
+        });
+
     }
+
+
 
     private void deselect() {
         for (Node node : layers) {

@@ -3,6 +3,7 @@ package com.photobooth.templateEdytor.panels;
 import com.photobooth.templateEdytor.TemplateMainView;
 import com.photobooth.templateEdytor.elements.TemplateElementInterface;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
@@ -90,13 +91,18 @@ public class InfoSelectedPanel extends VBox {
         getChildren().addAll(gridPane);
     }
 
-    public void setTemplateElementInterface(TemplateElementInterface templateElementInterface) {
-        nameTextField.setText(templateElementInterface.getName());
-        topTextField.setText(templateElementInterface.getElementTop());
-        leftTextField.setText(templateElementInterface.getElementLeft());
-        widthTextField.setText(templateElementInterface.getElementWidth());
-        heightTextField.setText(templateElementInterface.getElementHeight());
-        rotationTextField.setText(templateElementInterface.getElementRotation());
-        orderTextField.setText(templateElementInterface.getName());
+    public void setTemplateElementInterface(StackPane node) {
+        TemplateElementInterface templateElementInterface = (TemplateElementInterface) node;
+
+        System.out.println(templateElementInterface.getElementId());
+
+        nameTextField.textProperty().setValue(templateElementInterface.getName());
+
+        topTextField.textProperty().setValue(String.valueOf(node.getBoundsInParent().getMinY()));
+        leftTextField.textProperty().setValue(String.valueOf(node.getBoundsInParent().getMinX()));
+        widthTextField.textProperty().setValue(String.valueOf(node.getBoundsInParent().getWidth()));
+        heightTextField.textProperty().setValue(String.valueOf(node.getBoundsInParent().getHeight()));
+        rotationTextField.textProperty().setValue(templateElementInterface.getElementRotation());
+        orderTextField.textProperty().setValue(templateElementInterface.getName());
     }
 }

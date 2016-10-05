@@ -4,6 +4,8 @@ public interface TemplateElementInterface {
     void select();
     void deselect();
 
+    Integer getElementId();
+
     String getName();
 
     String getElementTop();

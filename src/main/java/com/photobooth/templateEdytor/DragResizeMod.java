@@ -1,12 +1,12 @@
-package com.photobooth.templateEdytor.elements;
+package com.photobooth.templateEdytor;
 
+import com.photobooth.templateEdytor.elements.*;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
 /**

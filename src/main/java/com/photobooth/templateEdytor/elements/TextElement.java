@@ -1,5 +1,6 @@
 package com.photobooth.templateEdytor.elements;
 
+import com.photobooth.IdCreator;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -7,6 +8,7 @@ import javafx.scene.text.Text;
 
 public class TextElement extends StackPane implements TemplateElementInterface{
 
+    private final Integer elementId;
     private Rectangle rectangle;
     private Text text;
 
@@ -15,6 +17,7 @@ public class TextElement extends StackPane implements TemplateElementInterface{
         rectangle = new Rectangle(100, 100, Color.BROWN);
         text = new Text("Text");
         getChildren().addAll(rectangle, text);
+        elementId = IdCreator.getCounter();
     }
 
     public void setText(Text text) {
@@ -33,7 +36,7 @@ public class TextElement extends StackPane implements TemplateElementInterface{
     @Override
     public void select() {
         rectangle.setStrokeWidth(10);
-        setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID,null, new BorderWidths(5))));
+        setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.DASHED,null, new BorderWidths(1))));
     }
 
     @Override
@@ -43,7 +46,7 @@ public class TextElement extends StackPane implements TemplateElementInterface{
 
     @Override
     public String getName() {
-        return null;
+        return getId();
     }
 
     @Override
@@ -69,5 +72,10 @@ public class TextElement extends StackPane implements TemplateElementInterface{
     @Override
     public String getElementRotation() {
         return null;
+    }
+
+    @Override
+    public Integer getElementId() {
+        return elementId;
     }
 }

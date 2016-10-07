@@ -1,18 +1,39 @@
 package com.photobooth.controller;
 
-import com.photobooth.view.MainView;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.layout.StackPane;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
- * Main controller, which displays and manages main view of application.
+ * @author mst
  */
-public class AppController {
+public class AppController implements Initializable {
 
-    public AppController() {
-        // TODO Configuration magic here
+    @FXML
+    StackPane contentHolder;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
     }
 
-    /** Shows application layaut */
-    public void startApp() {
-        MainView mainView = new MainView();
+    public void setContent(Node node)
+    {
+        contentHolder.getChildren().setAll(node);
+    }
+
+    @FXML
+    public void handleStateEditorAction(ActionEvent actionEvent) {
+        // TODO implement: set StateEditorView
+    }
+
+    @FXML
+    public void handleTemplateEditorAction(ActionEvent actionEvent) {
+        // TODO implement: set TemplateEditorView
     }
 }

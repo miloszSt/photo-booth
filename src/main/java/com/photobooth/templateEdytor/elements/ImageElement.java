@@ -2,6 +2,7 @@ package com.photobooth.templateEdytor.elements;
 
 import com.photobooth.IdCreator;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
@@ -66,15 +67,19 @@ public class ImageElement extends StackPane implements TemplateElementInterface{
         });
     }
 
+    private Rectangle selectionRectangle = new Rectangle(30,30,Color.YELLOWGREEN);
     @Override
     public void select() {
-        setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.DASHED,null, new BorderWidths(1))));;
+        deselect();
+        setAlignment(selectionRectangle, Pos.TOP_LEFT);
+        getChildren().addAll(selectionRectangle);
     }
 
     @Override
     public void deselect() {
-        setBorder(new Border(new BorderStroke(null,null,null, BorderWidths.EMPTY)));
+        getChildren().remove(selectionRectangle);
     }
+
 
     @Override
     public String getName() {

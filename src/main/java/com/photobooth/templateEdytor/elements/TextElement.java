@@ -1,6 +1,7 @@
 package com.photobooth.templateEdytor.elements;
 
 import com.photobooth.IdCreator;
+import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -33,17 +34,17 @@ public class TextElement extends StackPane implements TemplateElementInterface{
         return (Text) getChildren().get(1);
     }
 
+    private Rectangle selectionRectangle = new Rectangle(30,30,Color.YELLOWGREEN);
     @Override
     public void select() {
-        rectangle.setStrokeWidth(10);
-        setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.DASHED,null, new BorderWidths(1))));
+        deselect();
+        setAlignment(selectionRectangle, Pos.TOP_LEFT);
+        getChildren().addAll(selectionRectangle);
     }
-
     @Override
     public void deselect() {
-        setBorder(new Border(new BorderStroke(null,null,null, BorderWidths.EMPTY)));
+        getChildren().remove(selectionRectangle);
     }
-
     @Override
     public String getName() {
         return getId();

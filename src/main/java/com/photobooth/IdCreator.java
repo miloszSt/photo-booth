@@ -6,6 +6,6 @@ public class IdCreator {
 
 
     public static Integer getCounter(){
-        return ++counter;
+        return counter++;
     }
 }

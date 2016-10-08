@@ -123,9 +123,11 @@ public class TemplateMainView {
                 deselect();
                 for(Node node1 : layers){
                     TemplateElementInterface node11 = (TemplateElementInterface) node1;
-                    if(node11.getElementId().equals(newValue.getElementId())){
-                        node11.select();
-                        infoSelectedPanel.setTemplateElementInterface((StackPane) node1);
+                    if(newValue != null) {
+                        if (node11.getElementId().equals(newValue.getElementId())) {
+                            node11.select();
+                            infoSelectedPanel.setTemplateElementInterface((StackPane) node1);
+                        }
                     }
                 }
             }
@@ -134,6 +136,9 @@ public class TemplateMainView {
     }
 
 
+    public CenterPanel getCenterPanel() {
+        return centerPanel;
+    }
 
     private void deselect() {
         for (Node node : layers) {

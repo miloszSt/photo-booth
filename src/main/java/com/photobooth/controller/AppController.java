@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -17,9 +18,13 @@ public class AppController implements Initializable {
     @FXML
     StackPane contentHolder;
 
+    @FXML
+    VBox appHolder;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        System.out.println("Init AppController");
+        //appHolder.setStyle("-fx-border-color: red;");
     }
 
     public void setContent(Node node)

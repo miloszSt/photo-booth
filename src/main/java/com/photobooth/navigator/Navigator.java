@@ -14,7 +14,8 @@ public class Navigator {
 
     public static final String APP_VIEW = "/view/app.fxml";
     public static final String ENCOURAGMENT_VIEW = "/view/encouragment.fxml";
-    public static final String TAKE_PHOTO_VIEW = "/view/app.fxml";
+    public static final String TAKE_PHOTO_VIEW = "/view/takephoto.fxml";
+    public static final String GALLERY_VIEW = "/view/gallery.fxml";
 
     private static AppController appController;
 
@@ -22,11 +23,11 @@ public class Navigator {
         Navigator.appController = appController;
     }
 
-    public static void loadContentView(String fxmlViewPath) {
-        System.out.println("Load view from path: " + fxmlViewPath);
+    public static void goTo(String fxmlViewPath) {
+        appController.getSize();
         try {
             appController.setContent(FXMLLoader.load(Navigator.class.getResource(fxmlViewPath)));
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
     }

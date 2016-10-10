@@ -1,5 +1,6 @@
 package com.photobooth.controller;
 
+import com.photobooth.navigator.Navigator;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,8 +28,12 @@ public class EncouragementController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        mediaView.setMediaPlayer(initMediaPlayer());
+        //mediaPane.setStyle("-fx-border-color: black;");
+        MediaPlayer mediaPlayer = initMediaPlayer();
+        mediaView.setMediaPlayer(mediaPlayer);
     }
+
+
 
     private MediaPlayer initMediaPlayer() {
         Media media = new Media(Paths.get(MEDIA_URL).toUri().toString());
@@ -42,6 +47,6 @@ public class EncouragementController implements Initializable {
 
     @FXML
     public void handleMouseClick(Event event) {
-
+        Navigator.goTo(Navigator.TAKE_PHOTO_VIEW);
     }
 }

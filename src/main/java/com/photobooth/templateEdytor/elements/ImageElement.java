@@ -21,7 +21,7 @@ public class ImageElement extends StackPane implements TemplateElementInterface{
 
     private final Integer elementId;
     private Rectangle rectangle;
-
+    private String imageAbsolutePath;
     public ImageElement(double width, double height, Paint fill) {
         super();
 
@@ -48,14 +48,7 @@ public class ImageElement extends StackPane implements TemplateElementInterface{
                 if(db.hasFiles()){
 
                     for(File file:db.getFiles()){
-                        //String absolutePath = file.getAbsolutePath();
-                        String absolutePath = file.toURI().toString();
-
-                        Image dbimage = new Image(absolutePath);
-                        ImageView dbImageView = new ImageView();
-                        dbImageView.setImage(dbimage);
-
-                        rectangle.setFill(new ImagePattern(dbimage, 0, 0, 1, 1, true));
+                        setImage();
                     }
 
                     event.setDropCompleted(true);
@@ -67,13 +60,43 @@ public class ImageElement extends StackPane implements TemplateElementInterface{
         });
     }
 
+
+
     private Rectangle selectionRectangle = new Rectangle(30,30,Color.YELLOWGREEN);
+
     @Override
     public void select() {
         deselect();
         setAlignment(selectionRectangle, Pos.TOP_LEFT);
         getChildren().addAll(selectionRectangle);
     }
+
+    public String getImageAbsolutePath() {
+        return imageAbsolutePath;
+    }
+
+    public void setImageAbsolutePath(String imageAbsolutePath) {
+        this.imageAbsolutePath = imageAbsolutePath;
+    }
+
+    public void setImage(){
+        if(imageAbsolutePath != null) {
+            Image dbimage = new Image(imageAbsolutePath);
+            ImageView dbImageView = new ImageView();
+            dbImageView.setImage(dbimage);
+
+            rectangle.setFill(new ImagePattern(dbimage, 0, 0, 1, 1, true));
+        }
+    }
+
+    public void setHeight(Integer height){
+        rectangle.setHeight(height);
+    }
+
+    public void setWidth(Integer width){
+        rectangle.setWidth(width);
+    }
+
 
     @Override
     public void deselect() {
@@ -87,28 +110,33 @@ public class ImageElement extends StackPane implements TemplateElementInterface{
     }
 
     @Override
-    public String getElementTop() {
-        return null;
+    public double getElementTop() {
+        return getBoundsInParent().getMinY();
     }
 
     @Override
-    public String getElementLeft() {
-        return null;
+    public double getElementLeft() {
+        return getBoundsInParent().getMinX();
     }
 
     @Override
-    public String getElementWidth() {
-        return null;
+    public double getElementWidth() {
+        return getBoundsInParent().getWidth();
     }
 
     @Override
-    public String getElementHeight() {
-        return null;
+    public double getElementHeight() {
+        return getBoundsInParent().getHeight();
     }
 
     @Override
-    public String getElementRotation() {
-        return null;
+    public double getElementRotation() {
+        return 0d;
+    }
+
+    @Override
+    public Paint getElementColor() {
+        return rectangle.getFill();
     }
 
     @Override

@@ -29,13 +29,15 @@ public class CircleElement extends StackPane implements TemplateElementInterface
         setAlignment(selectionRectangle, Pos.TOP_LEFT);
         getChildren().addAll(selectionRectangle);
     }
+
+    public void setRadius(Integer radious){
+        circle.setRadius(radious);
+    }
+
+
     @Override
     public void deselect() {
         getChildren().remove(selectionRectangle);
-    }
-    @Override
-    public Integer getElementId() {
-        return elementId;
     }
 
     @Override
@@ -44,27 +46,38 @@ public class CircleElement extends StackPane implements TemplateElementInterface
     }
 
     @Override
-    public String getElementTop() {
-        return null;
+    public double getElementTop() {
+        return getBoundsInParent().getMinY();
     }
 
     @Override
-    public String getElementLeft() {
-        return null;
+    public double getElementLeft() {
+        return getBoundsInParent().getMinX();
     }
 
     @Override
-    public String getElementWidth() {
-        return null;
+    public Integer getElementId() {
+        return elementId;
     }
 
     @Override
-    public String getElementHeight() {
-        return null;
+    public double getElementWidth() {
+        return circle.getRadius();
     }
 
     @Override
-    public String getElementRotation() {
-        return null;
+    public double getElementHeight() {
+        return circle.getRadius();
     }
+
+    @Override
+    public double getElementRotation() {
+        return 0d;
+    }
+
+    @Override
+    public Paint getElementColor() {
+        return circle.fillProperty().getValue();
+    }
+
 }

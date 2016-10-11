@@ -1,5 +1,7 @@
 package com.photobooth.templateEdytor.elements;
 
+import javafx.scene.paint.Paint;
+
 public interface TemplateElementInterface {
     void select();
     void deselect();
@@ -8,13 +10,15 @@ public interface TemplateElementInterface {
 
     String getName();
 
-    String getElementTop();
+    double getElementTop();
 
-    String getElementLeft();
+    double getElementLeft();
 
-    String getElementWidth();
+    double getElementWidth();
 
-    String getElementHeight();
+    double getElementHeight();
 
-    String getElementRotation();
+    double getElementRotation();
+
+    Paint getElementColor();
 }

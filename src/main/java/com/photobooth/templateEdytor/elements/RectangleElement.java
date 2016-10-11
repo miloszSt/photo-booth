@@ -31,38 +31,55 @@ public class RectangleElement extends StackPane implements TemplateElementInterf
     public void deselect() {
         getChildren().remove(selectionRectangle);
     }
+
     @Override
     public String getName() {
         return getId();
     }
 
     @Override
-    public String getElementTop() {
-        return null;
+    public double getElementTop() {
+        return getBoundsInParent().getMinY();
     }
 
     @Override
-    public String getElementLeft() {
-        return null;
+    public double getElementLeft() {
+        return getBoundsInParent().getMinX();
     }
 
     @Override
-    public String getElementWidth() {
-        return null;
+    public double getElementWidth() {
+        return getBoundsInParent().getWidth();
     }
 
     @Override
-    public String getElementHeight() {
-        return null;
+    public double getElementHeight() {
+        return getBoundsInParent().getHeight();
     }
 
     @Override
-    public String getElementRotation() {
-        return null;
+    public double getElementRotation() {
+        return 0d;
+    }
+
+    @Override
+    public Paint getElementColor() {
+        return rectangle.getFill();
     }
 
     @Override
     public Integer getElementId() {
         return elementId;
     }
+
+
+    public void setHeight(Integer height){
+        rectangle.setHeight(height);
+    }
+
+    public void setWidth(Integer width){
+        rectangle.setWidth(width);
+    }
+
+
 }

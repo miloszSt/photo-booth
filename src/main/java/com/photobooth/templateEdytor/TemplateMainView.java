@@ -18,24 +18,30 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TemplateMainView {
+public class TemplateMainView implements Serializable{
 
     private final Border blackSolidBorder = new Border(new BorderStroke(Paint.valueOf("000"), BorderStrokeStyle.SOLID, null, null));
 
-    private final CenterPanel centerPanel;
-    private final AddLayerPanel addLayerPanel;
-    private final TemplateDetailsPanel templateDetailsPanel;
-    private final InfoSelectedPanel infoSelectedPanel;
-    private final LayersPanel layersPanel;
-    private final OptionsPanel optionsPanel;
-    private final TopPanel topPanel;
+    private CenterPanel centerPanel;
+    private AddLayerPanel addLayerPanel;
+    private TemplateDetailsPanel templateDetailsPanel;
+    private InfoSelectedPanel infoSelectedPanel;
+    private LayersPanel layersPanel;
+    private OptionsPanel optionsPanel;
+    private TopPanel topPanel;
+    private Stage primaryStage;
+    private Scene scene;
 
-    private Object template = new Object();
-    private List<Node> layers = new ArrayList<>();
-    private List<Layer> layersAString = new ArrayList<>();
+    private String templateName;
+    private List<Node> layers;
+    private List<Layer> layersAString;
     private Node currentSelection;
 
     private final EventHandler<MouseEvent> deselectAllOnClick = new EventHandler<MouseEvent>() {
@@ -46,8 +52,16 @@ public class TemplateMainView {
     };
 
     public TemplateMainView(Stage primaryStage) {
+        topPanel = new TopPanel(this);
+        this.templateName = "Nowy template";
+        init(primaryStage);
+    }
+
+    private void init(Stage primaryStage) {
+        this.primaryStage = primaryStage;
         Group root = new Group();
-        Scene scene = new Scene(root, 1920, 1080, Color.GRAY);
+
+        scene = new Scene(root, 1920, 1080, Color.GRAY);
 
         BorderPane border = new BorderPane();
 
@@ -61,8 +75,6 @@ public class TemplateMainView {
 
         centerPanel.getBackgroundPanel().setOnMouseClicked(deselectAllOnClick);
 
-        topPanel = new TopPanel(this);
-
         border.setTop(topPanel);
 
         createLeftPanel(border);
@@ -73,6 +85,8 @@ public class TemplateMainView {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+        layers = new ArrayList<>();
+        layersAString = new ArrayList<>();
     }
 
     private void createRightPanel(BorderPane border) {
@@ -135,6 +149,14 @@ public class TemplateMainView {
 
     }
 
+    public String getTemplateName() {
+        return templateName;
+    }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
+
+    }
 
     public CenterPanel getCenterPanel() {
         return centerPanel;
@@ -146,6 +168,12 @@ public class TemplateMainView {
         }
     }
 
+    public void reset(){
+        init(primaryStage);
+    }
 
+    public Scene getScene() {
+        return scene;
+    }
 }
 

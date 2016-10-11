@@ -119,19 +119,12 @@ public class InfoSelectedPanel extends VBox {
         this.currentNode = node;
 
         nameTextField.textProperty().setValue(templateElementInterface.getName());
+        topTextField.textProperty().setValue(doubleToIntWithoutDot(templateElementInterface.getElementTop()));
+        leftTextField.textProperty().setValue(doubleToIntWithoutDot(templateElementInterface.getElementLeft()));
+        widthTextField.textProperty().setValue(doubleToIntWithoutDot(templateElementInterface.getElementWidth()));
+        heightTextField.textProperty().setValue(doubleToIntWithoutDot(templateElementInterface.getElementHeight()));
+        rotationTextField.textProperty().setValue(String.valueOf(templateElementInterface.getElementRotation()));
 
-        topTextField.textProperty().setValue(doubleToIntWithoutDot(node.getBoundsInParent().getMinY()));
-        leftTextField.textProperty().setValue(doubleToIntWithoutDot(node.getBoundsInParent().getMinX()));
-
-        Node rectangleOrCircle = ((StackPane) currentNode).getChildren().get(0);
-        if (rectangleOrCircle instanceof Rectangle) {
-            widthTextField.textProperty().setValue(doubleToIntWithoutDot(node.getBoundsInParent().getWidth()));
-            heightTextField.textProperty().setValue(doubleToIntWithoutDot(node.getBoundsInParent().getHeight()));
-        } else if (rectangleOrCircle instanceof Circle) {
-            widthTextField.textProperty().setValue(doubleToIntWithoutDot(((Circle) rectangleOrCircle).getRadius()));
-        }
-
-        rotationTextField.textProperty().setValue(templateElementInterface.getElementRotation());
         orderTextField.textProperty().setValue(templateElementInterface.getName());
     }
 

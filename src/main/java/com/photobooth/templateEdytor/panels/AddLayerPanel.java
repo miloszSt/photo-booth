@@ -22,7 +22,7 @@ public class AddLayerPanel extends VBox{
     private final Button addTextButton;
     private final Button addRectangleButton;
     private final Button addCircleButton;
-    private  Integer counter = 1;
+    private Integer counter = 1;
 
     public AddLayerPanel(TemplateMainView templateMainView) {
         super();

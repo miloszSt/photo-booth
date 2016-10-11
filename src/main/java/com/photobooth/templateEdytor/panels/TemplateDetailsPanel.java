@@ -1,6 +1,8 @@
 package com.photobooth.templateEdytor.panels;
 
 import com.photobooth.templateEdytor.TemplateMainView;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -15,13 +17,21 @@ public class TemplateDetailsPanel extends VBox{
 
     private final TemplateMainView templateMainView;
 
+    private final TextField nameInputControl;
+
     public TemplateDetailsPanel(final TemplateMainView templateMainView) {
         super();
         this.templateMainView = templateMainView;
 
         Label templateDetails = new Label("TEMPLATE DETAILS");
         Label name = new Label("Name");
-        TextField nameInputControl= new TextField();
+        nameInputControl = new TextField(templateMainView.getTemplateName());
+        nameInputControl.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                templateMainView.setTemplateName(newValue);
+            }
+        });
 
         Label paperSizeLabel = new Label("Paper size");
         ObservableList<String> paperSizeOptions =

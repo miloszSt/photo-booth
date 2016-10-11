@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+        <?import javafx.scene.layout.*?>
+        <?import javafx.scene.media.MediaView?>
+
+<StackPane fx:id="mediaPane" alignment="CENTER"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.photobooth.controller.EncouragementController">
+    <children>
+        <MediaView   fx:id="mediaView" onMouseClicked="#handleMouseClick">
+        </MediaView>
+    </children>
+</StackPane>

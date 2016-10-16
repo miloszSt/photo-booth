@@ -23,7 +23,7 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setFullScreen(true);
         primaryStage.setFullScreenExitHint(FULL_SCREEN_HINT);
-
+        Navigator.setAppContainer(primaryStage);
         primaryStage.setScene(loadAppView());
 
         primaryStage.show();

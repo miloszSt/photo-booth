@@ -4,10 +4,11 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.control.Label?>
+<!-- ewentualnie ScrollPane -->
 <StackPane fx:id="mediaPane" alignment="CENTER"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.photobooth.controller.GalleryController">
     <children>
-        <Label text="Tutaj będzie galeria" />
+        <TilePane fx:id="galleryContainer" hgap="15"/>
     </children>
 </StackPane>

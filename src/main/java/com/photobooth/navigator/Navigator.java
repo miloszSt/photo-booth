@@ -2,6 +2,7 @@ package com.photobooth.navigator;
 
 import com.photobooth.controller.AppController;
 import javafx.fxml.FXMLLoader;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -19,16 +20,25 @@ public class Navigator {
 
     private static AppController appController;
 
+    private static Stage appContainer;
+
     public static void setAppController(AppController appController) {
         Navigator.appController = appController;
     }
 
     public static void goTo(String fxmlViewPath) {
-        appController.getSize();
         try {
             appController.setContent(FXMLLoader.load(Navigator.class.getResource(fxmlViewPath)));
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Stage getAppContainer() {
+        return appContainer;
+    }
+
+    public static void setAppContainer(Stage stage) {
+        appContainer = stage;
     }
 }

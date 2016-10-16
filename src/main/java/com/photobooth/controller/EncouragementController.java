@@ -47,6 +47,7 @@ public class EncouragementController implements Initializable {
 
     @FXML
     public void handleMouseClick(Event event) {
-        Navigator.goTo(Navigator.TAKE_PHOTO_VIEW);
+        //Navigator.goTo(Navigator.TAKE_PHOTO_VIEW);
+        Navigator.goTo(Navigator.GALLERY_VIEW);
     }
 }

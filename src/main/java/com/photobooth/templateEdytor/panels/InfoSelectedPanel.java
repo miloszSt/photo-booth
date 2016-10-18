@@ -137,24 +137,14 @@ public class InfoSelectedPanel extends VBox {
         downButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                ObservableList<Node> children = templateMainView.getCenterPanel().getChildren();
-                int i = children.indexOf(currentNode);
-                if (i > 1) {
-                    children.remove(i);
-                    children.add(--i, currentNode);
-                }
+                templateMainView.getCenterPanel().moveHigher(currentNode);
             }
         });
 
         upButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                ObservableList<Node> children = templateMainView.getCenterPanel().getChildren();
-                int i = children.indexOf(currentNode);
-                if (i < children.size() - 1) {
-                    children.remove(i);
-                    children.add(++i, currentNode);
-                }
+                templateMainView.getCenterPanel().moveLower(currentNode);
             }
         });
     }

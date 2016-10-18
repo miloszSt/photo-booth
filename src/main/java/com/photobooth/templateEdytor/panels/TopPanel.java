@@ -7,13 +7,20 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.print.*;
+import javafx.print.PageLayout;
+import javafx.print.PageOrientation;
+import javafx.print.Paper;
+import javafx.print.Printer;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -21,6 +28,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Scale;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -84,32 +98,90 @@ public class TopPanel extends HBox {
             @Override
             public void handle(ActionEvent event) {
 
-                List<SerializableTemplateInterface> serializableTemplateInterfaces = getSerializableTemplateInterfaces(templateMainView.getCenterPanel().getChildren());
+                List<SerializableTemplateInterface> serializableTemplateInterfaces = getSerializableTemplateInterfaces(templateMainView.getCenterPanel().getElements());
                 Pane pane = new Pane();
-                pane.getChildren().add(new Rectangle(900,900, Color.TRANSPARENT));
+                pane.getChildren().add(new Rectangle(487,734, Color.TRANSPARENT));
                 for(SerializableTemplateInterface serial : serializableTemplateInterfaces){
                     pane.getChildren().add((Node) serial.toElement());
                 }
-
-                Parent root = templateMainView.getScene().getRoot();
-                Parent centerPanel  = templateMainView.getCenterPanel();
                 Printer printer = Printer.getDefaultPrinter();
+
                 PageLayout pageLayout = printer.createPageLayout(Paper.A4, PageOrientation.PORTRAIT, Printer.MarginType.DEFAULT);
                 double scaleX = pageLayout.getPrintableWidth() / pane.getBoundsInParent().getWidth();
                 double scaleY = pageLayout.getPrintableHeight() / pane.getBoundsInParent().getHeight();
-                pane.getTransforms().add(new Scale(scaleX, scaleY));
+                System.out.println("skala X " + scaleX);
+                System.out.println("skala Y " + scaleY);
+
+                System.out.println("getBoundsInParent height "  + pane.getBoundsInParent().getHeight());
+                System.out.println("getBoundsInParent width "  + pane.getBoundsInParent().getWidth());
 
 
+//                pane.getTransforms().add(new Scale(scaleX, scaleY));
 
-                PrinterJob job = PrinterJob.createPrinterJob();
-                if (job != null && job.showPrintDialog(templateMainView.getScene().getWindow())){
-//                    boolean success = job.printPage(root);
-                    boolean success = job.printPage(pane);
-                    if (success) {
-                        job.endJob();
-                        System.out.print("podrukowane");
-                    }
+                WritableImage snapshot = pane.snapshot(new SnapshotParameters(), null);
+                System.out.println("Snapshot height "  + snapshot.getHeight());
+                System.out.println("Snapshot width "  + snapshot.getWidth());
+
+                BufferedImage bImage = SwingFXUtils.fromFXImage(snapshot, null);
+
+
+                ImageView dbImageView = new ImageView();
+
+                try {
+                    ImageIO.write(bImage, "PNG", new File("c:/test/dupa.png"));
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                Image value = new Image(new File("c:/test/dupa.png").toURI().toString());
+
+
+                System.out.println("Image height "  + value.getHeight());
+                System.out.println("Image width "  + value.getWidth());
+
+
+                dbImageView.setImage(value);
+//                dbImageView.setFitHeight(pageLayout.getPrintableHeight());
+//                dbImageView.setFitWidth(pageLayout.getPrintableWidth());
+
+                System.out.println("dbImageView height "  + dbImageView.getFitHeight());
+                System.out.println("dbImageView width "  + dbImageView.getFitWidth());
+
+
+                PrinterJob printJob = PrinterJob.getPrinterJob();
+
+                try {
+                    java.awt.Image image = ImageIO.read(new File("c:/test/dupa.png"));
+                    printJob.setPrintable(new Printable() {
+                        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+                            if (pageIndex != 0) {
+                                return NO_SUCH_PAGE;
+                            }
+                            graphics.drawImage(image, 0, 0, image.getWidth(null), image.getHeight(null), null);
+                            return PAGE_EXISTS;
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+                try {
+                    printJob.print();
+                } catch (PrinterException e1) {
+                    e1.printStackTrace();
+                }
+
+
+
+//                PrinterJob job = PrinterJob.createPrinterJob();
+//                if (job != null && job.showPrintDialog(templateMainView.getScene().getWindow())){
+////                    boolean success = job.printPage(root);
+//                    boolean success = job.printPage(dbImageView);
+//                    if (success) {
+//                        job.endJob();
+//                        System.out.print("podrukowane");
+//                    }
+//                }
             }
         });
         Button importTemplateButton = new Button("importTemplateButton");
@@ -118,7 +190,7 @@ public class TopPanel extends HBox {
         Button undoTemplateButton = new Button("undoTemplateButton");
         Button redoTemplateButton = new Button("redoTemplateButton");
 
-        Button button = new Button("                                                                                                                ");
+        Button button = new Button("                                                                         ");
         button.setDisable(true);
 
 
@@ -134,6 +206,7 @@ public class TopPanel extends HBox {
                 revertTemplateButton, printTemplateButton, importTemplateButton, exportTemplateButton,
                 browseTemplateButton, undoTemplateButton, redoTemplateButton, button);
     }
+
 
     private void deleteTemplate(String templateName) {
         try {
@@ -235,4 +308,7 @@ public class TopPanel extends HBox {
         }
         return serializableTemplateInterfaceList;
     }
+
+
+
 }

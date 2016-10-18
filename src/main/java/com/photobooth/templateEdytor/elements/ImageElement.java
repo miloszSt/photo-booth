@@ -1,6 +1,8 @@
 package com.photobooth.templateEdytor.elements;
 
 import com.photobooth.IdCreator;
+import com.photobooth.templateEdytor.serializable.ImageSerializable;
+import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
@@ -137,6 +139,11 @@ public class ImageElement extends StackPane implements TemplateElementInterface{
     @Override
     public Paint getElementColor() {
         return rectangle.getFill();
+    }
+
+    @Override
+    public SerializableTemplateInterface serialize() {
+        return new ImageSerializable(this);
     }
 
     @Override

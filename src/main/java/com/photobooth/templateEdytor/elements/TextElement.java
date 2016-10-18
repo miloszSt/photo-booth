@@ -1,6 +1,8 @@
 package com.photobooth.templateEdytor.elements;
 
 import com.photobooth.IdCreator;
+import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
+import com.photobooth.templateEdytor.serializable.TextSerializable;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -81,6 +83,11 @@ public class TextElement extends StackPane implements TemplateElementInterface{
     @Override
     public Paint getElementColor() {
         return rectangle.getFill();
+    }
+
+    @Override
+    public SerializableTemplateInterface serialize() {
+        return new TextSerializable(this);
     }
 
     @Override

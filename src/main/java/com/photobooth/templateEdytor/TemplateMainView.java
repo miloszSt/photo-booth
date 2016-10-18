@@ -24,6 +24,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class TemplateMainView implements Serializable{
 
@@ -120,6 +121,17 @@ public class TemplateMainView implements Serializable{
         setOnClickListenerForSelection(layer);
     }
 
+    public void refreshLayers(){
+        layers = centerPanel.getElements();
+        layers.forEach(new Consumer<Node>() {
+            @Override
+            public void accept(Node node) {
+                layersAString.add(new Layer((TemplateElementInterface) node));
+            }
+        });
+        layersPanel.getLayersList().setItems(FXCollections.observableArrayList(layersAString));
+    }
+
     private void setOnClickListenerForSelection(Node node) {
         node.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
@@ -128,6 +140,7 @@ public class TemplateMainView implements Serializable{
                 layersPanel.getLayersList().getSelectionModel().select(new Layer((TemplateElementInterface) node));
                 ((TemplateElementInterface) node).select();
                 infoSelectedPanel.setTemplateElementInterface((StackPane) node);
+                currentSelection = node;
             }
         });
 
@@ -166,6 +179,11 @@ public class TemplateMainView implements Serializable{
         for (Node node : layers) {
             ((TemplateElementInterface) node).deselect();
         }
+        currentSelection = null;
+    }
+
+    public Node getCurrentSelection() {
+        return currentSelection;
     }
 
     public void reset(){
@@ -174,6 +192,11 @@ public class TemplateMainView implements Serializable{
 
     public Scene getScene() {
         return scene;
+    }
+
+    public void removeLayer(Node currentSelection) {
+        centerPanel.removeLayer(currentSelection);
+        layersAString.remove(new Layer((TemplateElementInterface) currentSelection));
     }
 }
 

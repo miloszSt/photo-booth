@@ -6,6 +6,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.print.PageOrientation;
+import javafx.print.Paper;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -18,6 +20,8 @@ public class TemplateDetailsPanel extends VBox{
     private final TemplateMainView templateMainView;
 
     private final TextField nameInputControl;
+    private final ComboBox<Paper> paperSizeComboBox;
+    private final ComboBox<PageOrientation> orientationComboBox;
 
     public TemplateDetailsPanel(final TemplateMainView templateMainView) {
         super();
@@ -33,34 +37,56 @@ public class TemplateDetailsPanel extends VBox{
             }
         });
 
+
+
+//        Label resolutionLabel = new Label("Resolution");
+//        ObservableList<String> resolutionOptions =
+//                FXCollections.observableArrayList(
+//                        "800x700",
+//                        "100x100",
+//                        "100x120"
+//                );
+//        ComboBox<String> resolutionComboBox = new ComboBox<>(resolutionOptions);
+
+        HBox widthHeightLabelsBox = new HBox(new Label("Height"), new Label("Width"));
+        widthHeightLabelsBox.setSpacing(30);
+        TextField width = new TextField();
+        TextField height = new TextField();
+
+        HBox widthHeightInputBox = new HBox(height, width);
+
         Label paperSizeLabel = new Label("Paper size");
-        ObservableList<String> paperSizeOptions =
-                FXCollections.observableArrayList(
-                        "4x6",
-                        "99x99",
-                        "6x9"
+        ObservableList<Paper> paperSizeOptions =
+                FXCollections.observableArrayList(Paper.A0,Paper.A1, Paper.A2, Paper.A3,
+                        Paper.A4, Paper.A5, Paper.JIS_B4, Paper.JIS_B5, Paper.JIS_B6
                 );
-        ComboBox<String> paperSizeComboBox = new ComboBox<>(paperSizeOptions);
 
-        Label resolutionLabel = new Label("Resolution");
-        ObservableList<String> resolutionOptions =
-                FXCollections.observableArrayList(
-                        "800x700",
-                        "100x100",
-                        "100x120"
-                );
-        ComboBox<String> resolutionComboBox = new ComboBox<>(resolutionOptions);
+        paperSizeComboBox = new ComboBox<>(paperSizeOptions);
 
-        HBox widthHeightLabelsBox = new HBox(new Label("Width"), new Label("Height"));
-        HBox widthHeightInputBox = new HBox(new TextField(), new TextField());
+        paperSizeComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Paper>() {
+            @Override
+            public void changed(ObservableValue<? extends Paper> observable, Paper oldValue, Paper newValue) {
+                templateMainView.getCenterPanel().setPageSize(newValue);
+                width.setText(Integer.toString(templateMainView.getCenterPanel().getPageHeight()));
+                height.setText(Integer.toString(templateMainView.getCenterPanel().getPageWidth()));
+            }
+        });
 
         Label orientationLabel = new Label("Orientation");
-        ObservableList<String> orientationOptions =
+        ObservableList<PageOrientation> orientationOptions =
                 FXCollections.observableArrayList(
-                        "Horizontal",
-                        "Vertical"
+                        PageOrientation.PORTRAIT, PageOrientation.LANDSCAPE
                 );
-        ComboBox<String> orientationComboBox = new ComboBox<>(orientationOptions);
+
+        orientationComboBox = new ComboBox<>(orientationOptions);
+        orientationComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<PageOrientation>() {
+            @Override
+            public void changed(ObservableValue<? extends PageOrientation> observable, PageOrientation oldValue, PageOrientation newValue) {
+                templateMainView.getCenterPanel().setOrientation(newValue);
+                width.setText(Integer.toString(templateMainView.getCenterPanel().getPageHeight()));
+                height.setText(Integer.toString(templateMainView.getCenterPanel().getPageWidth()));
+            }
+        });
         Label backgroundColorLabel = new Label("Backgroud color");
         ColorPicker colorPicker = new ColorPicker();
 
@@ -72,7 +98,7 @@ public class TemplateDetailsPanel extends VBox{
 
 
         getChildren().addAll(templateDetails, name, nameInputControl, paperSizeLabel,
-                paperSizeComboBox, resolutionLabel, resolutionComboBox, widthHeightLabelsBox, widthHeightInputBox,
+                paperSizeComboBox, widthHeightLabelsBox, widthHeightInputBox,
                 orientationLabel, orientationComboBox, backgroundColorLabel, colorPicker);
     }
 }

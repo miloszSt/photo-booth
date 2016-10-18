@@ -2,6 +2,8 @@ package com.photobooth.templateEdytor.elements;
 
 
 import com.photobooth.IdCreator;
+import com.photobooth.templateEdytor.serializable.RectangleSerializable;
+import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -65,6 +67,11 @@ public class RectangleElement extends StackPane implements TemplateElementInterf
     @Override
     public Paint getElementColor() {
         return rectangle.getFill();
+    }
+
+    @Override
+    public SerializableTemplateInterface serialize() {
+        return new RectangleSerializable(this);
     }
 
     @Override

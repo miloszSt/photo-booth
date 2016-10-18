@@ -39,8 +39,10 @@ public class DragResizeMod {
         void onResize(Node node, double x, double y, double h, double w);
     }
 
-    private static final int WIDTH = 1200;
-    private static final int HEIGHT = 900;
+    private static int WIDTH = 1200;
+    private static int HEIGHT = 900;
+
+
     private static final OnDragResizeEventListener defaultListener = new OnDragResizeEventListener() {
         @Override
         public void onDrag(Node node, double x, double y, double h, double w) {
@@ -137,6 +139,18 @@ public class DragResizeMod {
 
     public static void makeResizable(Node node) {
         makeResizable(node, null);
+    }
+
+    public static void makeResizable(Node node, Integer height, Integer width) {
+        makeResizable(node, null);
+    }
+
+    public static void setWIDTH(int WIDTH) {
+        DragResizeMod.WIDTH = WIDTH;
+    }
+
+    public static void setHEIGHT(int HEIGHT) {
+        DragResizeMod.HEIGHT = HEIGHT;
     }
 
     public static void makeResizable(Node node, OnDragResizeEventListener listener) {

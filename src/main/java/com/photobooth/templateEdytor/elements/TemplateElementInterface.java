@@ -1,5 +1,6 @@
 package com.photobooth.templateEdytor.elements;
 
+import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
 import javafx.scene.paint.Paint;
 
 public interface TemplateElementInterface {
@@ -21,4 +22,6 @@ public interface TemplateElementInterface {
     double getElementRotation();
 
     Paint getElementColor();
+
+    SerializableTemplateInterface serialize();
 }

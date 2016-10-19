@@ -98,6 +98,16 @@ public class PhotoElement extends StackPane implements TemplateElementInterface{
     }
 
     @Override
+    public void setBackgroundColor(Paint color) {
+
+    }
+
+    @Override
+    public void setSecondColor(Paint color) {
+
+    }
+
+    @Override
     public Integer getElementId() {
         return elementId;
     }

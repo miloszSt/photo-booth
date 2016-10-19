@@ -24,4 +24,9 @@ public interface TemplateElementInterface {
     Paint getElementColor();
 
     SerializableTemplateInterface serialize();
+
+    void setBackgroundColor(Paint color);
+
+    void setSecondColor(Paint color);
+
 }

@@ -2,6 +2,7 @@ package com.photobooth.templateEdytor;
 
 import com.photobooth.templateEdytor.elements.ImageElement;
 import com.photobooth.templateEdytor.elements.TemplateElementInterface;
+import com.photobooth.templateEdytor.elements.TextElement;
 import com.photobooth.templateEdytor.panels.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -62,16 +63,16 @@ public class TemplateMainView implements Serializable{
         this.primaryStage = primaryStage;
         Group root = new Group();
 
-        scene = new Scene(root, 1920, 1080, Color.GRAY);
+        scene = new Scene(root, 1800, 900, Color.GRAY);
 
         BorderPane border = new BorderPane();
 
         addLayerPanel = new AddLayerPanel(this);
+        centerPanel = new CenterPanel(this);
         templateDetailsPanel = new TemplateDetailsPanel(this);
         layersPanel = new LayersPanel(this);
         optionsPanel = new OptionsPanel(this);
         this.infoSelectedPanel = new InfoSelectedPanel(this);
-        centerPanel = new CenterPanel(this);
 
 
         centerPanel.getBackgroundPanel().setOnMouseClicked(deselectAllOnClick);
@@ -137,10 +138,18 @@ public class TemplateMainView implements Serializable{
             @Override
             public void handle(MouseEvent event) {
                 deselect();
-                layersPanel.getLayersList().getSelectionModel().select(new Layer((TemplateElementInterface) node));
-                ((TemplateElementInterface) node).select();
+                TemplateElementInterface node1 = (TemplateElementInterface) node;
+                layersPanel.getLayersList().getSelectionModel().select(new Layer(node1));
+                node1.select();
                 infoSelectedPanel.setTemplateElementInterface((StackPane) node);
                 currentSelection = node;
+                optionsPanel.setBackgroundColor((Color) node1.getElementColor());
+                if(node1 instanceof TextElement){
+                    optionsPanel.setTextSize(((TextElement) node1).getTextSize());
+                    optionsPanel.setSecondColor((Color) ((TextElement) node1).getText().getFill());
+                    optionsPanel.setText(((TextElement) node1).getTextValue());
+                }
+
             }
         });
 

@@ -190,7 +190,7 @@ public class TopPanel extends HBox {
         Button undoTemplateButton = new Button("undoTemplateButton");
         Button redoTemplateButton = new Button("redoTemplateButton");
 
-        Button button = new Button("                                                                         ");
+        Button button = new Button("                                            ");
         button.setDisable(true);
 
 
@@ -269,7 +269,7 @@ public class TopPanel extends HBox {
     private void toFile(String templateName) {
         try {
 
-            ObservableList<Node> children = templateMainView.getCenterPanel().getChildren();
+            ObservableList<Node> children = templateMainView.getCenterPanel().getElements();
 
             List<SerializableTemplateInterface> serializableTemplateInterfaceList = getSerializableTemplateInterfaces(children);
 

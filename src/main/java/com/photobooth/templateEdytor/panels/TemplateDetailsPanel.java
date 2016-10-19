@@ -72,6 +72,8 @@ public class TemplateDetailsPanel extends VBox{
             }
         });
 
+
+        paperSizeComboBox.getSelectionModel().select(Paper.A4);
         Label orientationLabel = new Label("Orientation");
         ObservableList<PageOrientation> orientationOptions =
                 FXCollections.observableArrayList(
@@ -87,6 +89,8 @@ public class TemplateDetailsPanel extends VBox{
                 height.setText(Integer.toString(templateMainView.getCenterPanel().getPageWidth()));
             }
         });
+
+        orientationComboBox.getSelectionModel().select(PageOrientation.PORTRAIT);
         Label backgroundColorLabel = new Label("Backgroud color");
         ColorPicker colorPicker = new ColorPicker();
 

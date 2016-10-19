@@ -91,6 +91,16 @@ public class TextElement extends StackPane implements TemplateElementInterface{
     }
 
     @Override
+    public void setBackgroundColor(Paint color) {
+        rectangle.setFill(color);
+    }
+
+    @Override
+    public void setSecondColor(Paint color) {
+        text.setFill(color);
+    }
+
+    @Override
     public Integer getElementId() {
         return elementId;
     }
@@ -123,6 +133,10 @@ public class TextElement extends StackPane implements TemplateElementInterface{
     public void setFontStyle(Integer textSize, String textColor) {
         text.setFont(new Font(textSize));
         text.setFill(Color.valueOf(textColor));
+    }
+
+    public void setTextSize(int textSize){
+        text.setFont(new Font(textSize));
     }
 
     public void setTextValue(String textValue) {

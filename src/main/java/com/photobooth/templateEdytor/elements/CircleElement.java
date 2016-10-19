@@ -87,5 +87,15 @@ public class CircleElement extends StackPane implements TemplateElementInterface
         return new CircleSerializable(this);
     }
 
+    @Override
+    public void setBackgroundColor(Paint color) {
+        circle.setFill(color);
+    }
+
+    @Override
+    public void setSecondColor(Paint color) {
+
+    }
+
 
 }

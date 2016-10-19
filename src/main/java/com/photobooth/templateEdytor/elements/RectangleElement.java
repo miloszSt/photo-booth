@@ -75,6 +75,16 @@ public class RectangleElement extends StackPane implements TemplateElementInterf
     }
 
     @Override
+    public void setBackgroundColor(Paint color) {
+        rectangle.setFill(color);
+    }
+
+    @Override
+    public void setSecondColor(Paint color) {
+
+    }
+
+    @Override
     public Integer getElementId() {
         return elementId;
     }

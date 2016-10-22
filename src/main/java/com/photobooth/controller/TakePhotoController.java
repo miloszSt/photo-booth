@@ -1,7 +1,11 @@
 package com.photobooth.controller;
 
 import com.photobooth.camera.CameraService;
+import com.photobooth.controller.spec.AnimationInitializable;
 import com.photobooth.navigator.Navigator;
+import com.photobooth.util.FileUtils;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,12 +21,14 @@ import java.util.ResourceBundle;
 /**
  * @author mst
  */
-public class TakePhotoController implements Initializable {
+public class TakePhotoController implements Initializable, AnimationInitializable {
 
-    private static final String MEDIA_URL = "src/main/resources/odliczanie.mp4";
+    private static final String MEDIA_URL = "src/main/resources/animations/odliczanie.mp4";
 
     @FXML
     MediaView mediaView;
+
+    private String animationPath = "";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -32,7 +38,7 @@ public class TakePhotoController implements Initializable {
     }
 
     private MediaPlayer initMediaPlayer() {
-        Media media = new Media(Paths.get(MEDIA_URL).toUri().toString());
+        Media media = new Media(Paths.get(animationPath.isEmpty() ? MEDIA_URL : animationPath).toUri().toString());
         MediaPlayer player = new MediaPlayer(media);
         player.setAutoPlay(true);
         player.setCycleCount(MediaPlayer.INDEFINITE);
@@ -42,26 +48,34 @@ public class TakePhotoController implements Initializable {
     }
 
     private void takePhoto() {
-        Thread thread = new Thread(new Runnable() {
+        Task<Void> takePhotoTask = new Task<Void>() {
             @Override
-            public void run() {
-                try {
-                    Thread.sleep(3500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Jada swinie jadą");
-                try {
-                    new CameraService().takeImageForUser("Janusz");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            protected Void call() throws Exception {
+                Thread.sleep(3500);
+                new CameraService().takeImageForUser("Janusz");
+
+                return null;
             }
-        });
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                System.out.println("Success from task!");
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        Navigator.goTo(Navigator.GALLERY_VIEW);
+                    }
+                });
+            }
+        };
+        Thread thread = new Thread(takePhotoTask);
+        thread.setDaemon(true);
         thread.start();
-        // TODO should be synchronized with thread
-        Navigator.goTo(Navigator.GALLERY_VIEW);
+    }
+
+    @Override
+    public void initAnimation(String animationPath) {
+        this.animationPath = FileUtils.RESOURCES_FOLDER + animationPath;
     }
 }

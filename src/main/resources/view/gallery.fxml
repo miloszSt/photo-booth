@@ -9,6 +9,6 @@
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.photobooth.controller.GalleryController">
     <children>
-        <TilePane fx:id="galleryContainer" hgap="15"/>
+        <TilePane fx:id="galleryContainer" hgap="15" vgap="15"/>
     </children>
 </StackPane>

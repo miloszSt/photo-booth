@@ -5,10 +5,14 @@ import com.photobooth.navigator.Navigator;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
 /**
  * Entry point of application
@@ -31,13 +35,35 @@ public class App extends Application {
 
     private Scene loadAppView() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(Navigator.APP_VIEW));
-        // TODO pliki fxml w resource/view pozniej mozna zmienic
         Pane appPane = loader.load();
         AppController appController = loader.getController();
-
         Navigator.setAppController(appController);
-        Navigator.goTo(Navigator.ENCOURAGMENT_VIEW);
+
+        if (hasCustomConfiguration()) {
+            Navigator.nextState();
+        } else {
+            showNoCustomConfigurationAlert();
+        }
+
         return new Scene(appPane);
+    }
+
+    private void showNoCustomConfigurationAlert() {
+        Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationDialog.setHeaderText(null);
+        confirmationDialog.setContentText(ResourceBundle.getBundle("locale.locale")
+                .getString("ConfirmationAlert.ContentText"));
+
+        Optional<ButtonType> result = confirmationDialog.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            Navigator.goTo(Navigator.STATE_EDITOR_VIEW);
+        } else {
+            Navigator.nextState();
+        }
+    }
+
+    private boolean hasCustomConfiguration() {
+        return Navigator.hasCustomStatesConfiguration();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {

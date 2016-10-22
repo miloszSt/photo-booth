@@ -1,10 +1,13 @@
 package com.photobooth.navigator;
 
 import com.photobooth.controller.AppController;
+import com.photobooth.controller.spec.AnimationInitializable;
+import com.photobooth.model.StateDef;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.*;
 
 /**
  * Obsługuje przechodzenie pomiędzy poszczególnymi widokami.
@@ -13,10 +16,29 @@ import java.io.IOException;
  */
 public class Navigator {
 
+    /** Paths to FXML views definitions. */
     public static final String APP_VIEW = "/view/app.fxml";
     public static final String ENCOURAGMENT_VIEW = "/view/encouragment.fxml";
     public static final String TAKE_PHOTO_VIEW = "/view/takephoto.fxml";
     public static final String GALLERY_VIEW = "/view/gallery.fxml";
+    public static final String STATE_EDITOR_VIEW = "/view/stateeditor.fxml";
+    public static final String TEMPLATE_EDITOR_VIEW = "view/templateeditor.fxml";
+    public static final String END_OPTIONS_VIEW = "view/endoptions.fxml";
+
+    /** Default application flow. Used if there won't be any custom configuration. */
+    public static final List<StateDef> DEFAULT_APP_STATES = new ArrayList<StateDef>() {
+        {
+            add(new StateDef("Animacja zachety", ENCOURAGMENT_VIEW, "Pierwszy_PIONv2_converted.mp4"));
+            add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, "odliczanie.mp4"));
+            add(new StateDef("Galeria", GALLERY_VIEW, ""));
+        }
+    };
+
+    /** Stores custom application flow. */
+    private static List<StateDef> customAppStates = new ArrayList<>();
+
+    /** Maps state to animation presentet on view associated with state. */
+    private static Map<String, String> statesAnimations = new HashMap<>();
 
     private static AppController appController;
 
@@ -26,12 +48,53 @@ public class Navigator {
         Navigator.appController = appController;
     }
 
+    public static void nextState() {
+        Navigator.goTo(getStates().next());
+    }
+
+    public static void previousState() {
+        Navigator.goTo(getStates().previous());
+    }
+
+    public static boolean hasCustomStatesConfiguration() {
+        return !customAppStates.isEmpty();
+    }
+
+    public static void goTo(StateDef stateDefinition) {
+        FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(stateDefinition.getFxmlViewPath()));
+
+        try {
+            loader.load();
+            if (loader.getController() instanceof AnimationInitializable) {
+                ((AnimationInitializable) loader.getController()).initAnimation(stateDefinition.getAnimationPath());
+            }
+            goTo(stateDefinition.getFxmlViewPath());
+        } catch (IOException e) {
+            System.out.println("Error loading view: " + stateDefinition.getAnimationPath()
+                    + "\n" + e.getMessage());
+        }
+    }
+
+    /**
+     * Changes view directly for given path of FXML file.
+     *
+     * @param fxmlViewPath path of FXML file
+     */
     public static void goTo(String fxmlViewPath) {
         try {
             appController.setContent(FXMLLoader.load(Navigator.class.getResource(fxmlViewPath)));
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
+    }
+
+    public static ListIterator<StateDef> getStates() {
+        List<StateDef> states = hasCustomStatesConfiguration() ? customAppStates : DEFAULT_APP_STATES;
+        return states.listIterator();
+    }
+
+    public static void setCustomStates(List<StateDef> customStates) {
+        customAppStates = customStates;
     }
 
     public static Stage getAppContainer() {

@@ -1,6 +1,7 @@
 package com.photobooth.controller;
 
 import com.photobooth.navigator.Navigator;
+import com.photobooth.util.FileUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -38,14 +39,9 @@ public class GalleryController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         galleryContainer.setPadding(new Insets(15, 15, 15, 15));
-        File folder = loadImgFolder(IMAGES_PATH);
+        File folder = FileUtils.load(IMAGES_PATH);
         List<File> images = Arrays.asList(folder.listFiles());
         createImageViews(images);
-    }
-
-    private File loadImgFolder(String path) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        return new File(classLoader.getResource(path).getFile());
     }
 
     private void createImageViews(List<File> images) {

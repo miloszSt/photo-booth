@@ -1,5 +1,6 @@
 package com.photobooth.controller;
 
+import com.photobooth.navigator.Navigator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,8 +24,6 @@ public class AppController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("Init AppController");
-        //appHolder.setStyle("-fx-border-color: red;");
     }
 
     public void setContent(Node node)
@@ -34,11 +33,11 @@ public class AppController implements Initializable {
 
     @FXML
     public void handleStateEditorAction(ActionEvent actionEvent) {
-        // TODO implement: set StateEditorView
+        Navigator.goTo(Navigator.STATE_EDITOR_VIEW);
     }
 
     @FXML
     public void handleTemplateEditorAction(ActionEvent actionEvent) {
-        // TODO implement: set TemplateEditorView
+        Navigator.goTo(Navigator.TEMPLATE_EDITOR_VIEW);
     }
 }

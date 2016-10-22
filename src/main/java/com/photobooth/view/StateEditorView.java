@@ -94,7 +94,7 @@ public class StateEditorView extends JFrame {
         JComboBox<String> stateTypeCombobox = new JComboBox<String>(stateType);
         stateRow.add(stateTypeCombobox);
 
-        File f = new File("src/Main/resources/");
+        File f = new File("/");
         String[] animations = f.list();
 
         JComboBox<String> animationComboBox = new JComboBox<String>(animations);

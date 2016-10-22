@@ -1,6 +1,8 @@
 package com.photobooth.controller;
 
+import com.photobooth.controller.spec.AnimationInitializable;
 import com.photobooth.navigator.Navigator;
+import com.photobooth.util.FileUtils;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,9 +18,9 @@ import java.util.ResourceBundle;
 /**
  * @author mst
  */
-public class EncouragementController implements Initializable {
+public class EncouragementController implements Initializable, AnimationInitializable {
 
-    private static final String MEDIA_URL = "src/main/resources/Pierwszy_PIONv2_converted.mp4";
+    private static final String MEDIA_URL = "src/main/resources/animations/Pierwszy_PIONv2_converted.mp4";
 
     @FXML
     StackPane mediaPane;
@@ -26,17 +28,16 @@ public class EncouragementController implements Initializable {
     @FXML
     MediaView mediaView;
 
+    String animationPath = "";
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //mediaPane.setStyle("-fx-border-color: black;");
         MediaPlayer mediaPlayer = initMediaPlayer();
         mediaView.setMediaPlayer(mediaPlayer);
     }
 
-
-
     private MediaPlayer initMediaPlayer() {
-        Media media = new Media(Paths.get(MEDIA_URL).toUri().toString());
+        Media media = new Media(Paths.get(animationPath.isEmpty() ? MEDIA_URL : animationPath).toUri().toString());
         MediaPlayer player = new MediaPlayer(media);
         player.setAutoPlay(true);
         player.setCycleCount(MediaPlayer.INDEFINITE);
@@ -47,7 +48,11 @@ public class EncouragementController implements Initializable {
 
     @FXML
     public void handleMouseClick(Event event) {
-        //Navigator.goTo(Navigator.TAKE_PHOTO_VIEW);
-        Navigator.goTo(Navigator.GALLERY_VIEW);
+        Navigator.goTo(Navigator.TAKE_PHOTO_VIEW);
+    }
+
+    @Override
+    public void initAnimation(String animationPath) {
+        this.animationPath = FileUtils.RESOURCES_FOLDER + animationPath;
     }
 }

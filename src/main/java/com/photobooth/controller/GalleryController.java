@@ -38,6 +38,7 @@ public class GalleryController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        System.out.println("Gallery Controller");
         galleryContainer.setPadding(new Insets(15, 15, 15, 15));
         File folder = FileUtils.load(IMAGES_PATH);
         List<File> images = Arrays.asList(folder.listFiles());

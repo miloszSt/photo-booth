@@ -32,6 +32,7 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        System.out.println("TakePhoto Controller");
         MediaPlayer mediaPlayer = initMediaPlayer();
         mediaView.setMediaPlayer(mediaPlayer);
         takePhoto();
@@ -51,7 +52,7 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
         Task<Void> takePhotoTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                Thread.sleep(3500);
+                Thread.sleep(4000);
                 new CameraService().takeImageForUser("Janusz");
 
                 return null;
@@ -64,7 +65,7 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        Navigator.goTo(Navigator.GALLERY_VIEW);
+                        Navigator.nextState();
                     }
                 });
             }

@@ -145,7 +145,6 @@ public class StateEditorController implements Initializable {
         });
 
         Navigator.setCustomStates(customStates);
-        Navigator.nextState();
     }
 
     private void saveLabelAndFxmlPath(Node node, StateDef stateDefinition) {
@@ -158,6 +157,7 @@ public class StateEditorController implements Initializable {
     private void saveAnimationPath(Node node, StateDef stateDefinition) {
         ComboBox<String> comboBox = (ComboBox) node;
         String selected = comboBox.getValue();
-        stateDefinition.setAnimationPath(ANIMATIONS_PATH + "/" + selected);
+        if (selected != null)
+            stateDefinition.setAnimationPath(ANIMATIONS_PATH + "/" + selected);
     }
 }

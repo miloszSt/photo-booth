@@ -37,8 +37,7 @@ public class Navigator {
     /** Stores custom application flow. */
     private static List<StateDef> customAppStates = new ArrayList<>();
 
-    /** Maps state to animation presentet on view associated with state. */
-    private static Map<String, String> statesAnimations = new HashMap<>();
+    private static ListIterator<StateDef> iterator = DEFAULT_APP_STATES.listIterator();
 
     private static AppController appController;
 
@@ -49,11 +48,20 @@ public class Navigator {
     }
 
     public static void nextState() {
-        Navigator.goTo(getStates().next());
+        if (iterator.hasNext())
+            Navigator.goTo(iterator.next());
+        //else reset();
+    }
+
+    /** Resarts application flow. */
+    private static void reset() {
+        iterator = hasCustomStatesConfiguration() ? customAppStates.listIterator() : DEFAULT_APP_STATES.listIterator();
     }
 
     public static void previousState() {
-        Navigator.goTo(getStates().previous());
+        if (iterator.hasPrevious())
+            Navigator.goTo(iterator.previous());
+        //else reset();
     }
 
     public static boolean hasCustomStatesConfiguration() {
@@ -64,11 +72,11 @@ public class Navigator {
         FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(stateDefinition.getFxmlViewPath()));
 
         try {
-            loader.load();
+            appController.setContent(loader.load());
             if (loader.getController() instanceof AnimationInitializable) {
                 ((AnimationInitializable) loader.getController()).initAnimation(stateDefinition.getAnimationPath());
             }
-            goTo(stateDefinition.getFxmlViewPath());
+            //goTo(stateDefinition.getFxmlViewPath());
         } catch (IOException e) {
             System.out.println("Error loading view: " + stateDefinition.getAnimationPath()
                     + "\n" + e.getMessage());
@@ -95,6 +103,7 @@ public class Navigator {
 
     public static void setCustomStates(List<StateDef> customStates) {
         customAppStates = customStates;
+        iterator = customAppStates.listIterator();
     }
 
     public static Stage getAppContainer() {

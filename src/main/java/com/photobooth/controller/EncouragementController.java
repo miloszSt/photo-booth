@@ -32,6 +32,7 @@ public class EncouragementController implements Initializable, AnimationInitiali
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        System.out.println("EncouragementController");
         MediaPlayer mediaPlayer = initMediaPlayer();
         mediaView.setMediaPlayer(mediaPlayer);
     }
@@ -48,7 +49,7 @@ public class EncouragementController implements Initializable, AnimationInitiali
 
     @FXML
     public void handleMouseClick(Event event) {
-        Navigator.goTo(Navigator.TAKE_PHOTO_VIEW);
+        Navigator.nextState();
     }
 
     @Override

@@ -8,7 +8,8 @@
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.photobooth.controller.EncouragementController">
     <children>
-        <MediaView   fx:id="mediaView" onMouseClicked="#handleMouseClick">
+        <MediaView fx:id="mediaView"
+                   onMouseClicked="#handleMouseClick">
         </MediaView>
     </children>
 </StackPane>

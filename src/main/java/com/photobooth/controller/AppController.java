@@ -17,18 +17,18 @@ import java.util.ResourceBundle;
 public class AppController implements Initializable {
 
     @FXML
-    StackPane contentHolder;
+    VBox appHolder;
 
     @FXML
-    VBox appHolder;
+    StackPane contentHolder;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
     }
 
-    public void setContent(Node node)
-    {
+    public void setContent(Node node) {
         contentHolder.getChildren().setAll(node);
+        System.out.println(appHolder.getWidth() + " X " + appHolder.getHeight());
     }
 
     @FXML

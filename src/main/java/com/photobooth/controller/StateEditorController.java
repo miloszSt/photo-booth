@@ -12,18 +12,14 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -83,10 +79,8 @@ public class StateEditorController implements Initializable {
         Button addButton = new Button();
         addButton.setText("Dodaj Stan");
         addButton.setOnAction(actionEvent ->  {
-            if ((animationsComboBox.getValue() == null
-                    && stateTypesComboBox.getValue() == null) || (animationsComboBox.getValue() == null
-                    && stateTypesComboBox.getValue().shouldContainAnimation())) {
-                showAnimationNotSelectedAlert();
+            if (hasFormNotSelectedValues(stateTypesComboBox, animationsComboBox)) {
+                showNotSelectedAlert();
             } else {
                 formContainer.getChildren().add(createAddStateForm());
                 addButton.setText("Usun");
@@ -102,7 +96,20 @@ public class StateEditorController implements Initializable {
         return formRowContainer;
     }
 
-    private void showAnimationNotSelectedAlert() {
+    /**
+     * Check if there is some not selected values in comboboxes.
+     *
+     * @param typeComboBox combobox with view (state) types
+     * @param animationComboBox combobox with animations
+     * @return true/false
+     */
+    private boolean hasFormNotSelectedValues(ComboBox<StateType> typeComboBox, ComboBox<String> animationComboBox) {
+        return (typeComboBox.getValue() == null && typeComboBox.getValue() == null)
+                || (animationComboBox.getValue() == null
+                && typeComboBox.getValue().shouldContainAnimation());
+    }
+
+    private void showNotSelectedAlert() {
         Alert warnAlert = new Alert(Alert.AlertType.WARNING);
         warnAlert.setContentText(ResourceBundle.getBundle("locale.locale")
                 .getString("WarnAlert.ContentText"));
@@ -118,11 +125,11 @@ public class StateEditorController implements Initializable {
         Button saveButton = new Button();
         saveButton.setText("Zapisz");
         saveButton.setOnAction(actionEvent -> {
-            if (validateForm()) {
+            if (isFormValid()) {
                 saveStatesDefinitions();
                 Navigator.nextState();
             } else {
-                // alert
+                showNotSelectedAlert();
             }
         });
 
@@ -131,9 +138,14 @@ public class StateEditorController implements Initializable {
         return submitContainer;
     }
 
-    private boolean validateForm() {
-        // TODO mst implement
-        return true;
+    private boolean isFormValid() {
+        boolean isValid = true;
+        for (HBox formRow : formRows) {
+            ComboBox<StateType> typeComboBox = (ComboBox) formRow.getChildren().get(0);
+            ComboBox<String> animationComboBox = (ComboBox) formRow.getChildren().get(1);
+            isValid = isValid && !hasFormNotSelectedValues(typeComboBox, animationComboBox);
+        }
+        return isValid;
     }
 
     private void saveStatesDefinitions() {

@@ -5,6 +5,7 @@ import com.photobooth.controller.spec.AnimationInitializable;
 import com.photobooth.navigator.Navigator;
 import com.photobooth.util.FileUtils;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.concurrent.Task;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -35,6 +36,9 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
         System.out.println("TakePhoto Controller");
         MediaPlayer mediaPlayer = initMediaPlayer();
         mediaView.setMediaPlayer(mediaPlayer);
+        // set media view to fill all available space
+        mediaView.fitWidthProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
+        mediaView.fitHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
         takePhoto();
     }
 

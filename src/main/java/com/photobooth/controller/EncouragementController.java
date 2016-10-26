@@ -3,6 +3,7 @@ package com.photobooth.controller;
 import com.photobooth.controller.spec.AnimationInitializable;
 import com.photobooth.navigator.Navigator;
 import com.photobooth.util.FileUtils;
+import javafx.beans.binding.Bindings;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -32,9 +33,13 @@ public class EncouragementController implements Initializable, AnimationInitiali
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        mediaPane.setStyle("-fx-background-color: black");
         System.out.println("EncouragementController");
         MediaPlayer mediaPlayer = initMediaPlayer();
         mediaView.setMediaPlayer(mediaPlayer);
+        // set media view to fill all available space
+        mediaView.fitWidthProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
+        mediaView.fitHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
     }
 
     private MediaPlayer initMediaPlayer() {

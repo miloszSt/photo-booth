@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * Obsługuje przechodzenie pomiędzy poszczególnymi widokami.
  *
- * @mst
+ * @author mst
  */
 public class Navigator {
 
@@ -26,7 +26,7 @@ public class Navigator {
     public static final String END_OPTIONS_VIEW = "view/endoptions.fxml";
 
     /** Default application flow. Used if there won't be any custom configuration. */
-    public static final List<StateDef> DEFAULT_APP_STATES = new ArrayList<StateDef>() {
+    private static final List<StateDef> DEFAULT_APP_STATES = new ArrayList<StateDef>() {
         {
             add(new StateDef("Animacja zachety", ENCOURAGMENT_VIEW, "Pierwszy_PIONv2_converted.mp4"));
             add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, "odliczanie.mp4"));
@@ -43,32 +43,24 @@ public class Navigator {
 
     private static Stage appContainer;
 
-    public static void setAppController(AppController appController) {
-        Navigator.appController = appController;
-    }
-
     public static void nextState() {
         if (iterator.hasNext())
             Navigator.goTo(iterator.next());
-        //else reset();
-    }
-
-    /** Resarts application flow. */
-    private static void reset() {
-        iterator = hasCustomStatesConfiguration() ? customAppStates.listIterator() : DEFAULT_APP_STATES.listIterator();
     }
 
     public static void previousState() {
         if (iterator.hasPrevious())
             Navigator.goTo(iterator.previous());
-        //else reset();
     }
 
-    public static boolean hasCustomStatesConfiguration() {
-        return !customAppStates.isEmpty();
-    }
-
-    public static void goTo(StateDef stateDefinition) {
+    /**
+     * Change view with new, defined in given {@link StateDef} obejct. If controller connected with given state (view)
+     * is instance of {@link AnimationInitializable}, path to animation file displayed in that view will be passed
+     * by method {@link AnimationInitializable#initAnimation(String)}.
+     *
+     * @param stateDefinition {@link StateDef} contains state (view) definition
+     */
+    private static void goTo(StateDef stateDefinition) {
         FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(stateDefinition.getFxmlViewPath()));
 
         try {
@@ -76,11 +68,20 @@ public class Navigator {
             if (loader.getController() instanceof AnimationInitializable) {
                 ((AnimationInitializable) loader.getController()).initAnimation(stateDefinition.getAnimationPath());
             }
-            //goTo(stateDefinition.getFxmlViewPath());
         } catch (IOException e) {
             System.out.println("Error loading view: " + stateDefinition.getAnimationPath()
                     + "\n" + e.getMessage());
         }
+    }
+
+    /** Resarts application flow. */
+    private static void reset() {
+        iterator = hasCustomStatesConfiguration() ? customAppStates.listIterator() : DEFAULT_APP_STATES.listIterator();
+    }
+
+    /** Cheks if custom configuration was set. */
+    public static boolean hasCustomStatesConfiguration() {
+        return !customAppStates.isEmpty();
     }
 
     /**
@@ -96,11 +97,6 @@ public class Navigator {
         }
     }
 
-    public static ListIterator<StateDef> getStates() {
-        List<StateDef> states = hasCustomStatesConfiguration() ? customAppStates : DEFAULT_APP_STATES;
-        return states.listIterator();
-    }
-
     public static void setCustomStates(List<StateDef> customStates) {
         customAppStates = customStates;
         iterator = customAppStates.listIterator();
@@ -108,6 +104,10 @@ public class Navigator {
 
     public static Stage getAppContainer() {
         return appContainer;
+    }
+
+    public static void setAppController(AppController appController) {
+        Navigator.appController = appController;
     }
 
     public static void setAppContainer(Stage stage) {

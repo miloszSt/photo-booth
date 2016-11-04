@@ -11,12 +11,21 @@ public class StateDef {
 
     private String animationPath;
 
+    private String templateName;
+
     public StateDef() {}
 
     public StateDef(String label, String fxmlViewPath, String animationPath) {
         this.label = label;
         this.fxmlViewPath = fxmlViewPath;
         this.animationPath = animationPath;
+    }
+
+    public StateDef(String label, String fxmlViewPath, String animationPath, String templateName) {
+        this.label = label;
+        this.fxmlViewPath = fxmlViewPath;
+        this.animationPath = animationPath;
+        this.templateName = templateName;
     }
 
     public String getLabel() {
@@ -41,5 +50,13 @@ public class StateDef {
 
     public void setAnimationPath(String animationPath) {
         this.animationPath = animationPath;
+    }
+
+    public String getTemplateName() {
+        return templateName;
+    }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
     }
 }

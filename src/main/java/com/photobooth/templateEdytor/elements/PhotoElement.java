@@ -5,12 +5,18 @@ import com.photobooth.templateEdytor.serializable.PhotoSerializable;
 import com.photobooth.templateEdytor.serializable.RectangleSerializable;
 import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
 import javafx.geometry.Pos;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+
+import java.io.File;
+import java.nio.file.Files;
 
 public class PhotoElement extends StackPane implements TemplateElementInterface{
 
@@ -102,6 +108,13 @@ public class PhotoElement extends StackPane implements TemplateElementInterface{
 
     }
 
+    public void setPhoto(File file){
+        Image dbimage = new Image(String.valueOf(file.toURI()));
+        ImageView dbImageView = new ImageView();
+        dbImageView.setImage(dbimage);
+
+        rectangle.setFill(new ImagePattern(dbimage, 0, 0, 1, 1, true));
+    }
     @Override
     public void setSecondColor(Paint color) {
 

@@ -17,6 +17,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 
 public class ImageElement extends StackPane implements TemplateElementInterface{
@@ -50,6 +51,8 @@ public class ImageElement extends StackPane implements TemplateElementInterface{
                 if(db.hasFiles()){
 
                     for(File file:db.getFiles()){
+                        imageAbsolutePath = file.getAbsolutePath();
+
                         setImage();
                     }
 
@@ -83,7 +86,8 @@ public class ImageElement extends StackPane implements TemplateElementInterface{
 
     public void setImage(){
         if(imageAbsolutePath != null) {
-            Image dbimage = new Image(imageAbsolutePath);
+
+            Image dbimage = new Image(String.valueOf(new File(imageAbsolutePath).toURI()) );
             ImageView dbImageView = new ImageView();
             dbImageView.setImage(dbimage);
 

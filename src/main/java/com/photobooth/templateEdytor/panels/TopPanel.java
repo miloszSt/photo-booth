@@ -15,7 +15,6 @@ import javafx.print.PageOrientation;
 import javafx.print.Paper;
 import javafx.print.Printer;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -23,10 +22,8 @@ import javafx.scene.image.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.transform.Scale;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -43,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TopPanel extends HBox {
-    private static final String SRC_RESOURCES_TEMPLATES = "src/main/resources/templates/";
+    public static final String SRC_RESOURCES_TEMPLATES = "src/main/resources/templates/";
     private final TemplateMainView templateMainView;
 
     private final Button saveTemplateButton;
@@ -247,10 +244,12 @@ public class TopPanel extends HBox {
         try {
             templateMainView.setTemplateName(filename.replace(".ser", ""));
             templateMainView.reset();
+
             FileInputStream fin = new FileInputStream(SRC_RESOURCES_TEMPLATES + filename);
             ObjectInputStream ois = new ObjectInputStream(fin);
 
-            List<SerializableTemplateInterface> serializableTemplateInterfaceList = (List<SerializableTemplateInterface>) ois.readObject();
+            TemplateData data = (TemplateData) ois.readObject();
+            List<SerializableTemplateInterface> serializableTemplateInterfaceList = data.getTemplateInterfaceList();
 
 
             for (SerializableTemplateInterface serial : serializableTemplateInterfaceList) {
@@ -260,6 +259,9 @@ public class TopPanel extends HBox {
             ois.close();
             fin.close();
             templates.getSelectionModel().select(filename);
+
+            templateMainView.getCenterPanel().setOrientation(data.getOrientation());
+            templateMainView.getCenterPanel().setPageSize(data.getPaper());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -273,9 +275,18 @@ public class TopPanel extends HBox {
 
             List<SerializableTemplateInterface> serializableTemplateInterfaceList = getSerializableTemplateInterfaces(children);
 
+
+            TemplateData templateData = new TemplateData();
+            templateData.setTemplateInterfaceList(serializableTemplateInterfaceList);
+            templateData.setName(templateMainView.getTemplateName());
+            templateData.setOrientation(templateMainView.getCenterPanel().getOrientation());
+            templateData.setPaper(templateMainView.getCenterPanel().getPageFormat());
+            templateData.setHeight(templateMainView.getCenterPanel().getPageHeight());
+            templateData.setWight(templateMainView.getCenterPanel().getPageWidth());
+
             FileOutputStream fout = new FileOutputStream(SRC_RESOURCES_TEMPLATES + templateName + ".ser");
             ObjectOutputStream oos = new ObjectOutputStream(fout);
-            oos.writeObject(serializableTemplateInterfaceList);
+            oos.writeObject(templateData);
             oos.flush();
             oos.close();
             fout.close();

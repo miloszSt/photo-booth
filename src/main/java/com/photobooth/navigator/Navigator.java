@@ -2,11 +2,14 @@ package com.photobooth.navigator;
 
 import com.photobooth.controller.AppController;
 import com.photobooth.controller.spec.AnimationInitializable;
+import com.photobooth.controller.spec.TemplateAndPhotoInitializable;
 import com.photobooth.model.StateDef;
+import com.photobooth.templateEdytor.panels.TopPanel;
+import com.photobooth.templateEdytor.serializable.TemplateData;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -23,11 +26,12 @@ public class Navigator {
     public static final String GALLERY_VIEW = "/view/gallery.fxml";
     public static final String STATE_EDITOR_VIEW = "/view/stateeditor.fxml";
     public static final String TEMPLATE_EDITOR_VIEW = "view/templateeditor.fxml";
-    public static final String END_OPTIONS_VIEW = "view/endoptions.fxml";
+    public static final String END_OPTIONS_VIEW = "/view/endoptions.fxml";
 
     /** Default application flow. Used if there won't be any custom configuration. */
     private static final List<StateDef> DEFAULT_APP_STATES = new ArrayList<StateDef>() {
         {
+            add(new StateDef("Koniec", END_OPTIONS_VIEW, "", "swinia"));
             add(new StateDef("Animacja zachety", ENCOURAGMENT_VIEW, "Pierwszy_PIONv2_converted.mp4"));
             add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, "odliczanie.mp4"));
             add(new StateDef("Galeria", GALLERY_VIEW, ""));
@@ -68,6 +72,9 @@ public class Navigator {
             if (loader.getController() instanceof AnimationInitializable) {
                 ((AnimationInitializable) loader.getController()).initAnimation(stateDefinition.getAnimationPath());
             }
+            if (loader.getController() instanceof TemplateAndPhotoInitializable) {
+                ((TemplateAndPhotoInitializable) loader.getController()).setTemplateAndPhotos(getTemplateDateFromName(stateDefinition.getTemplateName()), getPhotos("e:/fotki/"));
+            }
         } catch (IOException e) {
             System.out.println("Error loading view: " + stateDefinition.getAnimationPath()
                     + "\n" + e.getMessage());
@@ -79,6 +86,33 @@ public class Navigator {
         iterator = hasCustomStatesConfiguration() ? customAppStates.listIterator() : DEFAULT_APP_STATES.listIterator();
     }
 
+    private static TemplateData getTemplateDateFromName(String templateName){
+        templateName+= ".ser";
+
+        FileInputStream fin = null;
+        TemplateData data = null;
+        try {
+            fin = new FileInputStream(TopPanel.SRC_RESOURCES_TEMPLATES + templateName);
+            ObjectInputStream ois = new ObjectInputStream(fin);
+
+            data = (TemplateData) ois.readObject();
+
+            ois.close();
+            fin.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return data;
+    }
+
+    private static List<File> getPhotos(String path){
+        return Arrays.asList(new File(path).listFiles());
+    }
     /** Cheks if custom configuration was set. */
     public static boolean hasCustomStatesConfiguration() {
         return !customAppStates.isEmpty();

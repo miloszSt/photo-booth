@@ -89,6 +89,15 @@ public class CenterPanel extends Pane {
         redrawBackground();
     }
 
+    public double getTemplateHeight(){
+        return backgroundPanel.getHeight();
+    }
+
+    public double getTemplateWidth(){
+        return backgroundPanel.getWidth();
+    }
+
+
     public void redrawBackground() {
 
         Printer printer = Printer.getDefaultPrinter();
@@ -117,5 +126,13 @@ public class CenterPanel extends Pane {
 
     public void removeLayer(Node node){
         mainPane.getChildren().remove(node);
+    }
+
+    public PageOrientation getOrientation() {
+        return orientation;
+    }
+
+    public Paper getPageFormat() {
+        return pageFormat;
     }
 }

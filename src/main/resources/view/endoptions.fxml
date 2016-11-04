@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.control.Label?>
+<!-- ewentualnie ScrollPane -->
+
+<StackPane fx:id="mediaPane" alignment="CENTER"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.photobooth.controller.DisplayTemplateController"
+      onMouseClicked="#handleMouseClick">
+    <children>
+        <Pane fx:id="finalViewPane"></Pane>
+    </children>
+</StackPane>

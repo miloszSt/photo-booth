@@ -6,11 +6,11 @@
 <?import javafx.scene.control.Label?>
 <!-- ewentualnie ScrollPane -->
 
-<StackPane fx:id="mediaPane" alignment="CENTER"
+<BorderPane fx:id="borderPane"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.photobooth.controller.DisplayTemplateController"
       onMouseClicked="#handleMouseClick">
-    <children>
-        <Pane fx:id="finalViewPane"  style="-fx-border-color: blueviolet"/>
-    </children>
-</StackPane>
+    <center>
+        <StackPane fx:id="stackPane"  style="-fx-border-color: blueviolet" />
+    </center>
+</BorderPane>

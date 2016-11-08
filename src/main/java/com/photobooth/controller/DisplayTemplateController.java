@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -33,10 +34,13 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
     private List<File> photos;
 
     @FXML
-    StackPane mediaPane;
+    BorderPane borderPane;
 
     @FXML
-    Pane finalViewPane;
+    StackPane stackPane;
+
+    @FXML
+    Pane finalViewPane = new Pane();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -50,7 +54,7 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         createPaneWithPhotos();
     }
 
-    public Pane createPaneWithPhotos(){
+    public  Pane createPaneWithPhotos(){
         List<File> photosToUse = new ArrayList<>(photos);
         if (finalViewPane.getChildren().size() > 0) finalViewPane.getChildren().clear();
 
@@ -68,6 +72,11 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
             finalViewPane.getChildren().add((Node) templateElementInterface);
         }
+        borderPane.setCenter(stackPane);
+        stackPane.setAlignment(Pos.CENTER);
+        stackPane.setMaxHeight(100);
+        stackPane.setMaxWidth(100);
+        stackPane.getChildren().add(finalViewPane);
 
         return finalViewPane;
     }
@@ -79,7 +88,7 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
     }
 
     public void print(){
-        WritableImage image = mediaPane.snapshot(new SnapshotParameters(), null);
+        WritableImage image = finalViewPane.snapshot(new SnapshotParameters(), null);
 
         File file = new File("e:/fotki/gotowe.png");
 

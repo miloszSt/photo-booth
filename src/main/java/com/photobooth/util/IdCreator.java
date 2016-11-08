@@ -1,4 +1,4 @@
-package com.photobooth;
+package com.photobooth.util;
 
 public class IdCreator {
 

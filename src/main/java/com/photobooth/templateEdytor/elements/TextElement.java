@@ -1,6 +1,6 @@
 package com.photobooth.templateEdytor.elements;
 
-import com.photobooth.IdCreator;
+import com.photobooth.util.IdCreator;
 import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
 import com.photobooth.templateEdytor.serializable.TextSerializable;
 import javafx.geometry.Pos;

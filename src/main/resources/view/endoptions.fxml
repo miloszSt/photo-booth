@@ -11,6 +11,6 @@
            fx:controller="com.photobooth.controller.DisplayTemplateController"
       onMouseClicked="#handleMouseClick">
     <children>
-        <Pane fx:id="finalViewPane"></Pane>
+        <Pane fx:id="finalViewPane"  style="-fx-border-color: blueviolet"/>
     </children>
 </StackPane>

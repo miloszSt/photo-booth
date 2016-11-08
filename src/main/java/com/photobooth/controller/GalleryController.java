@@ -2,18 +2,26 @@ package com.photobooth.controller;
 
 import com.photobooth.navigator.Navigator;
 import com.photobooth.util.FileUtils;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -34,14 +42,29 @@ public class GalleryController implements Initializable {
     private static final String IMAGES_PATH = "images";
 
     @FXML
+    BorderPane viewContainer;
+
+    @FXML
     TilePane galleryContainer;
+
+    @FXML
+    HBox buttonsContainer;
+
+    @FXML
+    Button btnReject;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("Gallery Controller");
-        galleryContainer.setPadding(new Insets(15, 15, 15, 15));
         File folder = FileUtils.load(IMAGES_PATH);
         List<File> images = Arrays.asList(folder.listFiles());
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+
+        galleryContainer.setPadding(new Insets(15, 15, 15, 15));
+        galleryContainer.setPrefHeight(primaryScreenBounds.getHeight() * 0.9);
+        galleryContainer.setMaxWidth(primaryScreenBounds.getWidth() * 0.4);
+        buttonsContainer.setPrefHeight(primaryScreenBounds.getHeight() * 0.1);
+        galleryContainer.setPrefColumns(1);
+        galleryContainer.setAlignment(Pos.CENTER);
         createImageViews(images);
     }
 
@@ -55,9 +78,9 @@ public class GalleryController implements Initializable {
     private ImageView createImageView(File imgFile) {
         ImageView imageView = null;
         try {
-            Image image = new Image(new FileInputStream(imgFile), 300, 0, true, true);
+            Image image = new Image(new FileInputStream(imgFile), 600, 0, true, true);
             imageView = new ImageView(image);
-            imageView.setFitWidth(300);
+            imageView.setFitWidth(600);
             imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
                 @Override
@@ -99,5 +122,13 @@ public class GalleryController implements Initializable {
         }
 
         return imageView;
+    }
+
+    public void handleAccept(ActionEvent actionEvent) {
+        // wysyłamy/drukujemy
+    }
+
+    public void handleReject(ActionEvent actionEvent) {
+        Navigator.start();
     }
 }

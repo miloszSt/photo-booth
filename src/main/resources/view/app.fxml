@@ -3,20 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="appHolder" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="com.photobooth.controller.AppController">
+<VBox fx:id="appHolder" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8"
+      fx:controller="com.photobooth.controller.AppController">
     <children>
-        <HBox>
-            <MenuBar>
-                <menus>
-                    <Menu text="Edit">
-                        <items>
-                            <MenuItem text="Edytor stanów" onAction="#handleStateEditorAction"/>
-                            <MenuItem text="Edytor template'ów" onAction="#handleTemplateEditorAction" />
-                        </items>
-                    </Menu>
-                </menus>
-            </MenuBar>
-        </HBox>
         <StackPane fx:id="contentHolder" />
     </children>
 </VBox>

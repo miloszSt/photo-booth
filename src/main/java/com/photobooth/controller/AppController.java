@@ -28,7 +28,6 @@ public class AppController implements Initializable {
 
     public void setContent(Node node) {
         contentHolder.getChildren().setAll(node);
-        System.out.println(appHolder.getWidth() + " X " + appHolder.getHeight());
     }
 
     @FXML

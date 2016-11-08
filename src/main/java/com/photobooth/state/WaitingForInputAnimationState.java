@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent;
 
 public class WaitingForInputAnimationState implements StateInterface {
 
-    public static final String GIF_FOLDER = "src/Main/resources/";
+    public static final String GIF_FOLDER = "src/App/resources/";
     private MainView mainView;
     private String animationName;
     private StateMachine machine;

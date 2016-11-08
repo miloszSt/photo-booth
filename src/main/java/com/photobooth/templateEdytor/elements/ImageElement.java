@@ -1,6 +1,6 @@
 package com.photobooth.templateEdytor.elements;
 
-import com.photobooth.IdCreator;
+import com.photobooth.util.IdCreator;
 import com.photobooth.templateEdytor.serializable.ImageSerializable;
 import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
 import javafx.event.EventHandler;
@@ -17,7 +17,6 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 import java.io.File;
-import java.nio.file.Paths;
 
 
 public class ImageElement extends StackPane implements TemplateElementInterface{

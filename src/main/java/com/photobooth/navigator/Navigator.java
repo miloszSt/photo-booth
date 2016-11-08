@@ -6,6 +6,7 @@ import com.photobooth.controller.spec.TemplateAndPhotoInitializable;
 import com.photobooth.model.StateDef;
 import com.photobooth.templateEdytor.panels.TopPanel;
 import com.photobooth.templateEdytor.serializable.TemplateData;
+import com.photobooth.util.FileUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
@@ -38,6 +39,8 @@ public class Navigator {
         }
     };
 
+    private static final String PHOTOS_PATH = "C:\\Users\\Public\\Pictures\\Sample Pictures";
+
     /** Stores custom application flow. */
     private static List<StateDef> customAppStates = new ArrayList<>();
 
@@ -57,6 +60,11 @@ public class Navigator {
             Navigator.goTo(iterator.previous());
     }
 
+    public static void start() {
+        reset();
+        nextState();
+    }
+
     /**
      * Change view with new, defined in given {@link StateDef} obejct. If controller connected with given state (view)
      * is instance of {@link AnimationInitializable}, path to animation file displayed in that view will be passed
@@ -73,7 +81,8 @@ public class Navigator {
                 ((AnimationInitializable) loader.getController()).initAnimation(stateDefinition.getAnimationPath());
             }
             if (loader.getController() instanceof TemplateAndPhotoInitializable) {
-                ((TemplateAndPhotoInitializable) loader.getController()).setTemplateAndPhotos(getTemplateDateFromName(stateDefinition.getTemplateName()), getPhotos("e:/fotki/"));
+                ((TemplateAndPhotoInitializable) loader.getController()).setTemplateAndPhotos(getTemplateDateFromName(
+                        stateDefinition.getTemplateName()), FileUtils.getPhotos(PHOTOS_PATH));
             }
         } catch (IOException e) {
             System.out.println("Error loading view: " + stateDefinition.getAnimationPath()
@@ -110,9 +119,6 @@ public class Navigator {
         return data;
     }
 
-    private static List<File> getPhotos(String path){
-        return Arrays.asList(new File(path).listFiles());
-    }
     /** Cheks if custom configuration was set. */
     public static boolean hasCustomStatesConfiguration() {
         return !customAppStates.isEmpty();

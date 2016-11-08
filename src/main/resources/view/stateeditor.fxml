@@ -3,7 +3,21 @@
 <?import javafx.scene.layout.GridPane?>
 
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.HBox?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-                fx:id="stateEditorContainer"
-                fx:controller="com.photobooth.controller.StateEditorController">
+            fx:id="stateEditorContainer"
+            fx:controller="com.photobooth.controller.StateEditorController">
+    <top>
+        <HBox alignment="CENTER">
+            <children>
+                <Label text="Skonfiguruj stany aplikacji" >
+                    <font>
+                        <Font size="26.0"/>
+                    </font>
+                </Label>
+            </children>
+        </HBox>
+    </top>
 </BorderPane>

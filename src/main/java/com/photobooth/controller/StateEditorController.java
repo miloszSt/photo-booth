@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -47,8 +48,9 @@ public class StateEditorController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        stateEditorContainer.setPadding(new Insets(10, 10, 10, 10));
+        stateEditorContainer.setPadding(new Insets(15, 10, 15, 10));
         formContainer = new VBox();
+        formContainer.setSpacing(15);
         formContainer.getChildren().add(createAddStateForm());
         // create default field for first state
         stateEditorContainer.setCenter(formContainer);
@@ -57,6 +59,8 @@ public class StateEditorController implements Initializable {
 
     private HBox createAddStateForm() {
         HBox formRowContainer = new HBox();
+        formRowContainer.setSpacing(12);
+        formRowContainer.setAlignment(Pos.CENTER);
         // animacja
         ComboBox<String> animationsComboBox = new ComboBox<>();
         String[] animations = FileUtils.load(ANIMATIONS_PATH).list();
@@ -134,6 +138,9 @@ public class StateEditorController implements Initializable {
         });
 
         HBox submitContainer = new HBox();
+        submitContainer.setPadding(new Insets(15, 0, 15, 0));
+        submitContainer.setSpacing(12);
+        submitContainer.setAlignment(Pos.CENTER);
         submitContainer.getChildren().addAll(cancelButton, saveButton);
         return submitContainer;
     }

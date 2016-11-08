@@ -10,10 +10,12 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -31,11 +33,14 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
     private List<File> photos;
 
     @FXML
+    StackPane mediaPane;
+
+    @FXML
     Pane finalViewPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        System.out.println("DisplayTemplate");
     }
 
     @Override
@@ -47,7 +52,7 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
     public Pane createPaneWithPhotos(){
         List<File> photosToUse = new ArrayList<>(photos);
-        this.finalViewPane = new Pane();
+        if (finalViewPane.getChildren().size() > 0) finalViewPane.getChildren().clear();
 
         Rectangle background = new Rectangle(templateData.getWight(), templateData.getHeight(), Color.TRANSPARENT);
 
@@ -74,7 +79,7 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
     }
 
     public void print(){
-        WritableImage image = finalViewPane.snapshot(new SnapshotParameters(), null);
+        WritableImage image = mediaPane.snapshot(new SnapshotParameters(), null);
 
         File file = new File("e:/fotki/gotowe.png");
 

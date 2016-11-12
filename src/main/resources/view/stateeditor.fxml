@@ -6,13 +6,19 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:id="stateEditorContainer"
-            fx:controller="com.photobooth.controller.StateEditorController">
+            fx:controller="com.photobooth.controller.StateEditorController"
+            stylesheets="@/css/stateeditor.css"
+            styleClass="container">
     <top>
         <HBox alignment="CENTER">
             <children>
-                <Label text="Skonfiguruj stany aplikacji" >
+                <Label text="Skonfiguruj stany aplikacji"
+                       styleClass="header-lbl">
+                    <padding><Insets top="15" bottom="15"/></padding>
                     <font>
                         <Font size="26.0"/>
                     </font>
@@ -20,4 +26,17 @@
             </children>
         </HBox>
     </top>
+    <bottom>
+        <HBox spacing="15" alignment="CENTER_RIGHT">
+            <padding><Insets top="15" right="50" bottom="15" left="15"/></padding>
+            <children>
+                <Button text="Anuluj"
+                        styleClass="cancel-button"
+                        onAction="#handleCancel"/>
+                <Button text="Zapisz"
+                        styleClass="save-button"
+                        onAction="#handleSave"/>
+            </children>
+        </HBox>
+    </bottom>
 </BorderPane>

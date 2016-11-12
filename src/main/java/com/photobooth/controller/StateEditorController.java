@@ -16,8 +16,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
+import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,13 +31,14 @@ import java.util.ResourceBundle;
 public class StateEditorController implements Initializable {
 
     private static final String ANIMATIONS_PATH = "animations";
+    private static final String TEMPLATES_PATH = "templates";
 
     private final ObservableList<StateType> stateTypes = FXCollections.observableArrayList(
-            new StateType("Animacja zachety", Navigator.ENCOURAGMENT_VIEW, true),
-            new StateType("Robienie fotki", Navigator.TAKE_PHOTO_VIEW, true),
-            new StateType("Galeria", Navigator.GALLERY_VIEW, false),
-            new StateType("Szablon", Navigator.TEMPLATE_EDITOR_VIEW, false),
-            new StateType("Ekran opcji końcowych", Navigator.END_OPTIONS_VIEW, false) // ewentualnie można dodać animacje na dowidzenia
+            new StateType("Animacja zachety", Navigator.ENCOURAGMENT_VIEW, true, false),
+            new StateType("Robienie fotki", Navigator.TAKE_PHOTO_VIEW, true, false),
+            new StateType("Galeria", Navigator.GALLERY_VIEW, false, false),
+            new StateType("Szablon", Navigator.TEMPLATE_EDITOR_VIEW, false, false),
+            new StateType("Ekran opcji koncowych", Navigator.END_OPTIONS_VIEW, false, true) // ewentualnie można dodać animacje na dowidzenia
     );
     @FXML
     BorderPane stateEditorContainer;
@@ -54,7 +57,7 @@ public class StateEditorController implements Initializable {
         formContainer.getChildren().add(createAddStateForm());
         // create default field for first state
         stateEditorContainer.setCenter(formContainer);
-        stateEditorContainer.setBottom(createSubmitButtonsContainer());
+        //stateEditorContainer.setBottom(createSubmitButtonsContainer());
     }
 
     private HBox createAddStateForm() {
@@ -63,18 +66,20 @@ public class StateEditorController implements Initializable {
         formRowContainer.setAlignment(Pos.CENTER);
         // animacja
         ComboBox<String> animationsComboBox = new ComboBox<>();
-        String[] animations = FileUtils.load(ANIMATIONS_PATH).list();
-        animationsComboBox.getItems().addAll(animations);
 
         // typ
         ComboBox<StateType> stateTypesComboBox = new ComboBox<>();
         stateTypesComboBox.setItems(stateTypes);
         stateTypesComboBox.setOnAction(actionEvent -> {
             StateType selected = stateTypesComboBox.getSelectionModel().getSelectedItem();
-            if (!selected.shouldContainAnimation())
-                animationsComboBox.setDisable(true);
-            else
+            String[] animations = FileUtils.load( selected.shouldContainAnimation() ? ANIMATIONS_PATH :
+                    (selected.shouldContainTemplate() ? TEMPLATES_PATH : "") ).list();
+            animationsComboBox.getItems().setAll(animations);
+            if (selected.shouldContainAnimation() || selected.shouldContainTemplate()) {
                 animationsComboBox.setDisable(false);
+            } else {
+                animationsComboBox.setDisable(true);
+            }
         });
         formRowContainer.getChildren().add(stateTypesComboBox);
         formRowContainer.getChildren().add(animationsComboBox);
@@ -82,12 +87,14 @@ public class StateEditorController implements Initializable {
         // przycisk 'Dodaj'
         Button addButton = new Button();
         addButton.setText("Dodaj Stan");
+        addButton.getStyleClass().setAll("add-button");
         addButton.setOnAction(actionEvent ->  {
             if (hasFormNotSelectedValues(stateTypesComboBox, animationsComboBox)) {
                 showNotSelectedAlert();
             } else {
                 formContainer.getChildren().add(createAddStateForm());
                 addButton.setText("Usun");
+                addButton.getStyleClass().setAll("del-button");
                 addButton.setOnAction(removeActionEvent -> {
                     formContainer.getChildren().remove(formRowContainer);
                     formRows.remove(formRowContainer);
@@ -120,14 +127,29 @@ public class StateEditorController implements Initializable {
         warnAlert.showAndWait();
     }
 
+     public void handleCancel() {
+         Navigator.nextState();
+     }
+
+    public void handleSave() {
+        if(isFormValid()) {
+            saveStatesDefinitions();
+            Navigator.nextState();
+        } else {
+            showNotSelectedAlert();
+        }
+    }
+
     private Node createSubmitButtonsContainer() {
         // przycisk 'Anuluj'
         Button cancelButton = new Button();
         cancelButton.setText("Anuluj");
+        cancelButton.getStyleClass().setAll("cancel-button");
         cancelButton.setOnAction(actionEvent -> Navigator.nextState());
         // przycisk 'Zapisz'
         Button saveButton = new Button();
         saveButton.setText("Zapisz");
+        saveButton.getStyleClass().setAll("save-button");
         saveButton.setOnAction(actionEvent -> {
             if (isFormValid()) {
                 saveStatesDefinitions();
@@ -158,8 +180,9 @@ public class StateEditorController implements Initializable {
     private void saveStatesDefinitions() {
         formRows.forEach(formRow -> {
             StateDef stateDefinition = new StateDef();
-            saveLabelAndFxmlPath(formRow.getChildren().get(0), stateDefinition);
-            saveAnimationPath(formRow.getChildren().get(1), stateDefinition);
+            Node stateTypeComboBox = formRow.getChildren().get(0);
+            saveLabelAndFxmlPath(stateTypeComboBox, stateDefinition);
+            saveAnimationPath(formRow.getChildren().get(1), stateTypeComboBox, stateDefinition);
             customStates.add(stateDefinition);
         });
 
@@ -173,10 +196,16 @@ public class StateEditorController implements Initializable {
         stateDefinition.setFxmlViewPath(selected.getFxmlViewPath());
     }
 
-    private void saveAnimationPath(Node node, StateDef stateDefinition) {
+    private void saveAnimationPath(Node node, Node stateTypeComboBox, StateDef stateDefinition) {
+        StateType stateType = ((ComboBox<StateType>)stateTypeComboBox).getValue();
         ComboBox<String> comboBox = (ComboBox) node;
         String selected = comboBox.getValue();
-        if (selected != null)
-            stateDefinition.setAnimationPath(ANIMATIONS_PATH + "/" + selected);
+        if (selected != null) {
+            if (stateType.shouldContainAnimation())
+                stateDefinition.setAnimationPath(ANIMATIONS_PATH + "/" + selected);
+            else if (stateType.shouldContainTemplate())
+                stateDefinition.setTemplateName(selected);
+        }
+
     }
 }

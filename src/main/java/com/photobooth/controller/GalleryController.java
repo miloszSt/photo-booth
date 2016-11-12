@@ -16,10 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -40,12 +37,17 @@ public class GalleryController implements Initializable {
     // TODO do zmiany na katalog, w którym będą przechowywane zdjęcia
     //private static final String IMAGES_PATH = "src/main/resources/images";
     private static final String IMAGES_PATH = "images";
+    private final static int COLS = 1;
+    private final static double IMG_SPACING = 15.0;
 
     @FXML
     BorderPane viewContainer;
 
+    /*@FXML
+    TilePane galleryContainer;*/
+
     @FXML
-    TilePane galleryContainer;
+    VBox galleryContainer2;
 
     @FXML
     HBox buttonsContainer;
@@ -53,70 +55,46 @@ public class GalleryController implements Initializable {
     @FXML
     Button btnReject;
 
+    private double galleryHeight;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        initGalleryContainer();
+
         File folder = FileUtils.load(IMAGES_PATH);
         List<File> images = Arrays.asList(folder.listFiles());
-        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-
-        galleryContainer.setPadding(new Insets(15, 15, 15, 15));
-        galleryContainer.setPrefHeight(primaryScreenBounds.getHeight() * 0.9);
-        galleryContainer.setMaxWidth(primaryScreenBounds.getWidth() * 0.4);
-        buttonsContainer.setPrefHeight(primaryScreenBounds.getHeight() * 0.1);
-        galleryContainer.setPrefColumns(1);
-        galleryContainer.setAlignment(Pos.CENTER);
         createImageViews(images);
     }
 
+    private void initGalleryContainer() {
+        galleryHeight = Screen.getPrimary().getVisualBounds().getHeight() * 0.9;
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        galleryContainer2.setPrefHeight(galleryHeight);
+        galleryContainer2.setSpacing(IMG_SPACING);
+        galleryContainer2.setPadding(new Insets(30, 0, 0, 0));
+        buttonsContainer.setPrefHeight(primaryScreenBounds.getHeight() * 0.1);
+    }
+
     private void createImageViews(List<File> images) {
+        double imageHeight = calculateImgHeight(images.size() / COLS);
         images.forEach(imgFile -> {
-            ImageView imageView = createImageView(imgFile);
-            galleryContainer.getChildren().addAll(imageView);
+            ImageView imageView = createImageView(imgFile, imageHeight);
+            galleryContainer2.getChildren().add(imageView);
         });
     }
 
-    private ImageView createImageView(File imgFile) {
+    private double calculateImgHeight(int size) {
+        double spacing = 2 * 15.0 /* container spacing */
+                + ((size - 1) * IMG_SPACING) / COLS /* spacing between images */;
+        return (galleryHeight - spacing)/size;
+    }
+
+    private ImageView createImageView(File imgFile, double imageHeight) {
         ImageView imageView = null;
         try {
-            Image image = new Image(new FileInputStream(imgFile), 600, 0, true, true);
+            Image image = new Image(new FileInputStream(imgFile), 0, imageHeight, true, true);
             imageView = new ImageView(image);
-            imageView.setFitWidth(600);
-            imageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-
-                    if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-
-                        if(mouseEvent.getClickCount() == 2){
-                            try {
-                                BorderPane borderPane = new BorderPane();
-                                ImageView imageView = new ImageView();
-                                Image image = new Image(new FileInputStream(imgFile));
-                                imageView.setImage(image);
-                                imageView.setStyle("-fx-background-color: BLACK");
-                                imageView.setFitHeight(Navigator.getAppContainer().getHeight() - 10);
-                                imageView.setPreserveRatio(true);
-                                imageView.setSmooth(true);
-                                imageView.setCache(true);
-                                borderPane.setCenter(imageView);
-                                borderPane.setStyle("-fx-background-color: BLACK");
-                                Stage newStage = new Stage();
-                                newStage.setWidth(Navigator.getAppContainer().getWidth());
-                                newStage.setHeight(Navigator.getAppContainer().getHeight());
-                                newStage.setTitle(imgFile.getName());
-                                Scene scene = new Scene(borderPane, Color.BLACK);
-                                newStage.setScene(scene);
-                                newStage.show();
-                            } catch (FileNotFoundException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-                    }
-                }
-            });
-
+            imageView.setFitHeight(imageHeight);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -125,7 +103,7 @@ public class GalleryController implements Initializable {
     }
 
     public void handleAccept(ActionEvent actionEvent) {
-        // wysyłamy/drukujemy
+        Navigator.nextState();
     }
 
     public void handleReject(ActionEvent actionEvent) {

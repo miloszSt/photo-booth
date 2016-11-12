@@ -32,7 +32,7 @@ public class Navigator {
     /** Default application flow. Used if there won't be any custom configuration. */
     private static final List<StateDef> DEFAULT_APP_STATES = new ArrayList<StateDef>() {
         {
-            add(new StateDef("Koniec", END_OPTIONS_VIEW, "", "swinia"));
+            add(new StateDef("Koniec", END_OPTIONS_VIEW, "", "swinia.ser"));
             add(new StateDef("Animacja zachety", ENCOURAGMENT_VIEW, "Pierwszy_PIONv2_converted.mp4"));
             add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, "odliczanie.mp4"));
             add(new StateDef("Galeria", GALLERY_VIEW, ""));
@@ -96,8 +96,6 @@ public class Navigator {
     }
 
     private static TemplateData getTemplateDateFromName(String templateName){
-        templateName+= ".ser";
-
         FileInputStream fin = null;
         TemplateData data = null;
         try {

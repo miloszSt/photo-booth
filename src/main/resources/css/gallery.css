@@ -1,0 +1,11 @@
+.container {
+    -fx-background-color: black;
+}
+
+.gallery-button {
+    -fx-padding: 15 15 15 15;
+    -fx-background-color: rgb(0, 90, 138);
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}

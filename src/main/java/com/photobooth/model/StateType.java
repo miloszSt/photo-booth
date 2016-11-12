@@ -11,10 +11,13 @@ public class StateType {
 
     private boolean shouldContainAnimation;
 
-    public StateType(String label, String fxmlViewPath, boolean shouldContainAnimation) {
+    private boolean shouldContainTemplate;
+
+    public StateType(String label, String fxmlViewPath, boolean shouldContainAnimation, boolean shouldContainTemplate) {
         this.label = label;
         this.fxmlViewPath = fxmlViewPath;
         this.shouldContainAnimation = shouldContainAnimation;
+        this.shouldContainTemplate = shouldContainTemplate;
     }
 
     public String getLabel() {
@@ -27,6 +30,10 @@ public class StateType {
 
     public boolean shouldContainAnimation() {
         return shouldContainAnimation;
+    }
+
+    public boolean shouldContainTemplate() {
+        return shouldContainTemplate;
     }
 
     @Override

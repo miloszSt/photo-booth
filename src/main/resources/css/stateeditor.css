@@ -1,0 +1,41 @@
+.container {
+    -fx-background-color: black;
+}
+
+.add-button, .del-button {
+    -fx-padding: 6 6 6 6;
+    -fx-background-radius: 4px;
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+}
+
+.add-button {
+    -fx-background-color: rgb(0, 90, 138);
+}
+
+.del-button {
+    -fx-background-color: red;
+}
+
+.cancel-button, .save-button {
+    -fx-padding: 10 10 10 10;
+    -fx-background-radius: 4px;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.cancel-button {
+    -fx-background-color: whitesmoke;
+    -fx-text-fill: dimgrey;
+}
+
+.save-button {
+    -fx-background-color: mediumseagreen;
+    -fx-text-fill: white;
+}
+
+.header-lbl {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}

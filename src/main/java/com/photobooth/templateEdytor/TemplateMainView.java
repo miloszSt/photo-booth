@@ -4,6 +4,8 @@ import com.photobooth.templateEdytor.elements.ImageElement;
 import com.photobooth.templateEdytor.elements.TemplateElementInterface;
 import com.photobooth.templateEdytor.elements.TextElement;
 import com.photobooth.templateEdytor.panels.*;
+import com.photobooth.util.Configuration;
+import com.photobooth.util.ConfigurationUtil;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -40,6 +42,8 @@ public class TemplateMainView implements Serializable{
     private TopPanel topPanel;
     private Stage primaryStage;
     private Scene scene;
+    private Configuration configuration;
+
 
     private String templateName;
     private List<Node> layers;
@@ -54,6 +58,7 @@ public class TemplateMainView implements Serializable{
     };
 
     public TemplateMainView(Stage primaryStage) {
+        configuration = ConfigurationUtil.initConfiguration();
         topPanel = new TopPanel(this);
         this.templateName = "Nowy template";
         init(primaryStage);
@@ -206,6 +211,10 @@ public class TemplateMainView implements Serializable{
     public void removeLayer(Node currentSelection) {
         centerPanel.removeLayer(currentSelection);
         layersAString.remove(new Layer((TemplateElementInterface) currentSelection));
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
     }
 }
 

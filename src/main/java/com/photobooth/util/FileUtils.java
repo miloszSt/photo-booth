@@ -2,6 +2,10 @@ package com.photobooth.util;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +54,18 @@ public class FileUtils {
                 return PHOTO_EXTENSIONS.contains(getExtension(file.getPath()));
             }
         }));
+    }
+
+
+    public static void createDirIfDoesntExists(String path){
+        Path dirPath = Paths.get(path);
+        if(!Files.exists(dirPath)){
+            try {
+                Files.createDirectories(dirPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static String getExtension(String pathname) {

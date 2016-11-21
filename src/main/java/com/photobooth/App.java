@@ -2,6 +2,8 @@ package com.photobooth;
 
 import com.photobooth.controller.AppController;
 import com.photobooth.navigator.Navigator;
+import com.photobooth.util.Configuration;
+import com.photobooth.util.ConfigurationUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,7 +12,12 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -22,9 +29,10 @@ import java.util.ResourceBundle;
 public class App extends Application {
 
     private static final String FULL_SCREEN_HINT = "";
-
+    private Configuration configuration;
     @Override
     public void start(Stage primaryStage) throws Exception {
+        this.configuration = ConfigurationUtil.initConfiguration();
         primaryStage.setFullScreen(true);
         primaryStage.setFullScreenExitHint(FULL_SCREEN_HINT);
         Navigator.setAppContainer(primaryStage);
@@ -69,4 +77,6 @@ public class App extends Application {
     public static void main(String[] args) throws IOException, InterruptedException {
         launch(args);
     }
+
+
 }

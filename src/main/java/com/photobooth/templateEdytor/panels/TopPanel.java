@@ -39,148 +39,28 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.photobooth.util.PrintUtil.print;
+
 public class TopPanel extends HBox {
-    public static final String SRC_RESOURCES_TEMPLATES = "src/main/resources/templates/";
     private final TemplateMainView templateMainView;
 
-    private final Button saveTemplateButton;
-    private final Button newTemplateButton;
-    private final Button copyTemplateButton;
-    private final Button deleteTemplateButton;
-    private final Button printTemplateButton;
+    private Button saveTemplateButton;
+    private Button newTemplateButton;
+    private Button copyTemplateButton;
+    private Button deleteTemplateButton;
+    private Button printTemplateButton;
 
     private final ComboBox templates;
 
     public TopPanel(TemplateMainView templateMainView) {
         super(5);
         this.templateMainView = templateMainView;
-
-        newTemplateButton = new Button("New Template");
-        newTemplateButton.setOnAction(
-                new EventHandler<ActionEvent>() {
-                    @Override
-                    public void handle(ActionEvent event) {
-                        templateMainView.reset();
-                        templateMainView.setTemplateName("new");
-                        templates.getSelectionModel().clearSelection();
-                    }
-                });
+        initButtons();
 
         templates = new ComboBox();
         refreshTemplateList();
 
-        copyTemplateButton = new Button("copyTemplateButton");
-        copyTemplateButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                toFile(templateMainView.getTemplateName() + " - Copy");
-                fromFile(templateMainView.getTemplateName() + " - Copy.ser");
-            }
-        });
-        deleteTemplateButton = new Button("deleteTemplateButton");
-
-        deleteTemplateButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                deleteTemplate(templateMainView.getTemplateName());
-            }
-        });
-
-
         Button revertTemplateButton = new Button("reverTemplateButton");
-
-        printTemplateButton = new Button("printTemplateButton");
-
-        printTemplateButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-
-                List<SerializableTemplateInterface> serializableTemplateInterfaces = getSerializableTemplateInterfaces(templateMainView.getCenterPanel().getElements());
-                Pane pane = new Pane();
-                pane.getChildren().add(new Rectangle(487,734, Color.TRANSPARENT));
-                for(SerializableTemplateInterface serial : serializableTemplateInterfaces){
-                    pane.getChildren().add((Node) serial.toElement());
-                }
-                Printer printer = Printer.getDefaultPrinter();
-
-                PageLayout pageLayout = printer.createPageLayout(Paper.A4, PageOrientation.PORTRAIT, Printer.MarginType.DEFAULT);
-                double scaleX = pageLayout.getPrintableWidth() / pane.getBoundsInParent().getWidth();
-                double scaleY = pageLayout.getPrintableHeight() / pane.getBoundsInParent().getHeight();
-                System.out.println("skala X " + scaleX);
-                System.out.println("skala Y " + scaleY);
-
-                System.out.println("getBoundsInParent height "  + pane.getBoundsInParent().getHeight());
-                System.out.println("getBoundsInParent width "  + pane.getBoundsInParent().getWidth());
-
-
-//                pane.getTransforms().add(new Scale(scaleX, scaleY));
-
-                WritableImage snapshot = pane.snapshot(new SnapshotParameters(), null);
-                System.out.println("Snapshot height "  + snapshot.getHeight());
-                System.out.println("Snapshot width "  + snapshot.getWidth());
-
-                BufferedImage bImage = SwingFXUtils.fromFXImage(snapshot, null);
-
-
-                ImageView dbImageView = new ImageView();
-
-                try {
-                    ImageIO.write(bImage, "PNG", new File("c:/test/dupa.png"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Image value = new Image(new File("c:/test/dupa.png").toURI().toString());
-
-
-                System.out.println("Image height "  + value.getHeight());
-                System.out.println("Image width "  + value.getWidth());
-
-
-                dbImageView.setImage(value);
-//                dbImageView.setFitHeight(pageLayout.getPrintableHeight());
-//                dbImageView.setFitWidth(pageLayout.getPrintableWidth());
-
-                System.out.println("dbImageView height "  + dbImageView.getFitHeight());
-                System.out.println("dbImageView width "  + dbImageView.getFitWidth());
-
-
-                PrinterJob printJob = PrinterJob.getPrinterJob();
-
-                try {
-                    java.awt.Image image = ImageIO.read(new File("c:/test/dupa.png"));
-                    printJob.setPrintable(new Printable() {
-                        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-                            if (pageIndex != 0) {
-                                return NO_SUCH_PAGE;
-                            }
-                            graphics.drawImage(image, 0, 0, image.getWidth(null), image.getHeight(null), null);
-                            return PAGE_EXISTS;
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-
-                try {
-                    printJob.print();
-                } catch (PrinterException e1) {
-                    e1.printStackTrace();
-                }
-
-
-
-//                PrinterJob job = PrinterJob.createPrinterJob();
-//                if (job != null && job.showPrintDialog(templateMainView.getScene().getWindow())){
-////                    boolean success = job.printPage(root);
-//                    boolean success = job.printPage(dbImageView);
-//                    if (success) {
-//                        job.endJob();
-//                        System.out.print("podrukowane");
-//                    }
-//                }
-            }
-        });
         Button importTemplateButton = new Button("importTemplateButton");
         Button exportTemplateButton = new Button("exportTemplateButton");
         Button browseTemplateButton = new Button("browseTemplateButton");
@@ -204,10 +84,61 @@ public class TopPanel extends HBox {
                 browseTemplateButton, undoTemplateButton, redoTemplateButton, button);
     }
 
+    private void initButtons(){
+        initNewButton();
+        initDeleteButton();
+        initCopyButton();
+        initPrintButton();
+    }
 
+    private void initCopyButton() {
+        copyTemplateButton = new Button("copyTemplateButton");
+        copyTemplateButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                toFile(templateMainView.getTemplateName() + " - Copy");
+                fromFile(templateMainView.getTemplateName() + " - Copy.ser");
+            }
+        });
+    }
+
+    private void initDeleteButton() {
+        deleteTemplateButton = new Button("deleteTemplateButton");
+        deleteTemplateButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                deleteTemplate(templateMainView.getTemplateName());
+            }
+        });
+    }
+
+    private void initNewButton(){
+        newTemplateButton = new Button("New Template");
+        newTemplateButton.setOnAction(
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        templateMainView.reset();
+                        templateMainView.setTemplateName("new");
+                        templates.getSelectionModel().clearSelection();
+                    }
+                });
+
+    }
+
+    private void initPrintButton(){
+        printTemplateButton = new Button("printTemplateButton");
+
+        printTemplateButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                print(getSerializableTemplateInterfaces(templateMainView.getCenterPanel().getElements()));
+            }
+        });
+    }
     private void deleteTemplate(String templateName) {
         try {
-            Path path = Paths.get(SRC_RESOURCES_TEMPLATES + templateName + ".ser");
+            Path path = Paths.get(templateMainView.getConfiguration().getTemplatePath() + templateName + ".ser");
             if (Files.exists(path)) {
                 Files.delete(path);
             }
@@ -222,7 +153,7 @@ public class TopPanel extends HBox {
     private void refreshTemplateList() {
         List<String> templatesFiles = new ArrayList<>();
         try {
-            Files.list(Paths.get("src/main/resources/templates")).forEach(path -> templatesFiles.add(path.getFileName().toString()));
+            Files.list(Paths.get(templateMainView.getConfiguration().getTemplatePath())).forEach(path -> templatesFiles.add(path.getFileName().toString()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -245,7 +176,7 @@ public class TopPanel extends HBox {
             templateMainView.setTemplateName(filename.replace(".ser", ""));
             templateMainView.reset();
 
-            FileInputStream fin = new FileInputStream(SRC_RESOURCES_TEMPLATES + filename);
+            FileInputStream fin = new FileInputStream(templateMainView.getConfiguration().getTemplatePath() + filename);
             ObjectInputStream ois = new ObjectInputStream(fin);
 
             TemplateData data = (TemplateData) ois.readObject();
@@ -284,7 +215,7 @@ public class TopPanel extends HBox {
             templateData.setHeight(templateMainView.getCenterPanel().getPageHeight());
             templateData.setWight(templateMainView.getCenterPanel().getPageWidth());
 
-            FileOutputStream fout = new FileOutputStream(SRC_RESOURCES_TEMPLATES + templateName + ".ser");
+            FileOutputStream fout = new FileOutputStream(templateMainView.getConfiguration().getTemplatePath() + templateName + ".ser");
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(templateData);
             oos.flush();

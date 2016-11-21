@@ -35,9 +35,6 @@ public class CenterPanel extends Pane {
         double printableHeight = pageLayout.getPrintableHeight();
         double printableWidth = pageLayout.getPrintableWidth();
 
-        System.out.println("rozmiar H  " + printableHeight);
-        System.out.println("rozmiar W " + printableWidth);
-
         backgroundPanel = new Rectangle(printableWidth, printableHeight, Color.WHITE);
         this.templateMainView = templateMainView;
 

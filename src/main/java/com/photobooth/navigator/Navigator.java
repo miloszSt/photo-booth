@@ -6,12 +6,19 @@ import com.photobooth.controller.spec.TemplateAndPhotoInitializable;
 import com.photobooth.model.StateDef;
 import com.photobooth.templateEdytor.panels.TopPanel;
 import com.photobooth.templateEdytor.serializable.TemplateData;
+import com.photobooth.util.Configuration;
+import com.photobooth.util.ConfigurationUtil;
 import com.photobooth.util.FileUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * Obsługuje przechodzenie pomiędzy poszczególnymi widokami.
@@ -39,7 +46,7 @@ public class Navigator {
         }
     };
 
-    private static final String PHOTOS_PATH = "C:\\Users\\Public\\Pictures\\Sample Pictures";
+//    private static final String PHOTOS_PATH = "C:\\Users\\Public\\Pictures\\Sample Pictures";
 
     /** Stores custom application flow. */
     private static List<StateDef> customAppStates = new ArrayList<>();
@@ -73,6 +80,7 @@ public class Navigator {
      * @param stateDefinition {@link StateDef} contains state (view) definition
      */
     private static void goTo(StateDef stateDefinition) {
+        Configuration configuration = ConfigurationUtil.initConfiguration();
         FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(stateDefinition.getFxmlViewPath()));
 
         try {
@@ -82,7 +90,7 @@ public class Navigator {
             }
             if (loader.getController() instanceof TemplateAndPhotoInitializable) {
                 ((TemplateAndPhotoInitializable) loader.getController()).setTemplateAndPhotos(getTemplateDateFromName(
-                        stateDefinition.getTemplateName()), FileUtils.getPhotos(PHOTOS_PATH));
+                        stateDefinition.getTemplateName()), FileUtils.getPhotos(configuration.getCurrentPhotosPath()));
             }
         } catch (IOException e) {
             System.out.println("Error loading view: " + stateDefinition.getAnimationPath()
@@ -93,13 +101,37 @@ public class Navigator {
     /** Resarts application flow. */
     private static void reset() {
         iterator = hasCustomStatesConfiguration() ? customAppStates.listIterator() : DEFAULT_APP_STATES.listIterator();
-    }
 
+        moveTempPhotosToArchive();
+    }
+    private static void moveTempPhotosToArchive(){
+        Configuration configuration = ConfigurationUtil.initConfiguration();
+        Path currentPhotoPath = Paths.get(configuration.getCurrentPhotosPath());
+        Path archivePhotos = Paths.get(configuration.getArchivePhotosPath());
+
+        try {
+            Stream<Path> list = Files.list(currentPhotoPath);
+            list.forEach(new Consumer<Path>() {
+                @Override
+                public void accept(Path path) {
+                    try {
+                        Files.move(path, Paths.get(archivePhotos.toString(), path.getFileName().toString()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private static TemplateData getTemplateDateFromName(String templateName){
+        Configuration configuration = ConfigurationUtil.initConfiguration();
+
         FileInputStream fin = null;
         TemplateData data = null;
         try {
-            fin = new FileInputStream(TopPanel.SRC_RESOURCES_TEMPLATES + templateName);
+            fin = new FileInputStream(configuration.getTemplatePath() + templateName);
             ObjectInputStream ois = new ObjectInputStream(fin);
 
             data = (TemplateData) ois.readObject();

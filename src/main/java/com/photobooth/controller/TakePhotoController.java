@@ -7,14 +7,12 @@ import com.photobooth.util.FileUtils;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.concurrent.Task;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
@@ -57,7 +55,7 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
             @Override
             protected Void call() throws Exception {
                 Thread.sleep(4000);
-                new CameraService().takeImageForUser("Janusz");
+                new CameraService().takeImage();
 
                 return null;
             }

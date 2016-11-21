@@ -14,20 +14,7 @@ public class CameraService {
         this.cameraDAO = new CameraDAO();
     }
 
-    public void takeImageForUser(String user) throws IOException, InterruptedException {
-        cameraDAO.captureImageForUser(user);
+    public void takeImage() throws IOException, InterruptedException {
+        cameraDAO.captureImageForUser();
     }
-
-    public List<BufferedImage> getImagesForUser(String user) throws IOException {
-        ArrayList<BufferedImage> images = new ArrayList<>();
-        List<File> userFiles = cameraDAO.getUserFiles(user);
-
-        for (File file : userFiles) {
-            images.add(ImageIO.read(file));
-        }
-
-        return images;
-    }
-
-
 }

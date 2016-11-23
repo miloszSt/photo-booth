@@ -3,6 +3,8 @@ package com.photobooth.controller;
 import com.photobooth.model.StateDef;
 import com.photobooth.model.StateType;
 import com.photobooth.navigator.Navigator;
+import com.photobooth.util.Configuration;
+import com.photobooth.util.ConfigurationUtil;
 import com.photobooth.util.FileUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,18 +22,21 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 /**
  * @author mst
  */
 public class StateEditorController implements Initializable {
-
-    private static final String ANIMATIONS_PATH = "animations";
-    private static final String TEMPLATES_PATH = "templates";
 
     private final ObservableList<StateType> stateTypes = FXCollections.observableArrayList(
             new StateType("Animacja zachety", Navigator.ENCOURAGMENT_VIEW, true, false),
@@ -72,9 +77,8 @@ public class StateEditorController implements Initializable {
         stateTypesComboBox.setItems(stateTypes);
         stateTypesComboBox.setOnAction(actionEvent -> {
             StateType selected = stateTypesComboBox.getSelectionModel().getSelectedItem();
-            String[] animations = FileUtils.load( selected.shouldContainAnimation() ? ANIMATIONS_PATH :
-                    (selected.shouldContainTemplate() ? TEMPLATES_PATH : "") ).list();
-            animationsComboBox.getItems().setAll(animations);
+            animationsComboBox.getItems().setAll(getListOfMedia(selected));
+
             if (selected.shouldContainAnimation() || selected.shouldContainTemplate()) {
                 animationsComboBox.setDisable(false);
             } else {
@@ -105,6 +109,26 @@ public class StateEditorController implements Initializable {
         formRows.add(formRowContainer);
 
         return formRowContainer;
+    }
+
+    /**
+     * Load list of media names which will be displayed in combobox according to selected {@link StateType}.
+     * If state is connected with view presented animation, list of available animations will be loaded. The same with
+     * state connected with presenting template.
+     *
+     * @param selectedStateType selected state type
+     * @return list of media names
+     */
+    private String[] getListOfMedia(StateType selectedStateType) {
+        Configuration configuration = ConfigurationUtil.initConfiguration();
+        String pathToMedia = "";
+        if (selectedStateType.shouldContainAnimation()) {
+            pathToMedia = configuration.getAnimationPath();
+        } else if (selectedStateType.shouldContainTemplate()) {
+            pathToMedia = configuration.getTemplatePath();
+        }
+        String[] media = new File(pathToMedia).list();
+        return media == null ? new String[] {} : media;
     }
 
     /**
@@ -202,7 +226,7 @@ public class StateEditorController implements Initializable {
         String selected = comboBox.getValue();
         if (selected != null) {
             if (stateType.shouldContainAnimation())
-                stateDefinition.setAnimationPath(ANIMATIONS_PATH + "/" + selected);
+                stateDefinition.setAnimationPath(ConfigurationUtil.initConfiguration().getAnimationPath() + selected);
             else if (stateType.shouldContainTemplate())
                 stateDefinition.setTemplateName(selected);
         }

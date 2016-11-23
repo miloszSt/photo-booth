@@ -55,28 +55,31 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
     }
 
     public  Pane createPaneWithPhotos(){
-        List<File> photosToUse = new ArrayList<>(photos);
         if (finalViewPane.getChildren().size() > 0) finalViewPane.getChildren().clear();
 
-        Rectangle background = new Rectangle(templateData.getWight(), templateData.getHeight(), Color.TRANSPARENT);
+        if (!photos.isEmpty()) {
+            List<File> photosToUse = new ArrayList<>(photos);
+            Rectangle background = new Rectangle(templateData.getWight(), templateData.getHeight(), Color.TRANSPARENT);
 
-        finalViewPane.getChildren().add(background);
-        List<SerializableTemplateInterface> templateInterfaceList = templateData.getTemplateInterfaceList();
+            finalViewPane.getChildren().add(background);
+            List<SerializableTemplateInterface> templateInterfaceList = templateData.getTemplateInterfaceList();
 
-        for(SerializableTemplateInterface element : templateInterfaceList){
-            TemplateElementInterface templateElementInterface = element.toElement();
+            for (SerializableTemplateInterface element : templateInterfaceList) {
+                TemplateElementInterface templateElementInterface = element.toElement();
 
-            if(templateElementInterface instanceof PhotoElement){
-                ((PhotoElement) templateElementInterface).setPhoto(photosToUse.remove(0));
+                if (templateElementInterface instanceof PhotoElement) {
+                    // TODO photosToUse.remove(0) powoduje IndexOutOfBoundException jesli jest mnie zdjec niz elementow w templeteInterfaceList
+                    ((PhotoElement) templateElementInterface).setPhoto(photosToUse.remove(0));
+                }
+
+                finalViewPane.getChildren().add((Node) templateElementInterface);
             }
-
-            finalViewPane.getChildren().add((Node) templateElementInterface);
+            borderPane.setCenter(stackPane);
+            stackPane.setAlignment(Pos.CENTER);
+            stackPane.setMaxHeight(100);
+            stackPane.setMaxWidth(100);
+            stackPane.getChildren().add(finalViewPane);
         }
-        borderPane.setCenter(stackPane);
-        stackPane.setAlignment(Pos.CENTER);
-        stackPane.setMaxHeight(100);
-        stackPane.setMaxWidth(100);
-        stackPane.getChildren().add(finalViewPane);
 
         return finalViewPane;
     }

@@ -3,7 +3,6 @@ package com.photobooth.controller;
 import com.photobooth.camera.CameraService;
 import com.photobooth.controller.spec.AnimationInitializable;
 import com.photobooth.navigator.Navigator;
-import com.photobooth.util.FileUtils;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.concurrent.Task;
@@ -32,12 +31,16 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("TakePhoto Controller");
+    }
+
+    @Override
+    public void initAnimation(String animationPath) {
+        this.animationPath = animationPath;
         MediaPlayer mediaPlayer = initMediaPlayer();
         mediaView.setMediaPlayer(mediaPlayer);
         // set media view to fill all available space
         mediaView.fitWidthProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
         mediaView.fitHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
-        takePhoto();
     }
 
     private MediaPlayer initMediaPlayer() {
@@ -77,8 +80,4 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
         thread.start();
     }
 
-    @Override
-    public void initAnimation(String animationPath) {
-        this.animationPath = FileUtils.RESOURCES_FOLDER + animationPath;
-    }
 }

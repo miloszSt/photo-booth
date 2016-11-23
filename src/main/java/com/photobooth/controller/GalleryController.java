@@ -1,6 +1,7 @@
 package com.photobooth.controller;
 
 import com.photobooth.navigator.Navigator;
+import com.photobooth.util.ConfigurationUtil;
 import com.photobooth.util.FileUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -35,19 +36,14 @@ import java.util.ResourceBundle;
 public class GalleryController implements Initializable {
 
     // TODO do zmiany na katalog, w którym będą przechowywane zdjęcia
-    //private static final String IMAGES_PATH = "src/main/resources/images";
-    private static final String IMAGES_PATH = "images";
     private final static int COLS = 1;
     private final static double IMG_SPACING = 15.0;
 
     @FXML
     BorderPane viewContainer;
 
-    /*@FXML
-    TilePane galleryContainer;*/
-
     @FXML
-    VBox galleryContainer2;
+    VBox galleryContainer;
 
     @FXML
     HBox buttonsContainer;
@@ -61,7 +57,7 @@ public class GalleryController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initGalleryContainer();
 
-        File folder = FileUtils.load(IMAGES_PATH);
+        File folder = new File(ConfigurationUtil.initConfiguration().getCurrentPhotosPath());
         List<File> images = Arrays.asList(folder.listFiles());
         createImageViews(images);
     }
@@ -69,9 +65,9 @@ public class GalleryController implements Initializable {
     private void initGalleryContainer() {
         galleryHeight = Screen.getPrimary().getVisualBounds().getHeight() * 0.9;
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-        galleryContainer2.setPrefHeight(galleryHeight);
-        galleryContainer2.setSpacing(IMG_SPACING);
-        galleryContainer2.setPadding(new Insets(30, 0, 0, 0));
+        galleryContainer.setPrefHeight(galleryHeight);
+        galleryContainer.setSpacing(IMG_SPACING);
+        galleryContainer.setPadding(new Insets(30, 0, 0, 0));
         buttonsContainer.setPrefHeight(primaryScreenBounds.getHeight() * 0.1);
     }
 
@@ -79,7 +75,7 @@ public class GalleryController implements Initializable {
         double imageHeight = calculateImgHeight(images.size() / COLS);
         images.forEach(imgFile -> {
             ImageView imageView = createImageView(imgFile, imageHeight);
-            galleryContainer2.getChildren().add(imageView);
+            galleryContainer.getChildren().add(imageView);
         });
     }
 

@@ -4,7 +4,6 @@ import com.photobooth.controller.AppController;
 import com.photobooth.controller.spec.AnimationInitializable;
 import com.photobooth.controller.spec.TemplateAndPhotoInitializable;
 import com.photobooth.model.StateDef;
-import com.photobooth.templateEdytor.panels.TopPanel;
 import com.photobooth.templateEdytor.serializable.TemplateData;
 import com.photobooth.util.Configuration;
 import com.photobooth.util.ConfigurationUtil;
@@ -12,11 +11,16 @@ import com.photobooth.util.FileUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 

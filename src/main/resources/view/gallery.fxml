@@ -10,7 +10,7 @@
             stylesheets="@/css/gallery.css"
             styleClass="container">
     <center>
-        <VBox fx:id="galleryContainer2" alignment="CENTER"/>
+        <VBox fx:id="galleryContainer" alignment="CENTER"/>
     </center>
     <bottom>
         <HBox xmlns:fx="http://javafx.com/fxml"

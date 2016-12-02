@@ -132,7 +132,7 @@ public class TopPanel extends HBox {
         printTemplateButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                print(getSerializableTemplateInterfaces(templateMainView.getCenterPanel().getElements()));
+                print(getTemplateData());
             }
         });
     }
@@ -202,18 +202,8 @@ public class TopPanel extends HBox {
     private void toFile(String templateName) {
         try {
 
-            ObservableList<Node> children = templateMainView.getCenterPanel().getElements();
 
-            List<SerializableTemplateInterface> serializableTemplateInterfaceList = getSerializableTemplateInterfaces(children);
-
-
-            TemplateData templateData = new TemplateData();
-            templateData.setTemplateInterfaceList(serializableTemplateInterfaceList);
-            templateData.setName(templateMainView.getTemplateName());
-            templateData.setOrientation(templateMainView.getCenterPanel().getOrientation());
-            templateData.setPaper(templateMainView.getCenterPanel().getPageFormat());
-            templateData.setHeight(templateMainView.getCenterPanel().getPageHeight());
-            templateData.setWight(templateMainView.getCenterPanel().getPageWidth());
+            TemplateData templateData = getTemplateData();
 
             FileOutputStream fout = new FileOutputStream(templateMainView.getConfiguration().getTemplatePath() + templateName + ".ser");
             ObjectOutputStream oos = new ObjectOutputStream(fout);
@@ -226,6 +216,19 @@ public class TopPanel extends HBox {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private TemplateData getTemplateData() {
+        TemplateData templateData = new TemplateData();
+        ObservableList<Node> children = templateMainView.getCenterPanel().getElements();
+        List<SerializableTemplateInterface> serializableTemplateInterfaceList = getSerializableTemplateInterfaces(children);
+        templateData.setTemplateInterfaceList(serializableTemplateInterfaceList);
+        templateData.setName(templateMainView.getTemplateName());
+        templateData.setOrientation(templateMainView.getCenterPanel().getOrientation());
+        templateData.setPaper(templateMainView.getCenterPanel().getPageFormat());
+        templateData.setHeight(templateMainView.getCenterPanel().getPageHeight());
+        templateData.setWight(templateMainView.getCenterPanel().getPageWidth());
+        return templateData;
     }
 
     private List<SerializableTemplateInterface> getSerializableTemplateInterfaces(ObservableList<Node> children) {

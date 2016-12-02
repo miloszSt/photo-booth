@@ -21,6 +21,18 @@ public class Configuration implements Serializable{
         initDirectories();
     }
 
+    public String getTemplateImagesPath() {
+        return templateImagesPath;
+    }
+
+    public String getTempPath() {
+        return tempPath;
+    }
+
+    public String getStateFlowPath() {
+        return stateFlowPath;
+    }
+
     private void initDirectories() {
         FileUtils.createDirIfDoesntExists(animationPath);
         FileUtils.createDirIfDoesntExists(templatePath);

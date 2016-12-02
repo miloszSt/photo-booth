@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 /**
  * @author mst
  */
-public class TakePhotoController implements Initializable, AnimationInitializable {
+public class PlayOnceController implements Initializable, AnimationInitializable {
 
     private static final String MEDIA_URL = "src/main/resources/animations/odliczanie.mp4";
 
@@ -36,7 +36,6 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
 
     @Override
     public void initAnimation(String animationPath) {
-        takePhoto();
         this.animationPath = animationPath;
         MediaPlayer mediaPlayer = initMediaPlayer();
         mediaView.setMediaPlayer(mediaPlayer);
@@ -52,37 +51,10 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
         player.setCycleCount(1);
         player.play();
 
+        player.setOnEndOfMedia(() -> Navigator.nextState());
         return player;
     }
 
-    private void takePhoto() {
-        Task<Void> takePhotoTask = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                System.out.println("Wywolany " + new Date());
-                Thread.sleep(2500);
-                System.out.println("pospane" + new Date());
 
-                new CameraService().takeImage();
-                System.out.println("zrobione" + new Date());
-                return null;
-            }
-
-            @Override
-            protected void succeeded() {
-                super.succeeded();
-                System.out.println("Success from task!");
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        Navigator.nextState();
-                    }
-                });
-            }
-        };
-        Thread thread = new Thread(takePhotoTask);
-        thread.setDaemon(true);
-        thread.start();
-    }
 
 }

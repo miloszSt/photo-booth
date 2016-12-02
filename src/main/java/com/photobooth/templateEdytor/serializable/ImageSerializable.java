@@ -4,6 +4,7 @@ package com.photobooth.templateEdytor.serializable;
 import com.photobooth.templateEdytor.elements.ImageElement;
 import javafx.scene.paint.Paint;
 
+import java.awt.*;
 import java.io.Serializable;
 
 public class ImageSerializable implements Serializable, SerializableTemplateInterface {
@@ -14,7 +15,6 @@ public class ImageSerializable implements Serializable, SerializableTemplateInte
     Integer height;
 
     String name;
-    String color;
     String imageUrl;
 
     public ImageSerializable(ImageElement imageElement){
@@ -24,11 +24,10 @@ public class ImageSerializable implements Serializable, SerializableTemplateInte
         this.height = new Double(imageElement.getElementHeight()).intValue();
         this.imageUrl = imageElement.getImageAbsolutePath();
         this.name = imageElement.getName();
-        this.color = imageElement.getElementColor().toString();
     }
 
     public ImageElement toElement(){
-        ImageElement imageElement = new ImageElement(this.width, this.height, Paint.valueOf(color));
+        ImageElement imageElement = new ImageElement(this.width, this.height, Paint.valueOf("fff"));
         imageElement.setId(name);
         imageElement.setLayoutY(top);
         imageElement.setLayoutX(left);

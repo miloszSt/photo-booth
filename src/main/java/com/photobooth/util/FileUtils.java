@@ -22,6 +22,7 @@ public class FileUtils {
     public static final List<String> PHOTO_EXTENSIONS = new ArrayList<String>(){
         {
             add("jpg");
+            add("JPG");
             add("jpeg");
             add("png");
             add("tif");

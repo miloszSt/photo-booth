@@ -41,6 +41,7 @@ public class StateEditorController implements Initializable {
     private final ObservableList<StateType> stateTypes = FXCollections.observableArrayList(
             new StateType("Animacja zachety", Navigator.ENCOURAGMENT_VIEW, true, false),
             new StateType("Robienie fotki", Navigator.TAKE_PHOTO_VIEW, true, false),
+            new StateType("Animacja jednorazowa", Navigator.PLAY_ONCE_VIEW, true, false),
             new StateType("Galeria", Navigator.GALLERY_VIEW, false, false),
             new StateType("Szablon", Navigator.TEMPLATE_EDITOR_VIEW, false, false),
             new StateType("Ekran opcji koncowych", Navigator.END_OPTIONS_VIEW, false, true) // ewentualnie można dodać animacje na dowidzenia

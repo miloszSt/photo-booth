@@ -6,6 +6,9 @@ import com.photobooth.templateEdytor.elements.PhotoElement;
 import com.photobooth.templateEdytor.elements.TemplateElementInterface;
 import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
 import com.photobooth.templateEdytor.serializable.TemplateData;
+import com.photobooth.util.Configuration;
+import com.photobooth.util.ConfigurationUtil;
+import com.photobooth.util.PrintUtil;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -14,16 +17,16 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -75,6 +78,7 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
                 finalViewPane.getChildren().add((Node) templateElementInterface);
             }
             borderPane.setCenter(stackPane);
+            stackPane.setBackground(new Background(new BackgroundFill(Color.WHITE,null,null)));
             stackPane.setAlignment(Pos.CENTER);
             stackPane.setMaxHeight(100);
             stackPane.setMaxWidth(100);
@@ -93,10 +97,13 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
     public void print(){
         WritableImage image = finalViewPane.snapshot(new SnapshotParameters(), null);
 
-        File file = new File("e:/fotki/gotowe.png");
+        File file = new File(ConfigurationUtil.initConfiguration().getTempPath() + LocalDateTime.now().toString().substring(0,13) + ".png");
 
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+
+            PrintUtil.print(file.getAbsolutePath(), templateData.getOrientation());
+
         } catch (IOException e) {
             // TODO: handle exception here
         }

@@ -16,7 +16,8 @@ public class CameraDAO {
         Configuration configuration = ConfigurationUtil.initConfiguration();
         System.out.println("About to take a photo " + LocalDateTime.now());
         Runtime rt = Runtime.getRuntime();
-        Process pr = rt.exec(COMMAND_LINE_CAMERA_DRIVER + " /folder " + configuration.getCurrentPhotosPath() + " /capture");
+//        Process pr = rt.exec(COMMAND_LINE_CAMERA_DRIVER + " /folder " + configuration.getCurrentPhotosPath() + " /capture");
+        Process pr = rt.exec(COMMAND_LINE_CAMERA_DRIVER + " /folder C:\\photoBooth\\currentPhotos /capture");
         System.out.println("Sent command " + LocalDateTime.now());
         pr.waitFor();
         System.out.println("Photo taken "  + LocalDateTime.now());

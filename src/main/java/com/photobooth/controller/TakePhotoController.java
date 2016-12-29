@@ -3,6 +3,7 @@ package com.photobooth.controller;
 import com.photobooth.camera.CameraService;
 import com.photobooth.controller.spec.AnimationInitializable;
 import com.photobooth.navigator.Navigator;
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.concurrent.Task;
@@ -11,6 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.nio.file.Paths;
@@ -43,6 +45,7 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
         // set media view to fill all available space
         mediaView.fitWidthProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
         mediaView.fitHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
+        addFadeInTransition(mediaView);
     }
 
     private MediaPlayer initMediaPlayer() {
@@ -53,6 +56,13 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
         player.play();
 
         return player;
+    }
+
+    private void addFadeInTransition(MediaView mediaView) {
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(1500), mediaView);
+        fadeIn.setFromValue(0.0);
+        fadeIn.setToValue(1.0);
+        fadeIn.play();
     }
 
     private void takePhoto() {

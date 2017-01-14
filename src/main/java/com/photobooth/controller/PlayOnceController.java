@@ -1,11 +1,8 @@
 package com.photobooth.controller;
 
-import com.photobooth.camera.CameraService;
 import com.photobooth.controller.spec.AnimationInitializable;
 import com.photobooth.navigator.Navigator;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.media.Media;
@@ -14,7 +11,9 @@ import javafx.scene.media.MediaView;
 
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 /**
@@ -27,7 +26,7 @@ public class PlayOnceController implements Initializable, AnimationInitializable
     @FXML
     MediaView mediaView;
 
-    private String animationPath = "";
+    private List<String> animationPaths = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -35,8 +34,8 @@ public class PlayOnceController implements Initializable, AnimationInitializable
     }
 
     @Override
-    public void initAnimation(String animationPath) {
-        this.animationPath = animationPath;
+    public void initAnimations(List<String> animationPaths) {
+        this.animationPaths = animationPaths;
         MediaPlayer mediaPlayer = initMediaPlayer();
         mediaView.setMediaPlayer(mediaPlayer);
         // set media view to fill all available space
@@ -45,7 +44,9 @@ public class PlayOnceController implements Initializable, AnimationInitializable
     }
 
     private MediaPlayer initMediaPlayer() {
-        Media media = new Media(Paths.get(animationPath.isEmpty() ? MEDIA_URL : animationPath).toUri().toString());
+        int mediaIdx = getRandomMediaIdx();
+        Media media = new Media(Paths.get(animationPaths.isEmpty() ? MEDIA_URL
+                : animationPaths.get(mediaIdx)).toUri().toString());
         MediaPlayer player = new MediaPlayer(media);
         player.setAutoPlay(true);
         player.setCycleCount(1);
@@ -55,6 +56,9 @@ public class PlayOnceController implements Initializable, AnimationInitializable
         return player;
     }
 
-
+    private int getRandomMediaIdx() {
+        Random rand = new Random();
+        return rand.nextInt(animationPaths.size());
+    }
 
 }

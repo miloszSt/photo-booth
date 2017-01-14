@@ -1,5 +1,7 @@
 package com.photobooth.model;
 
+import java.util.List;
+
 /**
  * @author mst
  */
@@ -9,22 +11,22 @@ public class StateDef {
 
     private String fxmlViewPath;
 
-    private String animationPath;
+    private List<String> animationPaths;
 
     private String templateName;
 
     public StateDef() {}
 
-    public StateDef(String label, String fxmlViewPath, String animationPath) {
+    public StateDef(String label, String fxmlViewPath, List<String> animationPaths) {
         this.label = label;
         this.fxmlViewPath = fxmlViewPath;
-        this.animationPath = animationPath;
+        this.animationPaths = animationPaths;
     }
 
-    public StateDef(String label, String fxmlViewPath, String animationPath, String templateName) {
+    public StateDef(String label, String fxmlViewPath, List<String> animationPaths, String templateName) {
         this.label = label;
         this.fxmlViewPath = fxmlViewPath;
-        this.animationPath = animationPath;
+        this.animationPaths = animationPaths;
         this.templateName = templateName;
     }
 
@@ -44,12 +46,12 @@ public class StateDef {
         this.fxmlViewPath = fxmlViewPath;
     }
 
-    public String getAnimationPath() {
-        return animationPath;
+    public List<String> getAnimationPaths() {
+        return animationPaths;
     }
 
-    public void setAnimationPath(String animationPath) {
-        this.animationPath = animationPath;
+    public void setAnimationPaths(List<String> animationPaths) {
+        this.animationPaths = animationPaths;
     }
 
     public String getTemplateName() {

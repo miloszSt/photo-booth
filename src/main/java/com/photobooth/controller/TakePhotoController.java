@@ -16,8 +16,7 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.Date;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * @author mst
@@ -29,7 +28,7 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
     @FXML
     MediaView mediaView;
 
-    private String animationPath = "";
+    private List<String> animationPaths = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -37,9 +36,9 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
     }
 
     @Override
-    public void initAnimation(String animationPath) {
+    public void initAnimations(List<String> animationPaths) {
         takePhoto();
-        this.animationPath = animationPath;
+        this.animationPaths = animationPaths;
         MediaPlayer mediaPlayer = initMediaPlayer();
         mediaView.setMediaPlayer(mediaPlayer);
         // set media view to fill all available space
@@ -49,13 +48,19 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
     }
 
     private MediaPlayer initMediaPlayer() {
-        Media media = new Media(Paths.get(animationPath.isEmpty() ? MEDIA_URL : animationPath).toUri().toString());
+        int mediaIdx = getRandomMediaIdx();
+        Media media = new Media(Paths.get(animationPaths.isEmpty() ? MEDIA_URL : animationPaths.get(mediaIdx)).toUri().toString());
         MediaPlayer player = new MediaPlayer(media);
         player.setAutoPlay(true);
         player.setCycleCount(1);
         player.play();
 
         return player;
+    }
+
+    private int getRandomMediaIdx() {
+        Random rand = new Random();
+        return rand.nextInt(animationPaths.size());
     }
 
     private void addFadeInTransition(MediaView mediaView) {

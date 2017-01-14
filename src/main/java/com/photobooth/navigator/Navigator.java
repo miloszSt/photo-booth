@@ -18,9 +18,7 @@ import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -44,12 +42,12 @@ public class Navigator {
     /** Default application flow. Used if there won't be any custom configuration. */
     private static final List<StateDef> DEFAULT_APP_STATES = new ArrayList<StateDef>() {
         {
-            add(new StateDef("Animacja zachety", ENCOURAGMENT_VIEW, "Pierwszy_PIONv2_converted.mp4"));
-            add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, "odliczanie.mp4"));
-            add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, "odliczanie.mp4"));
-            add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, "odliczanie.mp4"));
-            add(new StateDef("Galeria", GALLERY_VIEW, ""));
-            add(new StateDef("Koniec", END_OPTIONS_VIEW, "", "swinia.ser"));
+            add(new StateDef("Animacja zachety", ENCOURAGMENT_VIEW, Collections.singletonList("Pierwszy_PIONv2_converted.mp4")));
+            add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, Collections.singletonList("odliczanie.mp4")));
+            add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, Collections.singletonList("odliczanie.mp4")));
+            add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, Collections.singletonList("odliczanie.mp4")));
+            add(new StateDef("Galeria", GALLERY_VIEW, Collections.singletonList("")));
+            add(new StateDef("Koniec", END_OPTIONS_VIEW, Collections.singletonList(""), "swinia.ser"));
         }
     };
 
@@ -83,7 +81,7 @@ public class Navigator {
     /**
      * Change view with new, defined in given {@link StateDef} obejct. If controller connected with given state (view)
      * is instance of {@link AnimationInitializable}, path to animation file displayed in that view will be passed
-     * by method {@link AnimationInitializable#initAnimation(String)}.
+     * by method {@link AnimationInitializable#initAnimations(List<String>)}.
      *
      * @param stateDefinition {@link StateDef} contains state (view) definition
      */
@@ -94,14 +92,14 @@ public class Navigator {
         try {
             appController.setContent(loader.load());
             if (loader.getController() instanceof AnimationInitializable) {
-                ((AnimationInitializable) loader.getController()).initAnimation(stateDefinition.getAnimationPath());
+                ((AnimationInitializable) loader.getController()).initAnimations(stateDefinition.getAnimationPaths());
             }
             if (loader.getController() instanceof TemplateAndPhotoInitializable) {
                 ((TemplateAndPhotoInitializable) loader.getController()).setTemplateAndPhotos(getTemplateDateFromName(
                         stateDefinition.getTemplateName()), FileUtils.getPhotos(configuration.getCurrentPhotosPath()));
             }
         } catch (IOException e) {
-            System.out.println("Error loading view: " + stateDefinition.getAnimationPath()
+            System.out.println("Error loading view: " + stateDefinition.getAnimationPaths()
                     + "\n" + e.getMessage());
         }
     }

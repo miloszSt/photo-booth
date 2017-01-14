@@ -9,7 +9,7 @@ import javafx.beans.binding.Bindings;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -17,6 +17,9 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 /**
@@ -27,12 +30,15 @@ public class EncouragementController implements Initializable, AnimationInitiali
     private static final String MEDIA_URL = "src/main/resources/animations/Pierwszy_PIONv2_converted.mp4";
 
     @FXML
-    StackPane mediaPane;
+    //StackPane mediaPane;
+    VBox mediaPane;
 
     @FXML
     MediaView mediaView;
 
-    String animationPath = "";
+    List<String> animationPaths = new ArrayList<>();
+
+    Random rand = new Random();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -41,8 +47,8 @@ public class EncouragementController implements Initializable, AnimationInitiali
     }
 
     @Override
-    public void initAnimation(String animationPath) {
-        this.animationPath = animationPath;
+    public void initAnimations(List<String> animationPaths) {
+        this.animationPaths = animationPaths;
         MediaPlayer mediaPlayer = initMediaPlayer();
         mediaView.setMediaPlayer(mediaPlayer);
         // set media view to fill all available space
@@ -52,13 +58,19 @@ public class EncouragementController implements Initializable, AnimationInitiali
     }
 
     private MediaPlayer initMediaPlayer() {
-        Media media = new Media(Paths.get(animationPath.isEmpty() ? MEDIA_URL : animationPath).toUri().toString());
+        int mediaIdx = getRandomMediaIdx();
+        Media media = new Media(Paths.get(animationPaths.isEmpty() ? MEDIA_URL
+                : animationPaths.get(mediaIdx)).toUri().toString());
         MediaPlayer player = new MediaPlayer(media);
         player.setAutoPlay(true);
         player.setCycleCount(MediaPlayer.INDEFINITE);
         player.play();
 
         return player;
+    }
+
+    private int getRandomMediaIdx() {
+        return rand.nextInt(animationPaths.size());
     }
 
     private void addFadeInTransition(MediaView mediaView) {

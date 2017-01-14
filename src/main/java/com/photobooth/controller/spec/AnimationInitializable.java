@@ -1,8 +1,10 @@
 package com.photobooth.controller.spec;
 
+import java.util.List;
+
 /**
  * @author mst
  */
 public interface AnimationInitializable {
-    void initAnimation(String animationPath);
+    void initAnimations(List<String> animationPaths);
 }

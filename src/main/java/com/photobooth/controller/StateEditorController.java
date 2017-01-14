@@ -18,6 +18,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.controlsfx.control.CheckComboBox;
 
 import java.io.File;
 import java.net.URL;
@@ -63,7 +64,7 @@ public class StateEditorController implements Initializable {
         formRowContainer.setSpacing(12);
         formRowContainer.setAlignment(Pos.CENTER);
         // animacja
-        ComboBox<String> animationsComboBox = new ComboBox<>();
+        CheckComboBox<String> animationsComboBox = new CheckComboBox<>();
 
         // typ
         ComboBox<StateType> stateTypesComboBox = new ComboBox<>();
@@ -131,9 +132,9 @@ public class StateEditorController implements Initializable {
      * @param animationComboBox combobox with animations
      * @return true/false
      */
-    private boolean hasFormNotSelectedValues(ComboBox<StateType> typeComboBox, ComboBox<String> animationComboBox) {
+    private boolean hasFormNotSelectedValues(ComboBox<StateType> typeComboBox, CheckComboBox<String> animationComboBox) {
         return (typeComboBox.getValue() == null && typeComboBox.getValue() == null)
-                || (animationComboBox.getValue() == null
+                || (animationComboBox.getCheckModel().getCheckedItems() == null
                 && typeComboBox.getValue().shouldContainAnimation());
     }
 
@@ -188,7 +189,7 @@ public class StateEditorController implements Initializable {
         boolean isValid = true;
         for (HBox formRow : formRows) {
             ComboBox<StateType> typeComboBox = (ComboBox) formRow.getChildren().get(0);
-            ComboBox<String> animationComboBox = (ComboBox) formRow.getChildren().get(1);
+            CheckComboBox<String> animationComboBox = (CheckComboBox) formRow.getChildren().get(1);
             isValid = isValid && !hasFormNotSelectedValues(typeComboBox, animationComboBox);
         }
         return isValid;
@@ -215,14 +216,24 @@ public class StateEditorController implements Initializable {
 
     private void saveAnimationPath(Node node, Node stateTypeComboBox, StateDef stateDefinition) {
         StateType stateType = ((ComboBox<StateType>)stateTypeComboBox).getValue();
-        ComboBox<String> comboBox = (ComboBox) node;
-        String selected = comboBox.getValue();
-        if (selected != null) {
-            if (stateType.shouldContainAnimation())
-                stateDefinition.setAnimationPath(ConfigurationUtil.initConfiguration().getAnimationPath() + selected);
-            else if (stateType.shouldContainTemplate())
-                stateDefinition.setTemplateName(selected);
-        }
+        if (stateType.shouldContainAnimation()) {
+            CheckComboBox<String> comboBox = (CheckComboBox) node;
+            List<String> selected = comboBox.getCheckModel().getCheckedItems();
+            if (selected != null) {
+                List<String> animations = new ArrayList<>();
+                String animationPath = ConfigurationUtil.initConfiguration().getAnimationPath();
 
+                for (String animation : selected) {
+                    animations.add(animationPath + animation);
+                }
+                stateDefinition.setAnimationPaths(animations);
+            }
+        } else if (stateType.shouldContainTemplate()) {
+            ComboBox<String> comboBox = (ComboBox) node;
+            String selected = comboBox.getValue();
+            if (selected != null) {
+                stateDefinition.setTemplateName(selected);
+            }
+        }
     }
 }

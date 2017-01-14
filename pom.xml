@@ -5,7 +5,8 @@
     <artifactId>photo-booth</artifactId>
     <packaging>jar</packaging>
 
-    <name>photo-boothr</name>
+    <name>photo-booth</name>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

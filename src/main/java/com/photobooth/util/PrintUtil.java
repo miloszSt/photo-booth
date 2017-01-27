@@ -177,14 +177,59 @@ public class PrintUtil {
         return dScale;
     }
 
+
+    public static void print2(String filePath, PageOrientation orientation){
+        java.awt.print.PrinterJob printerJob = java.awt.print.PrinterJob.getPrinterJob();
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(new File(filePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        PageFormat pf = printerJob.defaultPage();
+        java.awt.print.Paper paper = new java.awt.print.Paper();
+        double margin = 0;
+        paper.setImageableArea(margin, margin, paper.getWidth() - margin * 2, paper.getHeight()
+                - margin * 2);
+        pf.setPaper(paper);
+
+        BufferedImage finalImg = img;
+        printerJob.setPrintable(new Printable() {
+            public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+                Graphics2D g2 = (Graphics2D) graphics;
+                final double xScale = 1.1;
+                final double xTranslate = -55;
+                final double yScale = 1;
+                final double yTranslate = 0;
+                final double widthScale = (pageFormat.getWidth() / finalImg.getWidth()) * xScale;
+                final double heightScale = (pageFormat.getHeight() / finalImg.getHeight()) * yScale;
+                System.out.println("Setting scale to " + widthScale + "x" + heightScale);
+                final AffineTransform at = AffineTransform.getScaleInstance(widthScale, heightScale);
+                System.out.println("Setting translate to " + xTranslate + "x" + yTranslate);
+                at.translate(xTranslate, yTranslate);
+                if (pageIndex != 0) {
+                    return NO_SUCH_PAGE;
+                }
+                g2.drawRenderedImage(finalImg, at);
+                return PAGE_EXISTS;
+            }
+        }, pf);
+        if (printerJob.printDialog()) {
+            try {
+                printerJob.print();
+            } catch (PrinterException e) {
+                System.out.println(e);
+            }
+        }
+    }
     public static void print(String filePath, PageOrientation orientation){
         PrintRequestAttributeSet pras = new HashPrintRequestAttributeSet();
         pras.add(new Copies(1));
-        if(orientation == PageOrientation.LANDSCAPE){
-            pras.add(OrientationRequested.LANDSCAPE);
-        }else {
+//        if(orientation == PageOrientation.LANDSCAPE){
+//            pras.add(OrientationRequested.LANDSCAPE);
+//        }else {
             pras.add(OrientationRequested.PORTRAIT);
-        }
+//        }
 //        pras.add(new MediaPrintableArea(0,0,104,156, MediaPrintableArea.MM));
         pras.add(new MediaPrintableArea(0.0f,0.0f,104.987f,156.125f, MediaPrintableArea.MM));
         PrintService pss[] = PrintServiceLookup.lookupPrintServices(DocFlavor.INPUT_STREAM.PNG, pras);
@@ -195,6 +240,7 @@ public class PrintUtil {
         DocPrintJob job = ps.createPrintJob();
         FileInputStream fin = null;
         try {
+
             fin = new FileInputStream(filePath);
             Doc doc = new SimpleDoc(fin, DocFlavor.INPUT_STREAM.PNG, null);
             job.print(doc, pras);

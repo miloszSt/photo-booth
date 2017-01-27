@@ -14,6 +14,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.print.PageOrientation;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
@@ -102,7 +103,9 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
 
-            PrintUtil.print(file.getAbsolutePath(), templateData.getOrientation());
+
+            PrintUtil.print2("C:\\photoBooth\\temp\\2016-12-01T20.png", PageOrientation.PORTRAIT);
+//            PrintUtil.print(file.getAbsolutePath(), templateData.getOrientation());
 
         } catch (IOException e) {
             // TODO: handle exception here

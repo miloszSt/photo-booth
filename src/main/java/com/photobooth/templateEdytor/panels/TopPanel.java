@@ -39,7 +39,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.photobooth.util.PrintUtil.print;
 
 public class TopPanel extends HBox {
     private final TemplateMainView templateMainView;
@@ -132,7 +131,7 @@ public class TopPanel extends HBox {
         printTemplateButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                print(getTemplateData());
+//                print(getTemplateData());
             }
         });
     }

@@ -8,7 +8,8 @@ import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
 import com.photobooth.templateEdytor.serializable.TemplateData;
 import com.photobooth.util.Configuration;
 import com.photobooth.util.ConfigurationUtil;
-import com.photobooth.util.PrintUtil;
+
+import com.photobooth.util.PrintHelper;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -97,15 +98,11 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
     public void print(){
         WritableImage image = finalViewPane.snapshot(new SnapshotParameters(), null);
-
         File file = new File(ConfigurationUtil.initConfiguration().getTempPath() + LocalDateTime.now().toString().substring(0,13) + ".png");
 
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-
-
-            PrintUtil.print2("C:\\photoBooth\\temp\\2016-12-01T20.png", PageOrientation.PORTRAIT);
-//            PrintUtil.print(file.getAbsolutePath(), templateData.getOrientation());
+            PrintHelper.print(file.getPath());
 
         } catch (IOException e) {
             // TODO: handle exception here

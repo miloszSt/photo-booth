@@ -4,6 +4,7 @@ import javafx.print.PageOrientation;
 import javafx.print.Paper;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TemplateData implements Serializable{
@@ -15,7 +16,7 @@ public class TemplateData implements Serializable{
     private Integer wight;
     private PageOrientation orientation;
 
-    private List<SerializableTemplateInterface> templateInterfaceList;
+    private List<SerializableTemplateInterface> templateInterfaceList = new ArrayList<>();
 
     public String getName() {
         return name;

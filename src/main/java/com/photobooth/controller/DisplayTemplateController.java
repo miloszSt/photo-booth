@@ -73,8 +73,11 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
                 TemplateElementInterface templateElementInterface = element.toElement();
 
                 if (templateElementInterface instanceof PhotoElement) {
-                    // TODO photosToUse.remove(0) powoduje IndexOutOfBoundException jesli jest mnie zdjec niz elementow w templeteInterfaceList
-                    ((PhotoElement) templateElementInterface).setPhoto(photosToUse.remove(0));
+                    Integer counter = ((PhotoElement) templateElementInterface).getCounter();
+
+
+//                     TODO photosToUse.remove(0) powoduje IndexOutOfBoundException jesli jest mnie zdjec niz elementow w templeteInterfaceList
+                    ((PhotoElement) templateElementInterface).setPhoto(photosToUse.get(counter - 1));
                 }
 
                 finalViewPane.getChildren().add((Node) templateElementInterface);

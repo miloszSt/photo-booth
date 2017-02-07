@@ -2,6 +2,7 @@ package com.photobooth.templateEdytor.serializable;
 
 import com.photobooth.templateEdytor.elements.ImageElement;
 import com.photobooth.templateEdytor.elements.PhotoElement;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 import java.io.Serializable;
@@ -15,7 +16,6 @@ public class PhotoSerializable implements Serializable, SerializableTemplateInte
     Integer counter;
 
     String name;
-    String color;
 
 
     public PhotoSerializable(PhotoElement photoElement){
@@ -25,11 +25,21 @@ public class PhotoSerializable implements Serializable, SerializableTemplateInte
         this.height = new Double(photoElement.getElementHeight()).intValue();
         this.counter = photoElement.getCounter();
         this.name = photoElement.getName();
-        this.color = photoElement.getElementColor().toString();
+//        this.color = photoElement.getElementColor().toString();
+    }
+
+    public PhotoSerializable(Integer top, Integer left, Integer width, Integer height, Integer counter, String name) {
+        this.top = top;
+        this.left = left;
+        this.width = width;
+        this.height = height;
+        this.counter = counter;
+        this.name = name;
+//        this.color = color;
     }
 
     public PhotoElement toElement(){
-        PhotoElement photoElement = new PhotoElement(this.width, this.height, Paint.valueOf(color), counter);
+        PhotoElement photoElement = new PhotoElement(this.width, this.height, Color.BLUE, counter);
         photoElement.setId(name);
         photoElement.setLayoutY(top);
         photoElement.setLayoutX(left);

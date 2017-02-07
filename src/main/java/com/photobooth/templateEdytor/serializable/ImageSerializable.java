@@ -26,6 +26,15 @@ public class ImageSerializable implements Serializable, SerializableTemplateInte
         this.name = imageElement.getName();
     }
 
+    public ImageSerializable(Integer top, Integer left, Integer width, Integer height, String name, String imageUrl) {
+        this.top = top;
+        this.left = left;
+        this.width = width;
+        this.height = height;
+        this.name = name;
+        this.imageUrl = imageUrl;
+    }
+
     public ImageElement toElement(){
         ImageElement imageElement = new ImageElement(this.width, this.height, Paint.valueOf("fff"));
         imageElement.setId(name);

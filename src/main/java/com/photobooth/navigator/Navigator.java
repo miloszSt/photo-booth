@@ -8,9 +8,12 @@ import com.photobooth.templateEdytor.serializable.TemplateData;
 import com.photobooth.util.Configuration;
 import com.photobooth.util.ConfigurationUtil;
 import com.photobooth.util.FileUtils;
+import com.photobooth.util.TemplateImporter;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -132,27 +135,24 @@ public class Navigator {
         }
     }
     private static TemplateData getTemplateDateFromName(String templateName){
-        Configuration configuration = ConfigurationUtil.initConfiguration();
 
-        FileInputStream fin = null;
-        TemplateData data = null;
+
+
+        TemplateData data1 = null;
         try {
-            fin = new FileInputStream(configuration.getTemplatePath() + templateName);
-            ObjectInputStream ois = new ObjectInputStream(fin);
+            Configuration configuration = ConfigurationUtil.initConfiguration();
 
-            data = (TemplateData) ois.readObject();
-
-            ois.close();
-            fin.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+            data1 = TemplateImporter.importTemplateFromDSLRBooth(configuration.getTemplatePath() + templateName);
+        } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
         }
 
-        return data;
+        return data1;
+
     }
 
     /** Cheks if custom configuration was set. */

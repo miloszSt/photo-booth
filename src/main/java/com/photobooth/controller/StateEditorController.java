@@ -21,10 +21,15 @@ import javafx.scene.layout.VBox;
 import org.controlsfx.control.CheckComboBox;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author mst
@@ -116,12 +121,21 @@ public class StateEditorController implements Initializable {
     private String[] getListOfMedia(StateType selectedStateType) {
         Configuration configuration = ConfigurationUtil.initConfiguration();
         String pathToMedia = "";
+        String[] media = null;
         if (selectedStateType.shouldContainAnimation()) {
             pathToMedia = configuration.getAnimationPath();
+            media = new File(pathToMedia).list();
         } else if (selectedStateType.shouldContainTemplate()) {
             pathToMedia = configuration.getTemplatePath();
+
+
+            File[] files = new File(pathToMedia).listFiles(File::isDirectory);
+            media = Arrays.stream(files).map(file -> file.getAbsolutePath()).toArray(size -> new String[size]);
+
+
         }
-        String[] media = new File(pathToMedia).list();
+
+
         return media == null ? new String[] {} : media;
     }
 
@@ -229,11 +243,11 @@ public class StateEditorController implements Initializable {
                 stateDefinition.setAnimationPaths(animations);
             }
         } else if (stateType.shouldContainTemplate()) {
-            ComboBox<String> comboBox = (ComboBox) node;
-            String selected = comboBox.getValue();
-            if (selected != null) {
-                stateDefinition.setTemplateName(selected);
-            }
+//            ComboBox<String> comboBox = (ComboBox) node;
+//            String selected = comboBox.getValue();
+//            if (selected != null) {
+//                stateDefinition.setTemplateName(selected);
+//            }
         }
     }
 }

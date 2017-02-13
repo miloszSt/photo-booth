@@ -236,8 +236,8 @@ public class StateEditorController implements Initializable {
                 CheckComboBox<String> animationComboBox = (CheckComboBox) formRow.getChildren().get(1);
                 isValid = isValid && !hasFormNotSelectedValues(stateTypeComboBox, animationComboBox);
             } else if (stateType.shouldContainTemplate()) {
-                CheckComboBox<String> animationComboBox = (CheckComboBox) formRow.getChildren().get(1);
-                isValid = isValid && !hasFormNotSelectedValues(stateTypeComboBox, animationComboBox);
+                ComboBox<String> templateComboBox = (ComboBox) formRow.getChildren().get(1);
+                isValid = isValid && !hasFormNotSelectedValues(stateTypeComboBox, templateComboBox);
             }
         }
 

@@ -142,7 +142,7 @@ public class Navigator {
         try {
             Configuration configuration = ConfigurationUtil.initConfiguration();
 
-            data1 = TemplateImporter.importTemplateFromDSLRBooth(configuration.getTemplatePath() + templateName);
+            data1 = TemplateImporter.importTemplateFromDSLRBooth(templateName);
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (IOException e) {

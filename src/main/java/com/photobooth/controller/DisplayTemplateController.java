@@ -6,19 +6,20 @@ import com.photobooth.templateEdytor.elements.PhotoElement;
 import com.photobooth.templateEdytor.elements.TemplateElementInterface;
 import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
 import com.photobooth.templateEdytor.serializable.TemplateData;
-import com.photobooth.util.Configuration;
 import com.photobooth.util.ConfigurationUtil;
 
 import com.photobooth.util.PrintHelper;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.print.PageOrientation;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -74,9 +75,6 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
                 if (templateElementInterface instanceof PhotoElement) {
                     Integer counter = ((PhotoElement) templateElementInterface).getCounter();
-
-
-//                     TODO photosToUse.remove(0) powoduje IndexOutOfBoundException jesli jest mnie zdjec niz elementow w templeteInterfaceList
                     ((PhotoElement) templateElementInterface).setPhoto(photosToUse.get(counter - 1));
                 }
 
@@ -91,6 +89,23 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         }
 
         return finalViewPane;
+    }
+
+
+    @FXML
+    public void addSignature(){
+
+        Rectangle rectangle = new Rectangle(finalViewPane.getWidth(), finalViewPane.getHeight(), Color.TRANSPARENT);
+
+        rectangle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println("x" + event.getSceneX());
+                System.out.println("y" + event.getSceneY());
+            }
+        });
+
+        finalViewPane.getChildren().add(rectangle);
     }
 
     @FXML

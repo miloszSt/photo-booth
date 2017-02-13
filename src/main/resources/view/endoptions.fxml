@@ -6,11 +6,16 @@
 <?import javafx.scene.control.Label?>
 <!-- ewentualnie ScrollPane -->
 
+<?import javafx.scene.control.Button?>
 <BorderPane fx:id="borderPane"
-           xmlns:fx="http://javafx.com/fxml"
-           fx:controller="com.photobooth.controller.DisplayTemplateController"
-      onMouseClicked="#handleMouseClick">
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.photobooth.controller.DisplayTemplateController"
+            onMouseClicked="#handleMouseClick">
     <center>
         <StackPane fx:id="stackPane" />
     </center>
+    <right>
+        <Button fx:id="button" onMouseClicked="#addSignature">Dodaj podpis</Button>
+
+    </right>
 </BorderPane>

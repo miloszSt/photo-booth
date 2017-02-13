@@ -21,8 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.CheckComboBox;
 
-import java.io.File;
-import java.io.FileFilter;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -203,7 +202,11 @@ public class StateEditorController implements Initializable {
         Button cancelButton = new Button();
         cancelButton.setText("Anuluj");
         cancelButton.getStyleClass().setAll("cancel-button");
-        cancelButton.setOnAction(actionEvent -> Navigator.nextState());
+        cancelButton.setOnAction(actionEvent -> {
+            Navigator.setCustomStates(loadLastConfiguration());
+            Navigator.nextState();
+
+        });
         // przycisk 'Zapisz'
         Button saveButton = new Button();
         saveButton.setText("Zapisz");
@@ -253,7 +256,80 @@ public class StateEditorController implements Initializable {
             customStates.add(stateDefinition);
         });
 
+
+        saveLastConfiguration(customStates);
         Navigator.setCustomStates(customStates);
+    }
+
+    private List<StateDef> loadLastConfiguration(){
+        FileInputStream fin = null;
+        ObjectInputStream ois = null;
+
+        try {
+
+            fin = new FileInputStream("c:\\temp\\address.ser");
+            ois = new ObjectInputStream(fin);
+            return (List<StateDef>) ois.readObject();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+
+            if (fin != null) {
+                try {
+                    fin.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (ois != null) {
+                try {
+                    ois.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+        return null;
+    }
+    private void saveLastConfiguration(List<StateDef> customStates) {
+        FileOutputStream fout = null;
+        ObjectOutputStream oos = null;
+
+        try {
+
+            fout = new FileOutputStream("c:\\temp\\address.ser");
+            oos = new ObjectOutputStream(fout);
+            oos.writeObject(customStates);
+
+            System.out.println("Done");
+
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+
+        } finally {
+
+            if (fout != null) {
+                try {
+                    fout.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (oos != null) {
+                try {
+                    oos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
     }
 
     private void saveLabelAndFxmlPath(Node node, StateDef stateDefinition) {

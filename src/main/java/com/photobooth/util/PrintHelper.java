@@ -32,7 +32,7 @@ public class PrintHelper {
         Printer printer = Printer.getDefaultPrinter();
         printer.getPrinterAttributes().getSupportedPapers();
         Paper paper = new ArrayList<>(printer.getPrinterAttributes().getSupportedPapers()).get(3);
-        PageLayout pageLayout = printer.createPageLayout(paper, PageOrientation.LANDSCAPE, Printer.MarginType.HARDWARE_MINIMUM);
+        PageLayout pageLayout = printer.createPageLayout(paper, PageOrientation.PORTRAIT, Printer.MarginType.HARDWARE_MINIMUM);
         System.out.println("PageLayout: " + pageLayout);
 
         // Printable area

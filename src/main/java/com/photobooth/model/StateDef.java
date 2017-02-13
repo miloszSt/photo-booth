@@ -1,11 +1,12 @@
 package com.photobooth.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author mst
  */
-public class StateDef {
+public class StateDef implements Serializable{
 
     private String label;
 

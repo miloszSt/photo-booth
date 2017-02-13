@@ -1,8 +1,10 @@
 package com.photobooth.controller;
 
 import com.photobooth.camera.CameraService;
+import com.photobooth.controller.spec.AnimationEndTransition;
 import com.photobooth.controller.spec.AnimationInitializable;
 import com.photobooth.navigator.Navigator;
+import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -23,7 +25,7 @@ import java.util.*;
 /**
  * @author mst
  */
-public class TakePhotoController implements Initializable, AnimationInitializable {
+public class TakePhotoController implements Initializable, AnimationInitializable, AnimationEndTransition {
 
     private static final String MEDIA_URL = "src/main/resources/animations/odliczanie.mp4";
 
@@ -49,7 +51,7 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
             Translate translationTransform = new Translate(0, -mediaHeight);
             mediaView.getTransforms().addAll(rotationTransform, translationTransform);
         });
-        addFadeInTransition(mediaView);
+        //addFadeInTransition(mediaView);
     }
 
     private MediaPlayer initMediaPlayer() {
@@ -95,7 +97,7 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        Navigator.nextState();
+                        animateEndTransition();
                     }
                 });
             }
@@ -105,4 +107,16 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
         thread.start();
     }
 
+    @Override
+    public void animateEndTransition() {
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(1500), mediaView);
+        fadeOut.setFromValue(1.0);
+        fadeOut.setToValue(0.0);
+        fadeOut.statusProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == Animation.Status.STOPPED) {
+                Navigator.nextState();
+            }
+        });
+        fadeOut.play();
+    }
 }

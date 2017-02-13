@@ -64,12 +64,9 @@ public class EncouragementController implements Initializable, AnimationInitiali
         //mediaView.setFitWidth(sceneWidth);
         //mediaView.setFitHeight(sceneHeight);
         //mediaView.setPreserveRatio(true);
-
-        //mediaView.setTranslateX(sceneWidth - (sceneWidth) / 2);
-        //mediaView.setTranslateY(sceneHeight - (sceneHeight) / 2);
         //mediaView.fitWidthProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
         //mediaView.fitHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
-        addFadeInTransition(mediaView);
+        //addFadeInTransition(mediaView, mediaPlayer);
     }
 
     private MediaPlayer initMediaPlayer() {
@@ -88,11 +85,15 @@ public class EncouragementController implements Initializable, AnimationInitiali
         return rand.nextInt(animationPaths.size());
     }
 
-    private void addFadeInTransition(MediaView mediaView) {
+    private void addFadeInTransition(MediaView mediaView, MediaPlayer mediaPlayer) {
         FadeTransition fadeIn = new FadeTransition(Duration.millis(1500), mediaView);
         fadeIn.setFromValue(0.0);
         fadeIn.setToValue(1.0);
         fadeIn.play();
+
+        mediaPlayer.setOnEndOfMedia(() -> {
+            fadeIn.stop();
+        });
     }
 
     @Override

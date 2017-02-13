@@ -9,10 +9,13 @@ import javafx.beans.binding.Bindings;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 
 import java.net.URL;
@@ -36,9 +39,9 @@ public class EncouragementController implements Initializable, AnimationInitiali
     @FXML
     MediaView mediaView;
 
-    List<String> animationPaths = new ArrayList<>();
+    private List<String> animationPaths = new ArrayList<>();
 
-    Random rand = new Random();
+    private Random rand = new Random();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -51,9 +54,21 @@ public class EncouragementController implements Initializable, AnimationInitiali
         this.animationPaths = animationPaths;
         MediaPlayer mediaPlayer = initMediaPlayer();
         mediaView.setMediaPlayer(mediaPlayer);
-        // set media view to fill all available space
-        mediaView.fitWidthProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
-        mediaView.fitHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
+
+        mediaPlayer.setOnReady(() -> {
+            double mediaHeight = mediaPlayer.getMedia().getHeight();
+            Rotate rotationTransform = new Rotate(90, 0, 0);
+            Translate translationTransform = new Translate(0, -mediaHeight);
+            mediaView.getTransforms().addAll(rotationTransform, translationTransform);
+        });
+        //mediaView.setFitWidth(sceneWidth);
+        //mediaView.setFitHeight(sceneHeight);
+        //mediaView.setPreserveRatio(true);
+
+        //mediaView.setTranslateX(sceneWidth - (sceneWidth) / 2);
+        //mediaView.setTranslateY(sceneHeight - (sceneHeight) / 2);
+        //mediaView.fitWidthProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "width"));
+        //mediaView.fitHeightProperty().bind(Bindings.selectDouble(mediaView.sceneProperty(), "height"));
         addFadeInTransition(mediaView);
     }
 

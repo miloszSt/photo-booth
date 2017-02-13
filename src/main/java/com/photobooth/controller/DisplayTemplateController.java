@@ -7,12 +7,10 @@ import com.photobooth.templateEdytor.elements.TemplateElementInterface;
 import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
 import com.photobooth.templateEdytor.serializable.TemplateData;
 import com.photobooth.util.ConfigurationUtil;
-
 import com.photobooth.util.PrintHelper;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -22,7 +20,6 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 import javax.imageio.ImageIO;

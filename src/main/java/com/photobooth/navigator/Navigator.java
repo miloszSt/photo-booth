@@ -14,14 +14,14 @@ import javafx.stage.Stage;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -53,8 +53,6 @@ public class Navigator {
             add(new StateDef("Koniec", END_OPTIONS_VIEW, Collections.singletonList(""), "swinia.ser"));
         }
     };
-
-//    private static final String PHOTOS_PATH = "C:\\Users\\Public\\Pictures\\Sample Pictures";
 
     /** Stores custom application flow. */
     private static List<StateDef> customAppStates = new ArrayList<>();

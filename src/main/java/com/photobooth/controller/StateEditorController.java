@@ -15,10 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import org.controlsfx.control.CheckComboBox;
 
 import java.io.*;
@@ -27,9 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.function.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author mst
@@ -42,8 +36,9 @@ public class StateEditorController implements Initializable {
             new StateType("Animacja jednorazowa", Navigator.PLAY_ONCE_VIEW, true, false),
             new StateType("Galeria", Navigator.GALLERY_VIEW, false, false),
             new StateType("Szablon", Navigator.TEMPLATE_EDITOR_VIEW, false, false),
-            new StateType("Ekran opcji koncowych", Navigator.END_OPTIONS_VIEW, false, true) // ewentualnie można dodać animacje na dowidzenia
+            new StateType("Ekran opcji koncowych", Navigator.END_OPTIONS_VIEW, false, true)
     );
+
     @FXML
     BorderPane stateEditorContainer;
 
@@ -68,8 +63,13 @@ public class StateEditorController implements Initializable {
     private GridPane createAddStateForm() {
         //HBox formRowContainer = new HBox();
         GridPane formRowContainer = new GridPane();
+        ColumnConstraints stateTypeColumnConstraints = new ColumnConstraints(230);
+        ColumnConstraints animTemplColumnConstraints = new ColumnConstraints(320);
+        ColumnConstraints addRemBtnColumnConstraints = new ColumnConstraints(100);
+        formRowContainer.getColumnConstraints().addAll(stateTypeColumnConstraints, animTemplColumnConstraints, addRemBtnColumnConstraints);
+
         //formRowContainer.setSpacing(12);
-        formRowContainer.setAlignment(Pos.CENTER);
+        //formRowContainer.setAlignment(Pos.CENTER);
 
         // typ
         ComboBox<StateType> stateTypesComboBox = new ComboBox<>();

@@ -16,6 +16,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.CheckComboBox;
@@ -49,7 +50,8 @@ public class StateEditorController implements Initializable {
 
     private VBox formContainer;
 
-    private List<HBox> formRows = new ArrayList<>();
+    //private List<HBox> formRows = new ArrayList<>();
+    private List<GridPane> formRows = new ArrayList<>();
 
     private List<StateDef> customStates = new ArrayList<>();
 
@@ -64,50 +66,61 @@ public class StateEditorController implements Initializable {
         //stateEditorContainer.setBottom(createSubmitButtonsContainer());
     }
 
-    private HBox createAddStateForm() {
-        HBox formRowContainer = new HBox();
-        formRowContainer.setSpacing(12);
+    private GridPane createAddStateForm() {
+        //HBox formRowContainer = new HBox();
+        GridPane formRowContainer = new GridPane();
+        //formRowContainer.setSpacing(12);
         formRowContainer.setAlignment(Pos.CENTER);
-        // animacja
-        CheckComboBox<String> animationsComboBox = new CheckComboBox<>();
 
         // typ
         ComboBox<StateType> stateTypesComboBox = new ComboBox<>();
         stateTypesComboBox.setItems(stateTypes);
         stateTypesComboBox.setOnAction(actionEvent -> {
             StateType selected = stateTypesComboBox.getSelectionModel().getSelectedItem();
-            animationsComboBox.getItems().setAll(getListOfMedia(selected));
-
-            if (selected.shouldContainAnimation() || selected.shouldContainTemplate()) {
-                animationsComboBox.setDisable(false);
-            } else {
-                animationsComboBox.setDisable(true);
+            if (selected.shouldContainTemplate()) {
+                ComboBox<String> templateComboBox = new ComboBox<>();
+                templateComboBox.setItems(FXCollections.observableArrayList(getListOfMedia(selected)));
+                //formRowContainer.getChildren().add(templateComboBox);
+                formRowContainer.add(templateComboBox, 1, 0);
             }
+            else if (selected.shouldContainAnimation()) {
+                CheckComboBox<String> animationsComboBox = new CheckComboBox<>();
+                animationsComboBox.getItems().setAll(getListOfMedia(selected));
+                //formRowContainer.getChildren().add(animationsComboBox);
+                formRowContainer.add(animationsComboBox, 1, 0);
+            }
+            addBtnNewRow(formRowContainer);
         });
-        formRowContainer.getChildren().add(stateTypesComboBox);
-        formRowContainer.getChildren().add(animationsComboBox);
+        //formRowContainer.getChildren().add(stateTypesComboBox);
+        formRowContainer.add(stateTypesComboBox, 0, 0);
+
 
         // przycisk 'Dodaj'
+        //formRowContainer.getChildren().add(addButton);
+        // tutaj jakis gnoj
+        formRows.add(formRowContainer);
+
+        return formRowContainer;
+    }
+
+    private void addBtnNewRow(GridPane formRowContainer) {
         Button addButton = new Button();
         addButton.setText("Dodaj Stan");
         addButton.getStyleClass().setAll("add-button");
         addButton.setOnAction(actionEvent ->  {
-            if (hasFormNotSelectedValues(stateTypesComboBox, animationsComboBox)) {
+            /*if (hasFormNotSelectedValues(stateTypesComboBox, animationsComboBox)) {
                 showNotSelectedAlert();
-            } else {
-                formContainer.getChildren().add(createAddStateForm());
-                addButton.setText("Usun");
-                addButton.getStyleClass().setAll("del-button");
-                addButton.setOnAction(removeActionEvent -> {
-                    formContainer.getChildren().remove(formRowContainer);
-                    formRows.remove(formRowContainer);
-                });
-            }
+            } else {*/
+            formContainer.getChildren().add(createAddStateForm());
+            addButton.setText("Usun");
+            addButton.getStyleClass().setAll("del-button");
+            addButton.setOnAction(removeActionEvent -> {
+                formContainer.getChildren().remove(formRowContainer);
+                formRows.remove(formRowContainer);
+            });
+            //}
         });
-        formRowContainer.getChildren().add(addButton);
-        formRows.add(formRowContainer);
-
-        return formRowContainer;
+        formRowContainer.add(addButton, 2, 0);
     }
 
     /**
@@ -140,7 +153,7 @@ public class StateEditorController implements Initializable {
     }
 
     /**
-     * Check if there is some not selected values in comboboxes.
+     * Check if there is some not selected values in combobox and checkcombobox.
      *
      * @param typeComboBox combobox with view (state) types
      * @param animationComboBox combobox with animations
@@ -149,6 +162,19 @@ public class StateEditorController implements Initializable {
     private boolean hasFormNotSelectedValues(ComboBox<StateType> typeComboBox, CheckComboBox<String> animationComboBox) {
         return (typeComboBox.getValue() == null && typeComboBox.getValue() == null)
                 || (animationComboBox.getCheckModel().getCheckedItems() == null
+                && typeComboBox.getValue().shouldContainAnimation());
+    }
+
+    /**
+     * Check if there is some not selected values in comboboxes.
+     *
+     * @param typeComboBox combobox with view (state) types
+     * @param animationComboBox combobox with animations
+     * @return true/false
+     */
+    private boolean hasFormNotSelectedValues(ComboBox<StateType> typeComboBox, ComboBox<String> animationComboBox) {
+        return (typeComboBox.getValue() == null && typeComboBox.getValue() == null)
+                || (animationComboBox.getValue() == null
                 && typeComboBox.getValue().shouldContainAnimation());
     }
 
@@ -201,11 +227,20 @@ public class StateEditorController implements Initializable {
 
     private boolean isFormValid() {
         boolean isValid = true;
-        for (HBox formRow : formRows) {
-            ComboBox<StateType> typeComboBox = (ComboBox) formRow.getChildren().get(0);
-            CheckComboBox<String> animationComboBox = (CheckComboBox) formRow.getChildren().get(1);
-            isValid = isValid && !hasFormNotSelectedValues(typeComboBox, animationComboBox);
+        //for (HBox formRow : formRows) {
+        for (GridPane formRow : formRows) {
+            ComboBox<StateType> stateTypeComboBox = (ComboBox) formRow.getChildren().get(0);
+            StateType stateType = stateTypeComboBox.getValue();
+
+            if (stateType.shouldContainAnimation()) {
+                CheckComboBox<String> animationComboBox = (CheckComboBox) formRow.getChildren().get(1);
+                isValid = isValid && !hasFormNotSelectedValues(stateTypeComboBox, animationComboBox);
+            } else if (stateType.shouldContainTemplate()) {
+                CheckComboBox<String> animationComboBox = (CheckComboBox) formRow.getChildren().get(1);
+                isValid = isValid && !hasFormNotSelectedValues(stateTypeComboBox, animationComboBox);
+            }
         }
+
         return isValid;
     }
 
@@ -243,11 +278,11 @@ public class StateEditorController implements Initializable {
                 stateDefinition.setAnimationPaths(animations);
             }
         } else if (stateType.shouldContainTemplate()) {
-//            ComboBox<String> comboBox = (ComboBox) node;
-//            String selected = comboBox.getValue();
-//            if (selected != null) {
-//                stateDefinition.setTemplateName(selected);
-//            }
+            ComboBox<String> comboBox = (ComboBox) node;
+            String selected = comboBox.getValue();
+            if (selected != null) {
+                stateDefinition.setTemplateName(selected);
+            }
         }
     }
 }

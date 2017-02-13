@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class PrintHelper {
 
 
-    public static void print(String filePath) {
+    public static void print(String filePath, Integer copies) {
         Image image = null;
         try {
             image = new Image(Files.newInputStream(Paths.get(filePath)));
@@ -22,17 +22,18 @@ public class PrintHelper {
             e.printStackTrace();
         }
         ImageView imageView = new ImageView(image);
-        new Thread(() -> printImage(imageView)).start();
+        new Thread(() -> printImage(imageView, copies)).start();
     }
 
 
-    private static void printImage(Node node) {
+    private static void printImage(Node node, Integer copies) {
 
         Printer printer = Printer.getDefaultPrinter();
         printer.getPrinterAttributes().getSupportedPapers();
         Paper paper = new ArrayList<>(printer.getPrinterAttributes().getSupportedPapers()).get(3);
         PageLayout pageLayout = printer.createPageLayout(paper, PageOrientation.PORTRAIT, Printer.MarginType.HARDWARE_MINIMUM);
         System.out.println("PageLayout: " + pageLayout);
+
 
         // Printable area
         double pWidth = pageLayout.getPrintableWidth();
@@ -60,6 +61,7 @@ public class PrintHelper {
         double newHeight = node.getBoundsInParent().getHeight();
 
         PrinterJob job = PrinterJob.createPrinterJob();
+        job.getJobSettings().setCopies(copies);
         job.getJobSettings().setPageLayout(pageLayout);
         if (job != null) {
             boolean success = job.printPage(node);

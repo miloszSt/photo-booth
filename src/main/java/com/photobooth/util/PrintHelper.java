@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class PrintHelper {
 
 
-    public static void print(String filePath, Integer copies) {
+    public static void print(String filePath, Integer copies) throws InterruptedException {
         Image image = null;
         try {
             image = new Image(Files.newInputStream(Paths.get(filePath)));
@@ -22,7 +22,9 @@ public class PrintHelper {
             e.printStackTrace();
         }
         ImageView imageView = new ImageView(image);
-        new Thread(() -> printImage(imageView, copies)).start();
+        Thread thread = new Thread(() -> printImage(imageView, copies));
+        thread.start();
+        thread.join();
     }
 
 

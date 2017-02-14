@@ -164,10 +164,12 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-//            PrintHelper.print(file.getPath(),copies);
+            PrintHelper.print(file.getPath(),copies);
             Navigator.nextState();
         } catch (IOException e) {
             // TODO: handle exception here
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

@@ -32,7 +32,13 @@ public class ConfigurationUtil {
                 }
             }
         }else {
-            return new Configuration("/photoBooth/animation/", "/photoBooth/templates/", "/photoBooth/currentPhotos/", "/photoBooth/archivePhotos", "/photoBooth/templateImages/", "/photoBooth/temp/", "/photoBooth/stateFlows");
+            return new Configuration("/photoBooth/animation/",
+                    "/photoBooth/templates/",
+                    "/photoBooth/currentPhotos/",
+                    "/photoBooth/archivePhotos",
+                    "/photoBooth/templateImages/",
+                    "/photoBooth/temp/",
+                    "/photoBooth/stateFlows");
         }
         return null;
     }

@@ -44,82 +44,67 @@ public class StateEditorController implements Initializable {
 
     private VBox formContainer;
 
-    //private List<HBox> formRows = new ArrayList<>();
     private List<GridPane> formRows = new ArrayList<>();
 
     private List<StateDef> customStates = new ArrayList<>();
 
+    private Configuration configuration;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        configuration = ConfigurationUtil.initConfiguration();
         stateEditorContainer.setPadding(new Insets(15, 10, 15, 10));
         formContainer = new VBox();
         formContainer.setSpacing(15);
         formContainer.getChildren().add(createAddStateForm());
         // create default field for first state
         stateEditorContainer.setCenter(formContainer);
-        //stateEditorContainer.setBottom(createSubmitButtonsContainer());
     }
 
     private GridPane createAddStateForm() {
-        //HBox formRowContainer = new HBox();
         GridPane formRowContainer = new GridPane();
         ColumnConstraints stateTypeColumnConstraints = new ColumnConstraints(230);
         ColumnConstraints animTemplColumnConstraints = new ColumnConstraints(320);
         ColumnConstraints addRemBtnColumnConstraints = new ColumnConstraints(100);
         formRowContainer.getColumnConstraints().addAll(stateTypeColumnConstraints, animTemplColumnConstraints, addRemBtnColumnConstraints);
 
-        //formRowContainer.setSpacing(12);
-        //formRowContainer.setAlignment(Pos.CENTER);
-
         // typ
         ComboBox<StateType> stateTypesComboBox = new ComboBox<>();
         stateTypesComboBox.setItems(stateTypes);
+        addBtnNewRow(formRowContainer);
+
         stateTypesComboBox.setOnAction(actionEvent -> {
             StateType selected = stateTypesComboBox.getSelectionModel().getSelectedItem();
+            if (formRowContainer.getChildren().size() == 3 ) {
+                System.out.println("Jest cos do usuniecia");
+                int counter = 0;
+                for (Node node : formRowContainer.getChildren()) {
+                    if (GridPane.getColumnIndex(node) == 1 && GridPane.getRowIndex(node) == 0) {
+                        formRowContainer.getChildren().remove(counter);
+                        break;
+                    }
+                    else {
+                        counter++;
+                    }
+                }
+            }
+
             if (selected.shouldContainTemplate()) {
                 ComboBox<String> templateComboBox = new ComboBox<>();
                 templateComboBox.setItems(FXCollections.observableArrayList(getListOfMedia(selected)));
-                //formRowContainer.getChildren().add(templateComboBox);
                 formRowContainer.add(templateComboBox, 1, 0);
             }
             else if (selected.shouldContainAnimation()) {
                 CheckComboBox<String> animationsComboBox = new CheckComboBox<>();
                 animationsComboBox.getItems().setAll(getListOfMedia(selected));
-                //formRowContainer.getChildren().add(animationsComboBox);
                 formRowContainer.add(animationsComboBox, 1, 0);
             }
-            addBtnNewRow(formRowContainer);
         });
-        //formRowContainer.getChildren().add(stateTypesComboBox);
+
         formRowContainer.add(stateTypesComboBox, 0, 0);
-
-
-        // przycisk 'Dodaj'
-        //formRowContainer.getChildren().add(addButton);
-        // tutaj jakis gnoj
         formRows.add(formRowContainer);
 
         return formRowContainer;
-    }
-
-    private void addBtnNewRow(GridPane formRowContainer) {
-        Button addButton = new Button();
-        addButton.setText("Dodaj Stan");
-        addButton.getStyleClass().setAll("add-button");
-        addButton.setOnAction(actionEvent ->  {
-            /*if (hasFormNotSelectedValues(stateTypesComboBox, animationsComboBox)) {
-                showNotSelectedAlert();
-            } else {*/
-            formContainer.getChildren().add(createAddStateForm());
-            addButton.setText("Usun");
-            addButton.getStyleClass().setAll("del-button");
-            addButton.setOnAction(removeActionEvent -> {
-                formContainer.getChildren().remove(formRowContainer);
-                formRows.remove(formRowContainer);
-            });
-            //}
-        });
-        formRowContainer.add(addButton, 2, 0);
     }
 
     /**
@@ -140,15 +125,46 @@ public class StateEditorController implements Initializable {
         } else if (selectedStateType.shouldContainTemplate()) {
             pathToMedia = configuration.getTemplatePath();
 
-
             File[] files = new File(pathToMedia).listFiles(File::isDirectory);
             media = Arrays.stream(files).map(file -> file.getAbsolutePath()).toArray(size -> new String[size]);
-
-
         }
 
-
         return media == null ? new String[] {} : media;
+    }
+
+    private void addBtnNewRow(GridPane formRowContainer) {
+        Button addButton = new Button();
+        addButton.setText("Dodaj Stan");
+        addButton.getStyleClass().setAll("add-button");
+        addButton.setOnAction(actionEvent ->  {
+            if (hasFormNotSelectedValues(formRowContainer)) {
+                showNotSelectedAlert();
+            } else {
+                formContainer.getChildren().add(createAddStateForm());
+                addButton.setText("Usun");
+                addButton.getStyleClass().setAll("del-button");
+                addButton.setOnAction(removeActionEvent -> {
+                    formContainer.getChildren().remove(formRowContainer);
+                    formRows.remove(formRowContainer);
+                });
+            }
+        });
+        formRowContainer.add(addButton, 2, 0);
+    }
+
+    private boolean hasFormNotSelectedValues(GridPane formRowContainer) {
+        ComboBox<StateType> stateTypeComboBox = (ComboBox) getNodeFromGridPane(formRowContainer, 0, 0);
+        StateType stateType = stateTypeComboBox.getValue();
+
+        if (stateType.shouldContainAnimation()) {
+            CheckComboBox<String> animationComboBox = (CheckComboBox) getNodeFromGridPane(formRowContainer, 1, 0);
+            return hasFormNotSelectedValues(stateTypeComboBox, animationComboBox);
+        } else if (stateType.shouldContainTemplate()) {
+            ComboBox<String> templateComboBox = (ComboBox) getNodeFromGridPane(formRowContainer, 1, 0);
+            return hasFormNotSelectedValues(stateTypeComboBox, templateComboBox);
+        }
+
+        return false;
     }
 
     /**
@@ -159,9 +175,9 @@ public class StateEditorController implements Initializable {
      * @return true/false
      */
     private boolean hasFormNotSelectedValues(ComboBox<StateType> typeComboBox, CheckComboBox<String> animationComboBox) {
-        return (typeComboBox.getValue() == null && typeComboBox.getValue() == null)
-                || (animationComboBox.getCheckModel().getCheckedItems() == null
-                && typeComboBox.getValue().shouldContainAnimation());
+        return typeComboBox.getValue() == null
+                || ( animationComboBox.getCheckModel().getCheckedItems().size() == 0
+                && typeComboBox.getValue().shouldContainAnimation() );
     }
 
     /**
@@ -172,9 +188,9 @@ public class StateEditorController implements Initializable {
      * @return true/false
      */
     private boolean hasFormNotSelectedValues(ComboBox<StateType> typeComboBox, ComboBox<String> animationComboBox) {
-        return (typeComboBox.getValue() == null && typeComboBox.getValue() == null)
-                || (animationComboBox.getValue() == null
-                && typeComboBox.getValue().shouldContainAnimation());
+        return typeComboBox.getValue() == null
+                || ( animationComboBox.getValue() == null
+                && typeComboBox.getValue().shouldContainTemplate() );
     }
 
     private void showNotSelectedAlert() {
@@ -185,6 +201,7 @@ public class StateEditorController implements Initializable {
     }
 
      public void handleCancel() {
+         Navigator.setCustomStates(configuration.loadLastStatFlow());
          Navigator.nextState();
      }
 
@@ -203,7 +220,6 @@ public class StateEditorController implements Initializable {
         cancelButton.setText("Anuluj");
         cancelButton.getStyleClass().setAll("cancel-button");
         cancelButton.setOnAction(actionEvent -> {
-            Navigator.setCustomStates(loadLastConfiguration());
             Navigator.nextState();
 
         });
@@ -230,16 +246,15 @@ public class StateEditorController implements Initializable {
 
     private boolean isFormValid() {
         boolean isValid = true;
-        //for (HBox formRow : formRows) {
         for (GridPane formRow : formRows) {
-            ComboBox<StateType> stateTypeComboBox = (ComboBox) formRow.getChildren().get(0);
+            ComboBox<StateType> stateTypeComboBox = (ComboBox) getNodeFromGridPane(formRow, 0, 0);
             StateType stateType = stateTypeComboBox.getValue();
 
             if (stateType.shouldContainAnimation()) {
-                CheckComboBox<String> animationComboBox = (CheckComboBox) formRow.getChildren().get(1);
+                CheckComboBox<String> animationComboBox = (CheckComboBox) getNodeFromGridPane(formRow, 1, 0);
                 isValid = isValid && !hasFormNotSelectedValues(stateTypeComboBox, animationComboBox);
             } else if (stateType.shouldContainTemplate()) {
-                ComboBox<String> templateComboBox = (ComboBox) formRow.getChildren().get(1);
+                ComboBox<String> templateComboBox = (ComboBox) getNodeFromGridPane(formRow, 1, 0);
                 isValid = isValid && !hasFormNotSelectedValues(stateTypeComboBox, templateComboBox);
             }
         }
@@ -247,89 +262,26 @@ public class StateEditorController implements Initializable {
         return isValid;
     }
 
-    private void saveStatesDefinitions() {
-        formRows.forEach(formRow -> {
-            StateDef stateDefinition = new StateDef();
-            Node stateTypeComboBox = formRow.getChildren().get(0);
-            saveLabelAndFxmlPath(stateTypeComboBox, stateDefinition);
-            saveAnimationPath(formRow.getChildren().get(1), stateTypeComboBox, stateDefinition);
-            customStates.add(stateDefinition);
-        });
-
-
-        saveLastConfiguration(customStates);
-        Navigator.setCustomStates(customStates);
-    }
-
-    private List<StateDef> loadLastConfiguration(){
-        FileInputStream fin = null;
-        ObjectInputStream ois = null;
-
-        try {
-
-            fin = new FileInputStream("c:\\temp\\address.ser");
-            ois = new ObjectInputStream(fin);
-            return (List<StateDef>) ois.readObject();
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-
-            if (fin != null) {
-                try {
-                    fin.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (ois != null) {
-                try {
-                    ois.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
+    private Node getNodeFromGridPane(GridPane gridPane, int col, int row) {
+        for (Node node : gridPane.getChildren()) {
+            if (GridPane.getColumnIndex(node) == col && GridPane.getRowIndex(node) == row)
+                return node;
         }
 
         return null;
     }
-    private void saveLastConfiguration(List<StateDef> customStates) {
-        FileOutputStream fout = null;
-        ObjectOutputStream oos = null;
 
-        try {
+    private void saveStatesDefinitions() {
+        formRows.forEach(formRow -> {
+            StateDef stateDefinition = new StateDef();
+            Node stateTypeComboBox = getNodeFromGridPane(formRow, 0, 0);
+            saveLabelAndFxmlPath(stateTypeComboBox, stateDefinition);
+            saveAnimationPath(getNodeFromGridPane(formRow, 1, 0), stateTypeComboBox, stateDefinition);
+            customStates.add(stateDefinition);
+        });
 
-            fout = new FileOutputStream("c:\\temp\\address.ser");
-            oos = new ObjectOutputStream(fout);
-            oos.writeObject(customStates);
-
-            System.out.println("Done");
-
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
-
-        } finally {
-
-            if (fout != null) {
-                try {
-                    fout.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (oos != null) {
-                try {
-                    oos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
+        configuration.saveStateFlow(customStates);
+        Navigator.setCustomStates(customStates);
     }
 
     private void saveLabelAndFxmlPath(Node node, StateDef stateDefinition) {

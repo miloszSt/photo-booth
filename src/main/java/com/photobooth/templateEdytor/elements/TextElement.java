@@ -1,5 +1,6 @@
 package com.photobooth.templateEdytor.elements;
 
+import com.photobooth.util.ColorUtils;
 import com.photobooth.util.IdCreator;
 import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
 import com.photobooth.templateEdytor.serializable.TextSerializable;
@@ -9,7 +10,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+
+import java.util.List;
 
 public class TextElement extends StackPane implements TemplateElementInterface{
 
@@ -19,9 +24,9 @@ public class TextElement extends StackPane implements TemplateElementInterface{
 
     public TextElement() {
         setId("Text Element");
-        rectangle = new Rectangle(100, 100, Color.BROWN);
+        rectangle = new Rectangle(100, 100, Color.TRANSPARENT);
         text = new Text("Text");
-        getChildren().addAll(rectangle, text);
+        getChildren().addAll(rectangle,text);
         elementId = IdCreator.getCounter();
     }
 
@@ -82,7 +87,7 @@ public class TextElement extends StackPane implements TemplateElementInterface{
 
     @Override
     public Paint getElementColor() {
-        return rectangle.getFill();
+        return null;
     }
 
     @Override
@@ -127,12 +132,26 @@ public class TextElement extends StackPane implements TemplateElementInterface{
     }
 
     public void setBackgroundColor(Color color) {
-        rectangle.setFill(color);
+//        rectangle.setFill(Color.TRANSPARENT);
+//        rectangle.setFill(color);
     }
 
-    public void setFontStyle(Integer textSize, String textColor) {
-        text.setFont(new Font(textSize));
-        text.setFill(Color.valueOf(textColor));
+    public void setFontStyle(Integer textSize, String textColor, Boolean isBold, Boolean isItalic, String fontName) {
+
+        Font font = Font.font(fontName, textSize);
+        if(isBold){
+            font = Font.font(fontName, FontWeight.BOLD, textSize);
+        }
+
+        if(isItalic){
+            font = Font.font(fontName, FontPosture.ITALIC, textSize);
+        }
+
+        if (isBold && isItalic){
+            font = Font.font(fontName, FontWeight.BOLD, FontPosture.ITALIC, textSize);
+        }
+        text.setFont(font);
+        text.setFill(ColorUtils.parseStringToColor(textColor));
     }
 
     public void setTextSize(int textSize){

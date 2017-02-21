@@ -2,13 +2,18 @@ package com.photobooth.templateEdytor.serializable;
 
 
 import com.photobooth.templateEdytor.elements.ImageElement;
+import com.photobooth.util.ColorUtils;
 import javafx.scene.paint.Paint;
+import javafx.scene.transform.Rotate;
 
 import java.awt.*;
 import java.io.Serializable;
 
 public class ImageSerializable implements Serializable, SerializableTemplateInterface {
 
+    String strokeColor;
+    Integer thickness;
+    Integer rotation;
     Integer top;
     Integer left;
     Integer width;
@@ -26,13 +31,15 @@ public class ImageSerializable implements Serializable, SerializableTemplateInte
         this.name = imageElement.getName();
     }
 
-    public ImageSerializable(Integer top, Integer left, Integer width, Integer height, String name, String imageUrl) {
+    public ImageSerializable(Integer top, Integer left, Integer width, Integer height, String name, String imageUrl, Integer thickness, String strokeColor) {
         this.top = top;
         this.left = left;
         this.width = width;
         this.height = height;
         this.name = name;
         this.imageUrl = imageUrl;
+        this.thickness = thickness;
+        this.strokeColor = strokeColor;
     }
 
     public ImageElement toElement(){
@@ -44,7 +51,7 @@ public class ImageSerializable implements Serializable, SerializableTemplateInte
         imageElement.setHeight(height);
         imageElement.setImageAbsolutePath(imageUrl);
         imageElement.setImage();
-
+        imageElement.setStroke(ColorUtils.parseStringToColor(strokeColor), thickness);
         return imageElement;
     }
 }

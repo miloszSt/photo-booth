@@ -16,6 +16,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
+import javax.swing.*;
 import java.io.File;
 
 
@@ -165,4 +166,7 @@ public class ImageElement extends StackPane implements TemplateElementInterface{
     }
 
 
+    public void setStroke(Color color, Integer thickness) {
+        this.setBorder(new Border(new BorderStroke(color, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(thickness))));
+    }
 }

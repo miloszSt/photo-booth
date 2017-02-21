@@ -15,6 +15,7 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -122,7 +123,19 @@ public class Navigator {
                 @Override
                 public void accept(Path path) {
                     try {
-                        Files.move(path, Paths.get(archivePhotos.toString(), path.getFileName().toString()));
+
+                        int index = 1;
+                        Path archivedPhotoPath = Paths.get(archivePhotos.toString(), path.getFileName().toString());
+                        if(Files.exists(archivedPhotoPath)){
+                            archivedPhotoPath = Paths.get(archivePhotos.toString(), path.getFileName().toString().toUpperCase().replace(".JPG", "("+index+").JPG"));
+                        };
+
+                        while (Files.exists(archivedPhotoPath)){
+                            index++;
+                            archivedPhotoPath = Paths.get(archivePhotos.toString(), path.getFileName().toString().toUpperCase().replace("JPG", "("+index+").JPG"));
+                        }
+
+                        Files.move(path, archivedPhotoPath);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -132,10 +145,8 @@ public class Navigator {
             e.printStackTrace();
         }
     }
+
     private static TemplateData getTemplateDateFromName(String templateName){
-
-
-
         TemplateData data1 = null;
         try {
             Configuration configuration = ConfigurationUtil.initConfiguration();

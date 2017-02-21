@@ -1,10 +1,7 @@
 package com.photobooth.util;
 
 import com.photobooth.templateEdytor.elements.ImageElement;
-import com.photobooth.templateEdytor.serializable.ImageSerializable;
-import com.photobooth.templateEdytor.serializable.PhotoSerializable;
-import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
-import com.photobooth.templateEdytor.serializable.TemplateData;
+import com.photobooth.templateEdytor.serializable.*;
 import javafx.print.PageOrientation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -33,6 +30,9 @@ public class TemplateImporter {
 
 
         Node template = doc.getElementsByTagName("Template").item(0);
+        data.setBackgroundColor(template.getAttributes().getNamedItem("BackgroundColor").getNodeValue());
+
+
 
         String backgroundColor = template.getAttributes().getNamedItem("BackgroundColor").getNodeValue();
         Integer resolution = Integer.valueOf(template.getAttributes().getNamedItem("Resolution").getNodeValue());
@@ -44,6 +44,9 @@ public class TemplateImporter {
 
 
         Node elements = doc.getElementsByTagName("Elements").item(0);
+
+
+
 
 
         NodeList childNodes = elements.getChildNodes();
@@ -59,12 +62,12 @@ public class TemplateImporter {
                     break;
                 case "Photo": data.getTemplateInterfaceList().add(0,parsePhotoNode(node));
                     break;
-//                case "Photo": data.getTemplateInterfaceList().add(parseImageNode(node));
-//                    break;
-//                case "Image": data.getTemplateInterfaceList().add(parseImageNode(node));
-//                    break;
-//                case "Image": data.getTemplateInterfaceList().add(parseImageNode(node));
-//                    break;
+                case "Text": data.getTemplateInterfaceList().add(0,parseTextNode(node));
+                    break;
+                case "Rectangle": data.getTemplateInterfaceList().add(0,parseRectangleNode(node));
+                    break;
+                case "Ellipse": data.getTemplateInterfaceList().add(0,parseCircleNode(node));
+                    break;
 //                case "Image": data.getTemplateInterfaceList().add(parseImageNode(node));
 //                    break;
 //                case "Image": data.getTemplateInterfaceList().add(parseImageNode(node));
@@ -75,13 +78,74 @@ public class TemplateImporter {
         }
 
 
+
+        data.getTemplateInterfaceList().add(0,new RectangleSerializable(backgroundColor,height,width,"background",0,0,"#FF000000",0));
         data.setHeight(height);
         data.setWight(width);
         data.setName(name);
 
+
         data.setOrientation(PageOrientation.PORTRAIT);
 
         return data;
+    }
+
+    private static SerializableTemplateInterface parseCircleNode(Node node) {
+        String backgroundColor = node.getAttributes().getNamedItem("BackgroundColor").getNodeValue();
+        Integer height = Integer.valueOf(node.getAttributes().getNamedItem("Height").getNodeValue());
+        Integer width = Integer.valueOf(node.getAttributes().getNamedItem("Width").getNodeValue());
+        String name = node.getAttributes().getNamedItem("Name").getNodeValue();
+        Integer left = Integer.valueOf(node.getAttributes().getNamedItem("Left").getNodeValue());
+        Integer top = Integer.valueOf(node.getAttributes().getNamedItem("Top").getNodeValue());
+
+//        Integer rotation = Integer.valueOf(node.getAttributes().getNamedItem("Rotation").getNodeValue());
+        String color = node.getAttributes().getNamedItem("Color").getNodeValue();
+
+        Integer thickness = Integer.valueOf(node.getAttributes().getNamedItem("Thickness").getNodeValue());
+
+        return new CircleSerializable(backgroundColor, height, width, name, left, top, color, thickness);
+
+    }
+
+    private static SerializableTemplateInterface parseRectangleNode(Node node) {
+        String backgroundColor = node.getAttributes().getNamedItem("BackgroundColor").getNodeValue();
+        Integer height = Integer.valueOf(node.getAttributes().getNamedItem("Height").getNodeValue());
+        Integer width = Integer.valueOf(node.getAttributes().getNamedItem("Width").getNodeValue());
+        String name = node.getAttributes().getNamedItem("Name").getNodeValue();
+        Integer left = Integer.valueOf(node.getAttributes().getNamedItem("Left").getNodeValue());
+        Integer top = Integer.valueOf(node.getAttributes().getNamedItem("Top").getNodeValue());
+
+//        Integer rotation = Integer.valueOf(node.getAttributes().getNamedItem("Rotation").getNodeValue());
+        String color = node.getAttributes().getNamedItem("Color").getNodeValue();
+
+        Integer thickness = Integer.valueOf(node.getAttributes().getNamedItem("Thickness").getNodeValue());
+
+
+
+        return new RectangleSerializable(backgroundColor, height, width, name, left, top, color, thickness);
+    }
+
+    private static SerializableTemplateInterface parseTextNode(Node node) {
+        Integer height = Integer.valueOf(node.getAttributes().getNamedItem("Height").getNodeValue());
+        Integer width = Integer.valueOf(node.getAttributes().getNamedItem("Width").getNodeValue());
+        String name = node.getAttributes().getNamedItem("Name").getNodeValue();
+        Integer left = Integer.valueOf(node.getAttributes().getNamedItem("Left").getNodeValue());
+        Integer top = Integer.valueOf(node.getAttributes().getNamedItem("Top").getNodeValue());
+
+//        Integer rotation = Integer.valueOf(node.getAttributes().getNamedItem("Rotation").getNodeValue());
+        String color = node.getAttributes().getNamedItem("FontColor").getNodeValue();
+
+        Integer textSize = Integer.valueOf(node.getAttributes().getNamedItem("FontSize").getNodeValue());
+        String textColor = node.getAttributes().getNamedItem("FontColor").getNodeValue();
+        String textValue = node.getAttributes().getNamedItem("Text").getNodeValue();
+        Boolean isItalic = Boolean.valueOf(node.getAttributes().getNamedItem("IsItalic").getNodeValue());
+        Boolean isBold = Boolean.valueOf(node.getAttributes().getNamedItem("IsBold").getNodeValue());
+        String fontName = node.getAttributes().getNamedItem("FontName").getNodeValue();
+        TextSerializable textSerializable = new TextSerializable(top, left, width, height,
+                name, color, textSize, textColor, textValue, isItalic, isBold, fontName);
+
+        return textSerializable;
+
     }
 
     private static SerializableTemplateInterface parsePhotoNode(Node node) {
@@ -95,7 +159,7 @@ public class TemplateImporter {
 
         Integer rotation = Integer.valueOf(node.getAttributes().getNamedItem("Rotation").getNodeValue());
 
-        PhotoSerializable photoSerializable = new PhotoSerializable(top, left, width, height, photoNumber, name);
+        PhotoSerializable photoSerializable = new PhotoSerializable(top, left, width, height, photoNumber, name, rotation);
 
         return photoSerializable;
     }
@@ -110,16 +174,14 @@ public class TemplateImporter {
 
         String imagePath = templateDirectoryPath + "\\" + node.getAttributes().getNamedItem("ImagePath").getNodeValue();
 
-
-
         String opacity = node.getAttributes().getNamedItem("Opacity").getNodeValue();
         String zIndex = node.getAttributes().getNamedItem("ZIndex").getNodeValue();
         String strokeColor = node.getAttributes().getNamedItem("StrokeColor").getNodeValue();
-        String thickness = node.getAttributes().getNamedItem("Thickness").getNodeValue();
+        Integer thickness = Integer.valueOf(node.getAttributes().getNamedItem("Thickness").getNodeValue());
         String keepAspect = node.getAttributes().getNamedItem("KeepAspect").getNodeValue();
 
 
-        ImageSerializable imageSerializable = new ImageSerializable(top, left, width, height, name, imagePath);
+        ImageSerializable imageSerializable = new ImageSerializable(top, left, width, height, name, imagePath, thickness, strokeColor);
 
 
         return imageSerializable;

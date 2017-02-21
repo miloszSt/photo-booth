@@ -15,6 +15,8 @@ public class TemplateData implements Serializable{
     private Integer height;
     private Integer wight;
     private PageOrientation orientation;
+    private String backgroundColor;
+
 
     private List<SerializableTemplateInterface> templateInterfaceList = new ArrayList<>();
 
@@ -29,6 +31,15 @@ public class TemplateData implements Serializable{
     public Paper getPaper() {
 
         return paper.toPaper();
+    }
+
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 
     public void setPaper(Paper paper) {

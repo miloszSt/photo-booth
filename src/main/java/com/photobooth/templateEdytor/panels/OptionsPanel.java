@@ -12,7 +12,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 
 
@@ -98,7 +97,7 @@ public class OptionsPanel extends VBox {
                 if(currentSelection instanceof TextElement){
 
                    ((TextElement) currentSelection).setText(new Text(newValue));
-                    ((TextElement) currentSelection).setFontStyle((int) strokeThickness.getValue(), strokeColorPicker.getValue().toString());
+                    ((TextElement) currentSelection).setFontStyle((int) strokeThickness.getValue(), strokeColorPicker.getValue().toString(), true, true, "Arial");
                 }
             }
         });

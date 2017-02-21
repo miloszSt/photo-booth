@@ -3,12 +3,17 @@ package com.photobooth.templateEdytor.serializable;
 
 import com.photobooth.templateEdytor.elements.ImageElement;
 import com.photobooth.templateEdytor.elements.RectangleElement;
+import com.photobooth.util.ColorUtils;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 import java.io.Serializable;
 
 public class RectangleSerializable implements Serializable, SerializableTemplateInterface {
 
+    Integer thickness;
+    String strokeColor;
+    String backgroundColor;
     Integer top;
     Integer left;
     Integer width;
@@ -28,13 +33,28 @@ public class RectangleSerializable implements Serializable, SerializableTemplate
         this.color = imageElement.getElementColor().toString();
     }
 
+    public RectangleSerializable(String backgroundColor, Integer height, Integer width, String name, Integer left, Integer top, String s, Integer thickness) {
+        this.backgroundColor = backgroundColor;
+        this.height = height;
+        this.width = width;
+        this.name = name;
+        this.left = left;
+        this.top = top;
+        this.color = s;
+        this.thickness = thickness;
+    }
+
     public RectangleElement toElement(){
-        RectangleElement rectangleElement = new RectangleElement(this.width, this.height, Paint.valueOf(color));
+
+        RectangleElement rectangleElement = new RectangleElement(this.width, this.height,
+                ColorUtils.parseStringToColor(backgroundColor));
         rectangleElement.setId(name);
         rectangleElement.setLayoutY(top);
         rectangleElement.setLayoutX(left);
         rectangleElement.setWidth(width);
         rectangleElement.setHeight(height);
+        rectangleElement.setStroke(ColorUtils.parseStringToColor(color), thickness);
+
 
         return rectangleElement;
     }

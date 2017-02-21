@@ -4,11 +4,13 @@ import com.photobooth.templateEdytor.elements.ImageElement;
 import com.photobooth.templateEdytor.elements.PhotoElement;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.transform.Rotate;
 
 import java.io.Serializable;
 
 public class PhotoSerializable implements Serializable, SerializableTemplateInterface {
 
+    Integer rotation;
     Integer top;
     Integer left;
     Integer width;
@@ -28,13 +30,14 @@ public class PhotoSerializable implements Serializable, SerializableTemplateInte
 //        this.color = photoElement.getElementColor().toString();
     }
 
-    public PhotoSerializable(Integer top, Integer left, Integer width, Integer height, Integer counter, String name) {
+    public PhotoSerializable(Integer top, Integer left, Integer width, Integer height, Integer counter, String name, Integer rotation) {
         this.top = top;
         this.left = left;
         this.width = width;
         this.height = height;
         this.counter = counter;
         this.name = name;
+        this.rotation = rotation;
 //        this.color = color;
     }
 
@@ -45,7 +48,7 @@ public class PhotoSerializable implements Serializable, SerializableTemplateInte
         photoElement.setLayoutX(left);
         photoElement.setWidth(width);
         photoElement.setHeight(height);
-
+        photoElement.setRotate(rotation);
         return photoElement;
     }
 

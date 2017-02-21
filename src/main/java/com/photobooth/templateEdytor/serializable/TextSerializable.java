@@ -9,6 +9,11 @@ import javafx.scene.paint.Paint;
 
 import java.io.Serializable;
 
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+
 public class TextSerializable implements Serializable, SerializableTemplateInterface {
 
     Integer top;
@@ -16,12 +21,18 @@ public class TextSerializable implements Serializable, SerializableTemplateInter
     Integer width;
     Integer height;
 
+    Integer rotation;
+
     String name;
     String color;
 
     Integer textSize;
     String textColor;
     String textValue;
+
+    Boolean isItalic;
+    Boolean isBold;
+    String fontName;
 
 
 
@@ -39,6 +50,23 @@ public class TextSerializable implements Serializable, SerializableTemplateInter
         this.textValue = textElement.getTextValue();
     }
 
+
+    public TextSerializable(Integer top, Integer left, Integer width, Integer height, String name, String color, Integer textSize, String textColor, String textValue, Boolean isItalic, Boolean isBold, String fontName) {
+        this.top = top;
+        this.left = left;
+        this.width = width;
+        this.height = height;
+        this.name = name;
+        this.color = color;
+        this.textSize = textSize;
+        this.textColor = textColor;
+        this.textValue = textValue;
+        this.isItalic = isItalic;
+        this.isBold = isBold;
+        this.fontName = fontName;
+    }
+
+
     public TextElement toElement(){
         TextElement textElement = new TextElement();
         textElement.setId(name);
@@ -48,9 +76,11 @@ public class TextSerializable implements Serializable, SerializableTemplateInter
         textElement.setHeight(height);
 
 
-        textElement.setBackgroundColor(Color.valueOf(color));
-        textElement.setFontStyle(textSize,textColor);
+        textElement.setBackgroundColor(Color.TRANSPARENT);
+        textElement.setFontStyle(textSize * 2,textColor, isBold, isItalic, fontName);
         textElement.setTextValue(textValue);
+
         return textElement;
     }
+
 }

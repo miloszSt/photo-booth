@@ -24,7 +24,6 @@ public class PrintHelper {
         ImageView imageView = new ImageView(image);
         Thread thread = new Thread(() -> printImage(imageView, copies));
         thread.start();
-        thread.join();
     }
 
 
@@ -62,6 +61,12 @@ public class PrintHelper {
         double newWidth = node.getBoundsInParent().getWidth();
         double newHeight = node.getBoundsInParent().getHeight();
 
+
+
+        System.out.println("printable Width " + pWidth);
+        System.out.println("printable Height " + pHeight);
+        System.out.println("new Width " + newWidth);
+        System.out.println("new Height " + newHeight);
         PrinterJob job = PrinterJob.createPrinterJob();
         job.getJobSettings().setCopies(copies);
         job.getJobSettings().setPageLayout(pageLayout);

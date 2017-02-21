@@ -98,4 +98,9 @@ public class CircleElement extends StackPane implements TemplateElementInterface
     }
 
 
+    public void setStroke(Color color, Integer thickness) {
+        circle.setStroke(color);
+        circle.setStrokeWidth(thickness);
+//        this.setBorder(new Border(new BorderStroke(color, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(thickness))));
+    }
 }

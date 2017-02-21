@@ -6,7 +6,9 @@ import com.photobooth.templateEdytor.elements.PhotoElement;
 import com.photobooth.templateEdytor.elements.TemplateElementInterface;
 import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
 import com.photobooth.templateEdytor.serializable.TemplateData;
+import com.photobooth.util.ColorUtils;
 import com.photobooth.util.ConfigurationUtil;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.*;
 
 import com.photobooth.util.PrintHelper;
@@ -19,6 +21,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -32,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -40,7 +45,7 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
     private TemplateData templateData;
     private List<File> photos;
-
+    private Double scaleFactor;
     @FXML
     BorderPane borderPane;
 
@@ -64,7 +69,7 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
     public  Pane createPaneWithPhotos(){
         if (finalViewPane.getChildren().size() > 0) finalViewPane.getChildren().clear();
-        Double scaleFactor = 1080.0 / templateData.getWight();
+        scaleFactor = 1080.0 / templateData.getWight();
         Double scaleFactor2 = templateData.getHeight() / 900.0;
 
 
@@ -93,12 +98,12 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
             System.out.println("w " + templateData.getWight() + "  H : " + templateData.getHeight());
             System.out.println("wF " + templateData.getWight() * scaleFactor + "  HF : " + templateData.getHeight() * scaleFactor );
-            System.out.println("wF2 " + templateData.getWight() * scaleFactor2 + "  HF2 : " + templateData.getHeight() * scaleFactor2 );
+//            System.out.println("wF2 " + templateData.getWight() * scaleFactor2 + "  HF2 : " + templateData.getHeight() * scaleFactor2 );
 
 
             borderPane.setCenter(stackPane);
-            stackPane.setBackground(new Background(new BackgroundFill(Color.WHITE,null,null)));
-            borderPane.setBackground(new Background(new BackgroundFill(Color.WHITE,null,null)));
+            stackPane.setBackground(new Background(new BackgroundFill(ColorUtils.parseStringToColor(templateData.getBackgroundColor()),null,null)));
+            borderPane.setBackground(new Background(new BackgroundFill(ColorUtils.parseStringToColor(templateData.getBackgroundColor()),null,null)));
 //            stackPane.setAlignment(Pos.CENTER);
 
 
@@ -157,13 +162,17 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         stackPane.setMaxWidth(1080);
 
         finalViewPane.setBackground(null);
-        WritableImage image = finalViewPane.snapshot(new SnapshotParameters(), null);
-        String fileName = LocalDateTime.now().toString().replace(":", "-");
-        fileName = fileName.substring(5,fileName.indexOf("."));
+        SnapshotParameters params = new SnapshotParameters();
+        params.setViewport(new Rectangle2D(0, 0, 1200, 1800));
+        WritableImage image = finalViewPane.snapshot(params, null);
+        DateTimeFormatter yyyymmdd_hHmm = DateTimeFormatter.ofPattern("MMDD_HHmm");
+        LocalDateTime now = LocalDateTime.now();
+        String fileName = now.format(yyyymmdd_hHmm);
         File file = new File(ConfigurationUtil.initConfiguration().getTempPath() + fileName + ".png");
 
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+
             PrintHelper.print(file.getPath(),copies);
             Navigator.nextState();
         } catch (IOException e) {

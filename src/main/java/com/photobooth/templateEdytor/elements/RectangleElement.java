@@ -14,7 +14,7 @@ public class RectangleElement extends StackPane implements TemplateElementInterf
 
     private final Integer elementId;
     private Rectangle rectangle;
-    public RectangleElement(double width, double height, Paint fill) {
+    public RectangleElement(double width, double height, Color fill) {
         super();
         setId("Rectangle Element");
         rectangle = new Rectangle(width, height, fill);
@@ -89,6 +89,9 @@ public class RectangleElement extends StackPane implements TemplateElementInterf
         return elementId;
     }
 
+    public void setStroke(Color color, Integer thickness) {
+        this.setBorder(new Border(new BorderStroke(color, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(thickness))));
+    }
 
     public void setHeight(Integer height){
         rectangle.setHeight(height);

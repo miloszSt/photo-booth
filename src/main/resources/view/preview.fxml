@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.photobooth.controller.PreviewController"
+            fx:id="viewContainer"
+            stylesheets="@/css/gallery.css"
+            styleClass="container">
+    <center>
+        <VBox fx:id="galleryContainer" alignment="CENTER"/>
+    </center>
+</BorderPane>

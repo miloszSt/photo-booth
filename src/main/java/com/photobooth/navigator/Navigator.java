@@ -2,7 +2,9 @@ package com.photobooth.navigator;
 
 import com.photobooth.camera.CameraDAO;
 import com.photobooth.controller.AppController;
+import com.photobooth.controller.PreviewController;
 import com.photobooth.controller.spec.AnimationInitializable;
+import com.photobooth.controller.spec.PhotoInitializable;
 import com.photobooth.controller.spec.TemplateAndPhotoInitializable;
 import com.photobooth.model.StateDef;
 import com.photobooth.templateEdytor.serializable.TemplateData;
@@ -40,6 +42,7 @@ public class Navigator {
     public static final String ENCOURAGMENT_VIEW = "/view/encouragment.fxml";
     public static final String PLAY_ONCE_VIEW = "/view/playonce.fxml";
     public static final String TAKE_PHOTO_VIEW = "/view/takephoto.fxml";
+    public static final String PREVIEW_VIEW = "/view/preview.fxml";
     public static final String GALLERY_VIEW = "/view/gallery.fxml";
     public static final String STATE_EDITOR_VIEW = "/view/stateeditor.fxml";
     public static final String TEMPLATE_EDITOR_VIEW = "view/templateeditor.fxml";
@@ -102,18 +105,32 @@ public class Navigator {
                 ((TemplateAndPhotoInitializable) loader.getController()).setTemplateAndPhotos(getTemplateDateFromName(
                         stateDefinition.getTemplateName()), FileUtils.getPhotos(configuration.getCurrentPhotosPath()));
             }
-        } catch (IOException e) {
+        } catch (IOException exception) {
             logger.error("Error loading view: " + stateDefinition.getAnimationPaths()
-                    + "\n" + e.getMessage());
+                    + "\n" + exception.getMessage());
+        }
+    }
+
+    /** Displays photo preview view after taking photo. After 2-3 seconds state flow will be restored. */
+    public static void goToPreview(String photoFilePath) {
+        FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(PREVIEW_VIEW));
+        try {
+            appController.setContent(loader.load());
+            PreviewController controller = loader.getController();
+            if (controller != null) {
+                controller.initPhoto(photoFilePath);
+            }
+        } catch (IOException exception) {
+            System.out.println("Error loading preview view: \n" + exception.getMessage());
         }
     }
 
     /** Resarts application flow. */
     private static void reset() {
         iterator = hasCustomStatesConfiguration() ? customAppStates.listIterator() : DEFAULT_APP_STATES.listIterator();
-
         moveTempPhotosToArchive();
     }
+
     private static void moveTempPhotosToArchive(){
         Configuration configuration = ConfigurationUtil.initConfiguration();
         Path currentPhotoPath = Paths.get(configuration.getCurrentPhotosPath());

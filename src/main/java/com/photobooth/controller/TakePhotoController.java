@@ -6,9 +6,13 @@ import com.photobooth.controller.spec.AnimationInitializable;
 import com.photobooth.navigator.Navigator;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.media.Media;
@@ -78,30 +82,43 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
     }
 
     private void takePhoto() {
-        Task<Void> takePhotoTask = new Task<Void>() {
+        Task<String> takePhotoTask = new Task<String>() {
             @Override
-            protected Void call() throws Exception {
+            protected String call() throws Exception {
                 System.out.println("Wywolany " + new Date());
                 Thread.sleep(2500);
                 System.out.println("pospane" + new Date());
 
-                new CameraService().takeImage();
-                System.out.println("zrobione" + new Date());
-                return null;
+                return new CameraService().takeImage();
             }
 
-            @Override
+            // TODO mst remove
+            /*@Override
             protected void succeeded() {
                 super.succeeded();
-                System.out.println("Success from task!");
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        animateEndTransition();
+                        //animateEndTransition();
                     }
                 });
-            }
+            }*/
         };
+        takePhotoTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                System.out.println("zrobione" + new Date());
+                String photoFilePath = takePhotoTask.getValue();
+                Platform.runLater(() -> {
+                    Navigator.goToPreview(photoFilePath);
+                    Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
+                        Navigator.nextState();
+                    }));
+                    timeline.play();
+                });
+
+            }
+        });
         Thread thread = new Thread(takePhotoTask);
         thread.setDaemon(true);
         thread.start();

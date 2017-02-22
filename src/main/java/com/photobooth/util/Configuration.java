@@ -1,12 +1,13 @@
 package com.photobooth.util;
 
 import com.photobooth.model.StateDef;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.List;
 
 public class Configuration implements Serializable{
-
+    final static Logger logger = Logger.getLogger(Configuration.class);
     private static final String STATE_FLOW_FILE = "state-flow.ser";
     private String animationPath;
     private String templatePath;
@@ -51,14 +52,14 @@ public class Configuration implements Serializable{
                 try {
                     fout.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e);
                 }
             }
             if (oos != null) {
                 try {
                     oos.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e);
                 }
             }
         }
@@ -80,14 +81,14 @@ public class Configuration implements Serializable{
                 try {
                     fin.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e);
                 }
             }
             if (ois != null) {
                 try {
                     ois.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e);
                 }
             }
         }

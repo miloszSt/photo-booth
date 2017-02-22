@@ -5,6 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.transform.Scale;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,14 +13,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class PrintHelper {
-
+    final static Logger logger = Logger.getLogger(PrintHelper.class);
 
     public static void print(String filePath, Integer copies) throws InterruptedException {
         Image image = null;
         try {
             image = new Image(Files.newInputStream(Paths.get(filePath)));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         ImageView imageView = new ImageView(image);
         Thread thread = new Thread(() -> printImage(imageView, copies));
@@ -33,7 +34,7 @@ public class PrintHelper {
         printer.getPrinterAttributes().getSupportedPapers();
         Paper paper = new ArrayList<>(printer.getPrinterAttributes().getSupportedPapers()).get(3);
         PageLayout pageLayout = printer.createPageLayout(paper, PageOrientation.PORTRAIT, Printer.MarginType.HARDWARE_MINIMUM);
-        System.out.println("PageLayout: " + pageLayout);
+        logger.debug("PageLayout: " + pageLayout);
 
 
         // Printable area
@@ -63,10 +64,10 @@ public class PrintHelper {
 
 
 
-        System.out.println("printable Width " + pWidth);
-        System.out.println("printable Height " + pHeight);
-        System.out.println("new Width " + newWidth);
-        System.out.println("new Height " + newHeight);
+        logger.debug("printable Width " + pWidth);
+        logger.debug("printable Height " + pHeight);
+        logger.debug("new Width " + newWidth);
+        logger.debug("new Height " + newHeight);
         PrinterJob job = PrinterJob.createPrinterJob();
         job.getJobSettings().setCopies(copies);
         job.getJobSettings().setPageLayout(pageLayout);

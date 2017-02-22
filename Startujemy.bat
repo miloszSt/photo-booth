@@ -1,0 +1,1 @@
+java -Dlog4j.configuration=file:"log4j.properties" -classpath photo-booth-4.0.0.jar com.photobooth.App

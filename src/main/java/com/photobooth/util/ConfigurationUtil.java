@@ -1,5 +1,7 @@
 package com.photobooth.util;
 
+import org.apache.log4j.Logger;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,7 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class ConfigurationUtil {
-
+    final static Logger logger = Logger.getLogger(ConfigurationUtil.class);
     public static Configuration initConfiguration(){
         if(Files.exists(Paths.get("/configuration"))) {
             FileInputStream fin = null;
@@ -18,17 +20,17 @@ public class ConfigurationUtil {
                 ois = new ObjectInputStream(fin);
                 return (Configuration) ois.readObject();
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                logger.error(e);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                logger.error(e);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e);
             } finally {
                 try {
                     fin.close();
                     ois.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e);
                 }
             }
         }else {

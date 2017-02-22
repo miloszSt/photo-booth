@@ -1,5 +1,6 @@
 package com.photobooth.navigator;
 
+import com.photobooth.camera.CameraDAO;
 import com.photobooth.controller.AppController;
 import com.photobooth.controller.spec.AnimationInitializable;
 import com.photobooth.controller.spec.TemplateAndPhotoInitializable;
@@ -11,6 +12,7 @@ import com.photobooth.util.FileUtils;
 import com.photobooth.util.TemplateImporter;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -32,7 +34,7 @@ import java.util.stream.Stream;
  * @author mst
  */
 public class Navigator {
-
+    final static Logger logger = Logger.getLogger(Navigator.class);
     /** Paths to FXML views definitions. */
     public static final String APP_VIEW = "/view/app.fxml";
     public static final String ENCOURAGMENT_VIEW = "/view/encouragment.fxml";
@@ -101,7 +103,7 @@ public class Navigator {
                         stateDefinition.getTemplateName()), FileUtils.getPhotos(configuration.getCurrentPhotosPath()));
             }
         } catch (IOException e) {
-            System.out.println("Error loading view: " + stateDefinition.getAnimationPaths()
+            logger.error("Error loading view: " + stateDefinition.getAnimationPaths()
                     + "\n" + e.getMessage());
         }
     }
@@ -137,12 +139,12 @@ public class Navigator {
 
                         Files.move(path, archivedPhotoPath);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error(e);
                     }
                 }
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 
@@ -153,11 +155,11 @@ public class Navigator {
 
             data1 = TemplateImporter.importTemplateFromDSLRBooth(templateName);
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            logger.error(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         } catch (SAXException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
 
         return data1;
@@ -178,7 +180,7 @@ public class Navigator {
         try {
             appController.setContent(FXMLLoader.load(Navigator.class.getResource(fxmlViewPath)));
         } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 

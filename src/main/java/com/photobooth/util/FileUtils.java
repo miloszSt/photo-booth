@@ -1,5 +1,7 @@
 package com.photobooth.util;
 
+import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -14,7 +16,7 @@ import java.util.List;
  * @author mst
  */
 public class FileUtils {
-
+    final static Logger logger = Logger.getLogger(FileUtils.class);
     private FileUtils() {}
 
     public static final String RESOURCES_FOLDER = "src/main/resources/";
@@ -64,7 +66,7 @@ public class FileUtils {
             try {
                 Files.createDirectories(dirPath);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e);
             }
         }
     }

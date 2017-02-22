@@ -29,6 +29,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Scale;
+import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class DisplayTemplateController implements Initializable, TemplateAndPhotoInitializable {
+    final static Logger logger = Logger.getLogger(DisplayTemplateController.class);
 
     private TemplateData templateData;
     private List<File> photos;
@@ -178,7 +180,7 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         } catch (IOException e) {
             // TODO: handle exception here
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 

@@ -24,6 +24,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -41,6 +42,8 @@ import java.util.List;
 
 
 public class TopPanel extends HBox {
+    final static Logger logger = Logger.getLogger(TopPanel.class);
+
     private final TemplateMainView templateMainView;
 
     private Button saveTemplateButton;
@@ -143,7 +146,7 @@ public class TopPanel extends HBox {
             }
             refreshTemplateList();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
 
         templateMainView.reset();
@@ -154,7 +157,7 @@ public class TopPanel extends HBox {
         try {
             Files.list(Paths.get(templateMainView.getConfiguration().getTemplatePath())).forEach(path -> templatesFiles.add(path.getFileName().toString()));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
 
         ObservableList<String> options = FXCollections.observableArrayList(templatesFiles);
@@ -213,7 +216,7 @@ public class TopPanel extends HBox {
 
             refreshTemplateList();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 

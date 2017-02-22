@@ -11,6 +11,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -24,10 +26,13 @@ import java.util.ResourceBundle;
 public class App extends Application {
 
     private static final String FULL_SCREEN_HINT = "";
+    final static Logger logger = Logger.getLogger(App.class);
+
     private Configuration configuration;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        logger.info("Uruchomiono aplikację");
         configuration = ConfigurationUtil.initConfiguration();
         primaryStage.setFullScreen(true);
         primaryStage.setFullScreenExitHint(FULL_SCREEN_HINT);

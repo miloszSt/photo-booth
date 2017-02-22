@@ -21,6 +21,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,7 +35,7 @@ import java.util.ResourceBundle;
  * @author mst
  */
 public class GalleryController implements Initializable {
-
+    final static Logger logger = Logger.getLogger(GalleryController.class);
     // TODO do zmiany na katalog, w którym będą przechowywane zdjęcia
     private final static int COLS = 1;
     private final static double IMG_SPACING = 15.0;
@@ -92,7 +93,7 @@ public class GalleryController implements Initializable {
             imageView = new ImageView(image);
             imageView.setFitHeight(imageHeight);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
 
         return imageView;

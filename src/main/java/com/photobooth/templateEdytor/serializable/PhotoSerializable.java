@@ -2,6 +2,7 @@ package com.photobooth.templateEdytor.serializable;
 
 import com.photobooth.templateEdytor.elements.ImageElement;
 import com.photobooth.templateEdytor.elements.PhotoElement;
+import com.photobooth.util.ColorUtils;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.transform.Rotate;
@@ -10,6 +11,8 @@ import java.io.Serializable;
 
 public class PhotoSerializable implements Serializable, SerializableTemplateInterface {
 
+    String strokeColor;
+    Integer thickness;
     Integer rotation;
     Integer top;
     Integer left;
@@ -30,7 +33,7 @@ public class PhotoSerializable implements Serializable, SerializableTemplateInte
 //        this.color = photoElement.getElementColor().toString();
     }
 
-    public PhotoSerializable(Integer top, Integer left, Integer width, Integer height, Integer counter, String name, Integer rotation) {
+    public PhotoSerializable(Integer top, Integer left, Integer width, Integer height, Integer counter, String name, Integer rotation, Integer thickness, String strokeColor) {
         this.top = top;
         this.left = left;
         this.width = width;
@@ -38,6 +41,9 @@ public class PhotoSerializable implements Serializable, SerializableTemplateInte
         this.counter = counter;
         this.name = name;
         this.rotation = rotation;
+        this.strokeColor = strokeColor;
+        this.thickness = thickness;
+
 //        this.color = color;
     }
 
@@ -49,6 +55,7 @@ public class PhotoSerializable implements Serializable, SerializableTemplateInte
         photoElement.setWidth(width);
         photoElement.setHeight(height);
         photoElement.setRotate(rotation);
+        photoElement.setStroke(ColorUtils.parseStringToColor(strokeColor), thickness);
         return photoElement;
     }
 

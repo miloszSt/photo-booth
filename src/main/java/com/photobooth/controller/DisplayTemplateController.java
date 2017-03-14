@@ -13,16 +13,13 @@ import javafx.scene.canvas.*;
 
 import com.photobooth.util.PrintHelper;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -32,7 +29,6 @@ import javafx.scene.transform.Scale;
 import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -48,6 +44,8 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
     private TemplateData templateData;
     private List<File> photos;
     private Double scaleFactor;
+    private Color signatureColor = Color.BLACK;
+    Canvas canvas;
     @FXML
     BorderPane borderPane;
 
@@ -56,6 +54,10 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
     @FXML
     Pane finalViewPane = new Pane();
+
+    @FXML
+    ToggleButton greenButton;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -67,9 +69,30 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         this.templateData = template;
         this.photos = photos;
         createPaneWithPhotos();
+        addSignature();
     }
 
-    public  Pane createPaneWithPhotos(){
+    @FXML
+    public void setColorGreen() {
+        this.signatureColor = Color.GREEN;
+    }
+
+    @FXML
+    public void setColorRed() {
+        this.signatureColor = Color.RED;
+    }
+
+    @FXML
+    public void setColorBlue() {
+        this.signatureColor = Color.BLUE;
+    }
+
+    @FXML
+    public void setColorBlack() {
+        this.signatureColor = Color.BLACK;
+    }
+
+    public Pane createPaneWithPhotos() {
         if (finalViewPane.getChildren().size() > 0) finalViewPane.getChildren().clear();
         scaleFactor = 1080.0 / templateData.getWight();
         Double scaleFactor2 = templateData.getHeight() / 900.0;
@@ -94,26 +117,25 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
                 finalViewPane.getChildren().add((Node) templateElementInterface);
 
-                finalViewPane.setBackground(new Background(new BackgroundFill(Color.WHITE,null,null)));
+                finalViewPane.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
 
             }
 
             System.out.println("w " + templateData.getWight() + "  H : " + templateData.getHeight());
-            System.out.println("wF " + templateData.getWight() * scaleFactor + "  HF : " + templateData.getHeight() * scaleFactor );
+            System.out.println("wF " + templateData.getWight() * scaleFactor + "  HF : " + templateData.getHeight() * scaleFactor);
 //            System.out.println("wF2 " + templateData.getWight() * scaleFactor2 + "  HF2 : " + templateData.getHeight() * scaleFactor2 );
 
 
             borderPane.setCenter(stackPane);
-            stackPane.setBackground(new Background(new BackgroundFill(ColorUtils.parseStringToColor(templateData.getBackgroundColor()),null,null)));
-            borderPane.setBackground(new Background(new BackgroundFill(ColorUtils.parseStringToColor(templateData.getBackgroundColor()),null,null)));
+            stackPane.setBackground(new Background(new BackgroundFill(ColorUtils.parseStringToColor(templateData.getBackgroundColor()), null, null)));
+            borderPane.setBackground(new Background(new BackgroundFill(ColorUtils.parseStringToColor(templateData.getBackgroundColor()), null, null)));
 //            stackPane.setAlignment(Pos.CENTER);
-
 
 
 //            stackPane.setMaxHeight(10);
 //            stackPane.setMaxWidth(1080);
 
-            ((HBox)borderPane.getBottom()).setBackground(new Background(new BackgroundFill(Color.BLACK,null, null)));
+//            ((GridPane)borderPane.getTop()).setBackground(new Background(new BackgroundFill(Color.BLACK,null, null)));
             stackPane.getChildren().add(finalViewPane);
 
             stackPane.getTransforms().add(scale);
@@ -121,11 +143,18 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         return finalViewPane;
     }
 
+    @FXML
+    public void clearSignature() {
+        Rectangle node = (Rectangle) finalViewPane.getChildren().get(0);
+        canvas.getGraphicsContext2D().clearRect(0, 0, node.getWidth(), node.getHeight());
+    }
+
 
     @FXML
-    public void addSignature(){
+    public void addSignature() {
         Rectangle node = (Rectangle) finalViewPane.getChildren().get(0);
-        final Canvas canvas = new Canvas(node.getWidth(),node.getHeight());
+
+        canvas = new Canvas(node.getWidth(), node.getHeight());
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         gc.setFill(Color.TRANSPARENT);
@@ -133,33 +162,32 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                gc.setFill(Color.BLACK);
-                gc.fillOval(event.getX()-10,event.getY()-10,20,20);
+                gc.setFill(signatureColor);
+                gc.fillOval(event.getX() - 10, event.getY() - 10, 20, 20);
             }
         });
 
         canvas.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                gc.setFill(Color.BLACK);
-                gc.fillOval(event.getX()-10,event.getY()-10,20,20);
+                gc.setFill(signatureColor);
+                gc.fillOval(event.getX() - 10, event.getY() - 10, 20, 20);
             }
         });
 
         finalViewPane.getChildren().add(canvas);
     }
 
-    public void print1(){
+    public void print1() {
         print(1);
     }
 
-    public void print2(){
+    public void print2() {
         print(2);
     }
 
 
-
-    private void print(Integer copies){
+    private void print(Integer copies) {
         stackPane.setMaxHeight(10);
         stackPane.setMaxWidth(1080);
 
@@ -175,7 +203,7 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
 
-            PrintHelper.print(file.getPath(),copies);
+            PrintHelper.print(file.getPath(), copies);
             Navigator.nextState();
         } catch (IOException e) {
             // TODO: handle exception here

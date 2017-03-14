@@ -46,13 +46,14 @@ public class PreviewController implements Initializable, PhotoInitializable {
     @Override
     public void initPhoto(String photoFilePath) {
         this.photoFilePath = photoFilePath;
-        this.photoFilePath = "C:\\photoBooth\\currentPhotos\\prof.png";
+        this.photoFilePath = "C:\\photoBooth\\currentPhotos\\test.JPG";
 
         createImageView();
     }
 
     private void createImageView() {
         ImageView imageView = null;
+        logger.info(photoFilePath);
         File imgFile = new File(photoFilePath);
         try {
             Image image = new Image(new FileInputStream(imgFile), 0, galleryHeight, true, true);

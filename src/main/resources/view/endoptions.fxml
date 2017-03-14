@@ -1,54 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.layout.*?>
-<!-- ewentualnie ScrollPane -->
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToggleButton?>
+
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Button?>
 <BorderPane fx:id="borderPane"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.photobooth.controller.DisplayTemplateController"
-            >
+            stylesheets="@/css/endoptions.css">
     <center>
-        <StackPane fx:id="stackPane" />
+        <StackPane fx:id="stackPane"/>
     </center>
-    <bottom>
-        <HBox spacing="240">
+    <top>
 
-            <StackPane onMouseClicked="#addSignature">
-                <Circle fx:id="circle" centerX="500" centerY="500" stroke="#0003ff"
-                        radius="100" >
+        <GridPane style="-fx-background-color: black">
+            <fx:define>
+                <ToggleGroup fx:id="toggleGroup1"/>
+            </fx:define>
 
-                    <fill>
-                        <Color green="0" blue="1"/>
-                    </fill>
-                </Circle>
-                <Text style="-fx-font-size: 32px">PODPISZ SIE !</Text>
-            </StackPane>
+            <ToggleButton fx:id="greenButton" text="      "
+                          GridPane.columnIndex="4" GridPane.rowIndex="0"
+                          toggleGroup="$toggleGroup1"
+                          styleClass="greenButton"
+                          onMouseClicked="#setColorGreen">
+            </ToggleButton>
+            <ToggleButton fx:id="blueButton" text="      "
+                          GridPane.columnIndex="4" GridPane.rowIndex="1"
+                          toggleGroup="$toggleGroup1"
+                          styleClass="blueButton"
+                          onMouseClicked="#setColorBlue">
+            </ToggleButton>
 
-            <StackPane onMouseClicked="#print1">
-                <Circle fx:id="circle2" centerX="500" centerY="500" stroke="#00ff04"
-                        radius="100" >
+            <ToggleButton fx:id="redButton" text="      "
+                          GridPane.columnIndex="5" GridPane.rowIndex="0"
+                          toggleGroup="$toggleGroup1"
+                          styleClass="redButton"
+                          onMouseClicked="#setColorRed">
+            </ToggleButton>
+            <ToggleButton fx:id="blackButton" text="      "
+                          GridPane.columnIndex="5" GridPane.rowIndex="1"
+                          toggleGroup="$toggleGroup1"
+                          styleClass="blackButton"
+                          onMouseClicked="#setColorBlack">
+            </ToggleButton>
 
-                    <fill>
-                        <Color red="0" green="1" blue="0"></Color>
-                    </fill>
-                </Circle>
-                <Text style="-fx-font-size: 42px">
-                    DRUKUJ 1
-                </Text>
-            </StackPane>
-            <StackPane onMouseClicked="#print2">
-                <Circle fx:id="circle3" centerX="500" centerY="500" stroke="#00ff04"
-                        radius="100" >
+            <Button fx:id="cleanButton" text="Wyczyść"
+                    GridPane.columnIndex="6" GridPane.rowIndex="0"
+                    styleClass="optionButton"
+                    onMouseClicked="#clearSignature">
+                <font>
+                    <Font size="30.0"/>
+                </font>
+            </Button>
 
-                    <fill>
-                        <Color red="0" green="1" blue="0"></Color>
-                    </fill>
-                </Circle>
-                <Text style="-fx-font-size: 42px">
-                    DRUKUJ 2
-                </Text>
-            </StackPane>
-        </HBox>
-    </bottom>
+            <Button fx:id="resetButton" text="Zacznij od nowa"
+                    GridPane.columnIndex="6" GridPane.rowIndex="1"
+                    styleClass="optionButton">
+                <font>
+                    <Font size="30.0"/>
+                </font>
+            </Button>
+
+            <Button fx:id="print1Button" text="Drukuj 1"
+                    GridPane.columnIndex="8" GridPane.rowIndex="0"
+                    styleClass="optionButton"
+            onMouseClicked="#print1">
+                <font>
+                    <Font size="30.0"/>
+                </font>
+            </Button>
+
+            <Button fx:id="print2Button" text="Drukuj 2"
+                    GridPane.columnIndex="8" GridPane.rowIndex="1"
+                    styleClass="optionButton"
+                    onMouseClicked="#print2">
+                <font>
+                    <Font size="30.0"/>
+                </font>
+            </Button>
+
+        </GridPane>
+
+    </top>
 </BorderPane>

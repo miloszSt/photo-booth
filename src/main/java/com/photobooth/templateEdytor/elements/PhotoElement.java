@@ -118,6 +118,10 @@ public class PhotoElement extends StackPane implements TemplateElementInterface{
 
     }
 
+    public void setStroke(Color color, Integer thickness) {
+        this.setBorder(new Border(new BorderStroke(color, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(thickness))));
+    }
+
     @Override
     public Integer getElementId() {
         return elementId;

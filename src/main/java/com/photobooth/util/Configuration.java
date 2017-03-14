@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 import java.io.*;
 import java.util.List;
 
-public class Configuration implements Serializable{
+public class Configuration implements Serializable {
     final static Logger logger = Logger.getLogger(Configuration.class);
     private static final String STATE_FLOW_FILE = "state-flow.ser";
     private String animationPath;
@@ -16,8 +16,10 @@ public class Configuration implements Serializable{
     private String templateImagesPath;
     private String tempPath;
     private String stateFlowPath;
+    private String beforePhotoPath;
 
-    public Configuration(String animationPath, String templatePath, String currentPhotosPath, String archivePhotosPath, String templateImagesPath, String temp, String stateFlowPath) {
+    public Configuration(String animationPath, String templatePath, String currentPhotosPath, String archivePhotosPath, String templateImagesPath, String temp, String stateFlowPath,
+                         String beforePhotoPath) {
         this.animationPath = animationPath;
         this.templatePath = templatePath;
         this.currentPhotosPath = currentPhotosPath;
@@ -25,6 +27,7 @@ public class Configuration implements Serializable{
         this.templateImagesPath = templateImagesPath;
         this.tempPath = temp;
         this.stateFlowPath = stateFlowPath;
+        this.beforePhotoPath = beforePhotoPath;
         initDirectories();
     }
 
@@ -36,6 +39,7 @@ public class Configuration implements Serializable{
         FileUtils.createDirIfDoesntExists(templateImagesPath);
         FileUtils.createDirIfDoesntExists(tempPath);
         FileUtils.createDirIfDoesntExists(stateFlowPath);
+        FileUtils.createDirIfDoesntExists(beforePhotoPath);
     }
 
     public void saveStateFlow(List<StateDef> customStates) {
@@ -146,5 +150,13 @@ public class Configuration implements Serializable{
 
     public boolean isStateFlowDefined() {
         return new File(getStateFlowFilePath()).exists();
+    }
+
+    public String getBeforePhotoPath() {
+        return beforePhotoPath;
+    }
+
+    public void setBeforePhotoPath(String beforePhotoPath) {
+        this.beforePhotoPath = beforePhotoPath;
     }
 }

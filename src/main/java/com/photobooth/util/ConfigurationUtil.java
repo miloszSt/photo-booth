@@ -40,7 +40,8 @@ public class ConfigurationUtil {
                     "/photoBooth/archivePhotos",
                     "/photoBooth/templateImages/",
                     "/photoBooth/temp/",
-                    "/photoBooth/stateFlows");
+                    "/photoBooth/stateFlows",
+                    "/photoBooth/beforePhoto");
         }
         return null;
     }

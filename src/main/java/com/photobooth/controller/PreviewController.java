@@ -1,6 +1,8 @@
 package com.photobooth.controller;
 
 import com.photobooth.controller.spec.PhotoInitializable;
+import com.photobooth.navigator.Navigator;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -9,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
+import javafx.util.Duration;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -33,6 +36,7 @@ public class PreviewController implements Initializable, PhotoInitializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        logger.info("Preview state");
         initGalleryContainer();
     }
 
@@ -46,8 +50,6 @@ public class PreviewController implements Initializable, PhotoInitializable {
     @Override
     public void initPhoto(String photoFilePath) {
         this.photoFilePath = photoFilePath;
-        this.photoFilePath = "C:\\photoBooth\\currentPhotos\\test.JPG";
-
         createImageView();
     }
 
@@ -64,5 +66,9 @@ public class PreviewController implements Initializable, PhotoInitializable {
         }
 
         galleryContainer.getChildren().add(imageView);
+        // go to next state after 2500 miliseconds
+        PauseTransition delay = new PauseTransition(Duration.millis(2500));
+        delay.setOnFinished(event -> Navigator.nextState());
+        delay.play();
     }
 }

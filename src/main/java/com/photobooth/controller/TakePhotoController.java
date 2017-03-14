@@ -4,10 +4,9 @@ import com.photobooth.camera.CameraService;
 import com.photobooth.controller.spec.AnimationEndTransition;
 import com.photobooth.controller.spec.AnimationInitializable;
 import com.photobooth.navigator.Navigator;
-import javafx.animation.Animation;
-import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import com.photobooth.util.Configuration;
+import com.photobooth.util.ConfigurationUtil;
+import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.concurrent.Task;
@@ -21,15 +20,25 @@ import javafx.scene.media.MediaView;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.util.Duration;
+import org.apache.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.net.URL;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.sql.Time;
 import java.util.*;
+
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
 /**
  * @author mst
  */
 public class TakePhotoController implements Initializable, AnimationInitializable, AnimationEndTransition {
+
+    final static Logger logger = Logger.getLogger(TakePhotoController.class);
 
     private static final String MEDIA_URL = "src/main/resources/animations/odliczanie.mp4";
 
@@ -38,8 +47,11 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
 
     private List<String> animationPaths = new ArrayList<>();
 
+    private Configuration configuration;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        configuration = ConfigurationUtil.initConfiguration();
         System.out.println("TakePhoto Controller");
     }
 
@@ -91,37 +103,62 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
 
                 return new CameraService().takeImage();
             }
-
-            // TODO mst remove
-            /*@Override
-            protected void succeeded() {
-                super.succeeded();
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        //animateEndTransition();
-                    }
-                });
-            }*/
         };
         takePhotoTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
-                System.out.println("zrobione" + new Date());
                 String photoFilePath = takePhotoTask.getValue();
-                Platform.runLater(() -> {
+                if (isPhotoFileExist(photoFilePath)) {
                     Navigator.goToPreview(photoFilePath);
-                    Timeline timeline = new Timeline(new KeyFrame(Duration.millis(2000), ae -> {
-                        Navigator.nextState();
-                    }));
-                    timeline.play();
-                });
+                } else {
+                    try {
+                        WatchService watcher = FileSystems.getDefault().newWatchService();
+                        Path dir = Paths.get("C:" + configuration.getCurrentPhotosPath());
+                        logger.info("Register dir: " + dir.toString() + " to watch for files");
+                        dir.register(watcher, ENTRY_CREATE);
+                        while (true) {
+                            WatchKey key;
+                            try {
+                                key = watcher.take();
+                            } catch (InterruptedException e) {
+                                logger.info("Error during file watching (on method WatcherService.take()): " + e.getMessage());
+                                return;
+                            }
 
+                            for (WatchEvent<?> watchEvent : key.pollEvents()) {
+                                WatchEvent.Kind<?> kind = watchEvent.kind();
+                                if (kind == OVERFLOW) continue;
+
+                                if (kind == ENTRY_CREATE) {
+                                    WatchEvent<Path> ev = (WatchEvent<Path>) event;
+                                    Path filename = ev.context();
+                                    System.out.format("Emailing file %s%n", filename);
+                                    Navigator.goToPreview(filename.toString());
+                                }
+                            }
+
+                            // Reset the key
+                            boolean valid = key.reset();
+                            if (!valid) {
+                                break;
+                            }
+                        }
+
+                    } catch (IOException exception) {
+                        logger.info("Error during file watching: " + exception.getMessage());
+                    }
+
+                }
             }
         });
         Thread thread = new Thread(takePhotoTask);
         thread.setDaemon(true);
         thread.start();
+    }
+
+    private boolean isPhotoFileExist(String photoFilePath) {
+        File photo = new File(photoFilePath);
+        return photo.exists();
     }
 
     @Override

@@ -1,10 +1,8 @@
 package com.photobooth.navigator;
 
-import com.photobooth.camera.CameraDAO;
 import com.photobooth.controller.AppController;
 import com.photobooth.controller.PreviewController;
 import com.photobooth.controller.spec.AnimationInitializable;
-import com.photobooth.controller.spec.PhotoInitializable;
 import com.photobooth.controller.spec.TemplateAndPhotoInitializable;
 import com.photobooth.model.StateDef;
 import com.photobooth.templateEdytor.serializable.TemplateData;
@@ -19,7 +17,6 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -39,7 +36,7 @@ public class Navigator {
     final static Logger logger = Logger.getLogger(Navigator.class);
     /** Paths to FXML views definitions. */
     public static final String APP_VIEW = "/view/app.fxml";
-    public static final String ENCOURAGMENT_VIEW = "/view/encouragment.fxml";
+    public static final String ENCOURAGMENT_VIEW = "/view/encouragement.fxml";
     public static final String PLAY_ONCE_VIEW = "/view/playonce.fxml";
     public static final String TAKE_PHOTO_VIEW = "/view/takephoto.fxml";
     public static final String PREVIEW_VIEW = "/view/preview.fxml";

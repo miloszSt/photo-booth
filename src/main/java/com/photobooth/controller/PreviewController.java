@@ -10,6 +10,8 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
 import javafx.stage.Screen;
 import javafx.util.Duration;
 import org.apache.log4j.Logger;
@@ -42,6 +44,8 @@ public class PreviewController implements Initializable, PhotoInitializable {
 
     private void initGalleryContainer() {
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        logger.info("Display width: " + primaryScreenBounds.getWidth());
+        logger.info("Display heigth: " + primaryScreenBounds.getHeight());
         galleryHeight = primaryScreenBounds.getHeight() * 0.9;
         galleryContainer.setPrefHeight(galleryHeight);
         galleryContainer.setPadding(new Insets(30, 0, 0, 0));
@@ -58,16 +62,20 @@ public class PreviewController implements Initializable, PhotoInitializable {
         logger.info(photoFilePath);
         File imgFile = new File(photoFilePath);
         try {
-            Image image = new Image(new FileInputStream(imgFile), 0, galleryHeight, true, true);
+            Image image = new Image(new FileInputStream(imgFile));
             imageView = new ImageView(image);
-            imageView.setFitHeight(galleryHeight);
+            Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+            imageView.setFitWidth(primaryScreenBounds.getWidth());
+            imageView.setFitHeight(primaryScreenBounds.getHeight());
+            imageView.setPreserveRatio(true);
         } catch (FileNotFoundException e) {
             logger.error(e);
         }
 
         galleryContainer.getChildren().add(imageView);
+
         // go to next state after 2500 miliseconds
-        PauseTransition delay = new PauseTransition(Duration.millis(2500));
+        PauseTransition delay = new PauseTransition(Duration.millis(5000));
         delay.setOnFinished(event -> Navigator.nextState());
         delay.play();
     }

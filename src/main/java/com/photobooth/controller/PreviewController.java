@@ -75,7 +75,7 @@ public class PreviewController implements Initializable, PhotoInitializable {
         galleryContainer.getChildren().add(imageView);
 
         // go to next state after 2500 miliseconds
-        PauseTransition delay = new PauseTransition(Duration.millis(5000));
+        PauseTransition delay = new PauseTransition(Duration.millis(2500));
         delay.setOnFinished(event -> Navigator.nextState());
         delay.play();
     }

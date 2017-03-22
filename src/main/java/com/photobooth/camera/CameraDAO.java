@@ -21,7 +21,7 @@ public class CameraDAO {
         logger.info("About to take a photo " + LocalDateTime.now());
         Runtime rt = Runtime.getRuntime();
 
-        DateTimeFormatter yyyymmdd_hHmm = DateTimeFormatter.ofPattern("YYYYMMDD_HHmmSS");
+        DateTimeFormatter yyyymmdd_hHmm = DateTimeFormatter.ofPattern("YYYYMMdd_HHmmSS");
         LocalDateTime now = LocalDateTime.now();
         String fileName = now.format(yyyymmdd_hHmm);
         logger.info("Sent command " + LocalDateTime.now());

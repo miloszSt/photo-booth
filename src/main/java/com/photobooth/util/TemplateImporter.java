@@ -159,9 +159,10 @@ public class TemplateImporter {
 
         Integer thickness = Integer.valueOf(node.getAttributes().getNamedItem("Thickness").getNodeValue());
         String strokeColor = node.getAttributes().getNamedItem("StrokeColor").getNodeValue();
-
-        Integer rotation = Integer.valueOf(node.getAttributes().getNamedItem("Rotation").getNodeValue());
-
+        Integer rotation = 0;
+        if (node.getAttributes().getNamedItem("Rotation") != null) {
+            rotation = Integer.valueOf(node.getAttributes().getNamedItem("Rotation").getNodeValue());
+        }
         PhotoSerializable photoSerializable = new PhotoSerializable(top, left, width, height, photoNumber, name, rotation, thickness, strokeColor);
 
         return photoSerializable;

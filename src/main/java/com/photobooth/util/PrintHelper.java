@@ -23,10 +23,13 @@ public class PrintHelper {
             logger.error(e);
         }
         ImageView imageView = new ImageView(image);
-        Thread thread = new Thread(() -> printImage(imageView, copies));
+//        Thread thread = new Thread(() -> printImage(imageView, copies));
+        Thread thread = new Thread(() -> dummyPrint(imageView, copies));
         thread.start();
     }
+    private static void dummyPrint(Node node, Integer copies){
 
+    }
 
     private static void printImage(Node node, Integer copies) {
 

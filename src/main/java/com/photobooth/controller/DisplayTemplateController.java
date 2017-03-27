@@ -186,6 +186,10 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         print(2);
     }
 
+    @FXML
+    private void reset(){
+        Navigator.start();
+    }
 
     private void print(Integer copies) {
         stackPane.setMaxHeight(10);
@@ -195,10 +199,10 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         SnapshotParameters params = new SnapshotParameters();
         params.setViewport(new Rectangle2D(0, 0, 1200, 1800));
         WritableImage image = finalViewPane.snapshot(params, null);
-        DateTimeFormatter yyyymmdd_hHmm = DateTimeFormatter.ofPattern("MMDD_HHmm");
+        DateTimeFormatter yyyymmdd_hHmm = DateTimeFormatter.ofPattern("MMdd_HHmm");
         LocalDateTime now = LocalDateTime.now();
         String fileName = now.format(yyyymmdd_hHmm);
-        File file = new File(ConfigurationUtil.initConfiguration().getTempPath() + fileName + ".png");
+        File file = new File("c:/" + ConfigurationUtil.initConfiguration().getTempPath() + fileName + ".png");
 
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);

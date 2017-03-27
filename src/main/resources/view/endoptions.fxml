@@ -59,7 +59,8 @@
 
             <Button fx:id="resetButton" text="Zacznij od nowa"
                     GridPane.columnIndex="6" GridPane.rowIndex="1"
-                    styleClass="optionButton">
+                    styleClass="optionButton"
+                    onMouseClicked="#reset">
                 <font>
                     <Font size="30.0"/>
                 </font>

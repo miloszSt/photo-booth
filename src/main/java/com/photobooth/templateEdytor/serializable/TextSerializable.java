@@ -77,8 +77,10 @@ public class TextSerializable implements Serializable, SerializableTemplateInter
 
 
         textElement.setBackgroundColor(Color.TRANSPARENT);
-        textElement.setFontStyle(textSize * 2,textColor, isBold, isItalic, fontName);
+        textElement.setFontStyle(textSize,textColor, isBold, isItalic, fontName);
         textElement.setTextValue(textValue);
+
+
 
         return textElement;
     }

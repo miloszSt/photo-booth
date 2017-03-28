@@ -4,6 +4,8 @@ import com.photobooth.util.ColorUtils;
 import com.photobooth.util.IdCreator;
 import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
 import com.photobooth.templateEdytor.serializable.TextSerializable;
+import com.sun.javafx.tk.FontLoader;
+import com.sun.javafx.tk.Toolkit;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -13,8 +15,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-
-import java.util.List;
 
 public class TextElement extends StackPane implements TemplateElementInterface{
 
@@ -138,6 +138,14 @@ public class TextElement extends StackPane implements TemplateElementInterface{
 
     public void setFontStyle(Integer textSize, String textColor, Boolean isBold, Boolean isItalic, String fontName) {
 
+        int baseTextSize = 999;
+        Font font = getFont(baseTextSize, isBold, isItalic, fontName);
+        text.setFont(calculateFontSizeBasedOnRectangleWidth(font, baseTextSize, isBold, isItalic, fontName));
+
+        text.setFill(ColorUtils.parseStringToColor(textColor));
+    }
+
+    private Font getFont(Integer textSize, Boolean isBold, Boolean isItalic, String fontName) {
         Font font = Font.font(fontName, textSize);
         if(isBold){
             font = Font.font(fontName, FontWeight.BOLD, textSize);
@@ -150,8 +158,25 @@ public class TextElement extends StackPane implements TemplateElementInterface{
         if (isBold && isItalic){
             font = Font.font(fontName, FontWeight.BOLD, FontPosture.ITALIC, textSize);
         }
-        text.setFont(font);
-        text.setFill(ColorUtils.parseStringToColor(textColor));
+        return font;
+    }
+
+    public Font calculateFontSizeBasedOnRectangleWidth(Font font, Integer baseTextSize, Boolean  isBold, Boolean isItalic, String fontName){
+        FontLoader fontLoader = Toolkit.getToolkit().getFontLoader();
+
+        float stringWidth = fontLoader.computeStringWidth(text.getText(), font);
+        Font font1 = font;
+
+        while(stringWidth > rectangle.getWidth() || fontLoader.getFontMetrics(font1).getAscent() * 1.3 > rectangle.getHeight() ){
+            baseTextSize--;
+            font1 = getFont(baseTextSize, isBold, isItalic, fontName);
+            stringWidth = fontLoader.computeStringWidth(text.getText(), font1) * 2.4f;
+
+        }
+//        System.out.println("String width " + stringWidth + " baseTextSize " + baseTextSize + " rectangle " + rectangle);
+//        System.out.println(fontLoader.getFontMetrics(font1));
+//
+        return getFont(baseTextSize, isBold, isItalic, fontName);
     }
 
     public void setTextSize(int textSize){

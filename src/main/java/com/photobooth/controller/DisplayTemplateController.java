@@ -101,8 +101,8 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         final Scale scale = new Scale(scaleFactor, scaleFactor);
         if (!photos.isEmpty()) {
             List<File> photosToUse = new ArrayList<>(photos);
-            Rectangle background = new Rectangle(templateData.getWight(), templateData.getHeight(), Color.TRANSPARENT);
-
+            Rectangle background = new Rectangle(templateData.getWight(), templateData.getHeight(), Color.GREEN);
+//
             finalViewPane.getChildren().add(background);
             List<SerializableTemplateInterface> templateInterfaceList = templateData.getTemplateInterfaceList();
 
@@ -117,7 +117,7 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
                 finalViewPane.getChildren().add((Node) templateElementInterface);
 
-                finalViewPane.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+                finalViewPane.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
 
             }
 
@@ -127,8 +127,10 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
 
             borderPane.setCenter(stackPane);
-            stackPane.setBackground(new Background(new BackgroundFill(ColorUtils.parseStringToColor(templateData.getBackgroundColor()), null, null)));
+//            stackPane.setBackground(new Background(new BackgroundFill(ColorUtils.parseStringToColor(templateData.getBackgroundColor()), null, null)));
             borderPane.setBackground(new Background(new BackgroundFill(ColorUtils.parseStringToColor(templateData.getBackgroundColor()), null, null)));
+            borderPane.setMaxWidth(templateData.getWight());
+            borderPane.setMaxHeight(templateData.getHeight());
 //            stackPane.setAlignment(Pos.CENTER);
 
 

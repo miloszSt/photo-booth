@@ -1,10 +1,14 @@
 package com.photobooth;
 
+import com.photobooth.config.Config;
+import com.photobooth.config.ConfigReader;
 import com.photobooth.controller.AppController;
 import com.photobooth.navigator.Navigator;
-import com.photobooth.util.Configuration;
-import com.photobooth.util.ConfigurationUtil;
+import com.photobooth.util.StateFlowConfiguration;
 import javafx.application.Application;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -12,7 +16,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -25,19 +28,49 @@ import java.util.ResourceBundle;
  */
 public class App extends Application {
 
-    private static final String FULL_SCREEN_HINT = "";
-    final static Logger logger = Logger.getLogger(App.class);
+    private final static Logger logger = Logger.getLogger(App.class);
 
-    private Configuration configuration;
+    private static final String FULL_SCREEN_HINT = "";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         logger.info("Uruchomiono aplikację");
-        configuration = ConfigurationUtil.initConfiguration();
+
+        if (ConfigReader.hasStateFlowConfigurationDefined()) {
+            logger.info("Czytam konfiguracje przepływu stanów");
+            Task<StateFlowConfiguration> getStateFlowConfigTask = new Task<StateFlowConfiguration>() {
+                @Override
+                protected StateFlowConfiguration call() throws Exception {
+                    return ConfigReader.readStateFlowCOnfiguration();
+                }
+            };
+            getStateFlowConfigTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent event) {
+                    StateFlowConfiguration stateFlowConfiguration = getStateFlowConfigTask.getValue();
+                    Config.getInstance().setStateFlowConfiguration(stateFlowConfiguration);
+                    setUp(primaryStage);
+                }
+            });
+            Thread thread = new Thread(getStateFlowConfigTask);
+            thread.setDaemon(true);
+            thread.start();
+        } else {
+            setUp(primaryStage);
+        }
+    }
+
+    private void setUp(Stage primaryStage) {
+        // standardowy przepływ programu
         primaryStage.setFullScreen(true);
         primaryStage.setFullScreenExitHint(FULL_SCREEN_HINT);
         Navigator.setAppContainer(primaryStage);
-        primaryStage.setScene(loadAppView());
+
+        try {
+            primaryStage.setScene(loadAppView());
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
         primaryStage.show();
     }
 
@@ -47,38 +80,25 @@ public class App extends Application {
         AppController appController = loader.getController();
         Navigator.setAppController(appController);
 
-        if (hasCustomConfiguration()) {
-            Navigator.nextState();
+        if (Config.getInstance().getStateFlowConfiguration() != null) {
+            showStateFlowConfigurationExists();
         } else {
-            showNoCustomConfigurationAlert();
+            Navigator.goToStateEditor(false);
         }
 
         return new Scene(appPane);
     }
 
-    private void showNoCustomConfigurationAlert() {
+    private void showStateFlowConfigurationExists() {
         Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmationDialog.setHeaderText(null);
-        String contentProperty;
-        if (configuration.isStateFlowDefined())
-            contentProperty = "ConfirmationAlert.ContentText";
-        else
-            contentProperty = "InitConfirmationAlert.ContentText";
-
+        confirmationDialog.setHeaderText(ResourceBundle.getBundle("locale.locale")
+                .getString("ConfirmationLoadDefinedStatFlowConfigurationAlert.HeaderText"));
         confirmationDialog.setContentText(ResourceBundle.getBundle("locale.locale")
-                .getString(contentProperty));
+                .getString("ConfirmationLoadDefinedStatFlowConfigurationAlert.ContentText"));
 
         Optional<ButtonType> result = confirmationDialog.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            Navigator.goTo(Navigator.STATE_EDITOR_VIEW);
-        } else { // Cancel
-            Navigator.setCustomStates(configuration.loadLastStatFlow());
-            Navigator.nextState();
-        }
-    }
-
-    private boolean hasCustomConfiguration() {
-        return Navigator.hasCustomStatesConfiguration();
+        boolean shouldUseDefinedStateFlowConfig = result.isPresent() && result.get() == ButtonType.OK;
+        Navigator.goToStateEditor(shouldUseDefinedStateFlowConfig);
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {

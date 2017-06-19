@@ -1,7 +1,5 @@
 package com.photobooth.controller;
 
-import com.photobooth.navigator.Navigator;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -28,15 +26,5 @@ public class AppController implements Initializable {
 
     public void setContent(Node node) {
         contentHolder.getChildren().setAll(node);
-    }
-
-    @FXML
-    public void handleStateEditorAction(ActionEvent actionEvent) {
-        Navigator.goTo(Navigator.STATE_EDITOR_VIEW);
-    }
-
-    @FXML
-    public void handleTemplateEditorAction(ActionEvent actionEvent) {
-        Navigator.goTo(Navigator.TEMPLATE_EDITOR_VIEW);
     }
 }

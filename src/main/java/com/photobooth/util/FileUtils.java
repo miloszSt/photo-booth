@@ -16,12 +16,12 @@ import java.util.List;
  * @author mst
  */
 public class FileUtils {
-    final static Logger logger = Logger.getLogger(FileUtils.class);
+    private final static Logger logger = Logger.getLogger(FileUtils.class);
     private FileUtils() {}
 
     public static final String RESOURCES_FOLDER = "src/main/resources/";
 
-    public static final List<String> PHOTO_EXTENSIONS = new ArrayList<String>(){
+    private static final List<String> PHOTO_EXTENSIONS = new ArrayList<String>(){
         {
             add("jpg");
             add("JPG");
@@ -37,7 +37,6 @@ public class FileUtils {
      * Loads file or folder from 'resources' according to given path.
      *
      * @param path to file or folder
-     * @return
      */
     public static File load(String path) {
         ClassLoader classLoader = FileUtils.class.getClassLoader();
@@ -61,18 +60,22 @@ public class FileUtils {
 
 
     public static void createDirIfDoesntExists(String path){
-        Path dirPath = Paths.get(path);
-        if(!Files.exists(dirPath)){
+        if(!checkIfFileExistUnderProjectCatalog(path)){
             try {
-                Files.createDirectories(dirPath);
+                Files.createDirectories(Paths.get(path));
+                logger.info("Create config directory: " + path);
             } catch (IOException e) {
                 logger.error(e);
             }
         }
     }
 
-    public static String getExtension(String pathname) {
-        return pathname.substring(pathname.lastIndexOf('.') + 1);
+    public static boolean checkIfFileExistUnderProjectCatalog(String path) {
+        Path filePath = Paths.get(path);
+        return Files.exists(filePath);
     }
 
+    private static String getExtension(String pathname) {
+        return pathname.substring(pathname.lastIndexOf('.') + 1);
+    }
 }

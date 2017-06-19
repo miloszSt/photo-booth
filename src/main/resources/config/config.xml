@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<state-flow-config>
+    <state-def
+            label="Animacja zachęty"
+            fxmlViewPath="/view/encouragement.fxml">
+        <media path="/photoBooth/animation/caluski_poziom.mp4" />
+    </state-def>
+    <state-def
+            label="Fotka"
+            fxmlViewPath="/view/takephoto.fxml">
+        <media path="/photoBooth/animation/caluski_poziom.mp4" />
+        <media path="/photoBooth/animation/czerwony_dywan_poziom.mp4" />
+    </state-def>
+    <state-def
+            label="Fotka"
+            fxmlViewPath="/view/takephoto.fxml">
+        <media path="/photoBooth/animation/odliczanie_poziom.mp4" />
+        <media path="/photoBooth/animation/lustereczko_poziom.mp4" />
+    </state-def>
+</state-flow-config>

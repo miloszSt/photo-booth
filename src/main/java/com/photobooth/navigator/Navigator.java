@@ -1,15 +1,15 @@
 package com.photobooth.navigator;
 
+import com.photobooth.config.Config;
 import com.photobooth.controller.AppController;
 import com.photobooth.controller.PreviewController;
 import com.photobooth.controller.spec.AnimationInitializable;
+import com.photobooth.controller.spec.StateFlowConfigurationInitializable;
 import com.photobooth.controller.spec.TemplateAndPhotoInitializable;
+import com.photobooth.model.Media;
 import com.photobooth.model.StateDef;
 import com.photobooth.templateEdytor.serializable.TemplateData;
-import com.photobooth.util.Configuration;
-import com.photobooth.util.ConfigurationUtil;
-import com.photobooth.util.FileUtils;
-import com.photobooth.util.TemplateImporter;
+import com.photobooth.util.*;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import org.apache.log4j.Logger;
@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * @author mst
  */
 public class Navigator {
-    final static Logger logger = Logger.getLogger(Navigator.class);
+    private final static Logger logger = Logger.getLogger(Navigator.class);
     /** Paths to FXML views definitions. */
     public static final String APP_VIEW = "/view/app.fxml";
     public static final String ENCOURAGMENT_VIEW = "/view/encouragement.fxml";
@@ -48,12 +48,12 @@ public class Navigator {
     /** Default application flow. Used if there won't be any custom configuration. */
     private static final List<StateDef> DEFAULT_APP_STATES = new ArrayList<StateDef>() {
         {
-            add(new StateDef("Animacja zachety", ENCOURAGMENT_VIEW, Collections.singletonList("Pierwszy_PIONv2_converted.mp4")));
-            add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, Collections.singletonList("odliczanie.mp4")));
-            add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, Collections.singletonList("odliczanie.mp4")));
-            add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, Collections.singletonList("odliczanie.mp4")));
-            add(new StateDef("Galeria", GALLERY_VIEW, Collections.singletonList("")));
-            add(new StateDef("Koniec", END_OPTIONS_VIEW, Collections.singletonList(""), "swinia.ser"));
+            add(new StateDef("Animacja zęchety", ENCOURAGMENT_VIEW, Collections.singletonList(new Media("Pierwszy_PIONv2_converted.mp4"))));
+            add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, Collections.singletonList(new Media("odliczanie.mp4"))));
+            add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, Collections.singletonList(new Media("odliczanie.mp4"))));
+            add(new StateDef("Robienie fotki", TAKE_PHOTO_VIEW, Collections.singletonList(new Media("odliczanie.mp4"))));
+            add(new StateDef("Galeria", GALLERY_VIEW, Collections.singletonList(null)));
+            add(new StateDef("Koniec", END_OPTIONS_VIEW, Collections.singletonList(null), "swinia.ser"));
         }
     };
 
@@ -96,7 +96,7 @@ public class Navigator {
         try {
             appController.setContent(loader.load());
             if (loader.getController() instanceof AnimationInitializable) {
-                ((AnimationInitializable) loader.getController()).initAnimations(stateDefinition.getAnimationPaths());
+                ((AnimationInitializable) loader.getController()).initAnimations(stateDefinition.getMediaPaths());
             }
             if (loader.getController() instanceof TemplateAndPhotoInitializable) {
                 ((TemplateAndPhotoInitializable) loader.getController()).setTemplateAndPhotos(getTemplateDateFromName(
@@ -188,11 +188,16 @@ public class Navigator {
     /**
      * Changes view directly for given path of FXML file.
      *
-     * @param fxmlViewPath path of FXML file
+     * @param shouldUseDefinedStateFlowConfig if controller should use StateFlowConfiguration or not
      */
-    public static void goTo(String fxmlViewPath) {
+    public static void goToStateEditor(boolean shouldUseDefinedStateFlowConfig) {
+        FXMLLoader loader = new FXMLLoader(Navigator.class.getResource(Navigator.STATE_EDITOR_VIEW));
         try {
-            appController.setContent(FXMLLoader.load(Navigator.class.getResource(fxmlViewPath)));
+            appController.setContent(loader.load());
+            if (shouldUseDefinedStateFlowConfig
+                    && loader.getController() instanceof StateFlowConfigurationInitializable) {
+                ((StateFlowConfigurationInitializable) loader.getController()).setStateFlowConfiguration(Config.getInstance().getStateFlowConfiguration());
+            }
         } catch (IOException | NullPointerException e) {
             logger.error(e);
         }

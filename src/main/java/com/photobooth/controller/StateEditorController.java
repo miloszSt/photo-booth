@@ -1,10 +1,15 @@
 package com.photobooth.controller;
 
+import com.photobooth.config.Config;
+import com.photobooth.controller.spec.StateFlowConfigurationInitializable;
+import com.photobooth.model.Media;
 import com.photobooth.model.StateDef;
 import com.photobooth.model.StateType;
 import com.photobooth.navigator.Navigator;
 import com.photobooth.util.Configuration;
 import com.photobooth.util.ConfigurationUtil;
+import com.photobooth.util.FormCreator;
+import com.photobooth.util.StateFlowConfiguration;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,10 +21,15 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.*;
+import org.apache.log4j.Logger;
 import org.controlsfx.control.CheckComboBox;
 
+import javax.xml.bind.JAXB;
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +38,9 @@ import java.util.ResourceBundle;
 /**
  * @author mst
  */
-public class StateEditorController implements Initializable {
+public class StateEditorController implements Initializable, StateFlowConfigurationInitializable {
+
+    private static final Logger logger = Logger.getLogger(StateEditorController.class);
 
     private final ObservableList<StateType> stateTypes = FXCollections.observableArrayList(
             new StateType("Animacja zachety", Navigator.ENCOURAGMENT_VIEW, true, false),
@@ -50,13 +62,31 @@ public class StateEditorController implements Initializable {
 
     private Configuration configuration;
 
+    private StateFlowConfiguration stateFlowConfiguration;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         configuration = ConfigurationUtil.initConfiguration();
         stateEditorContainer.setPadding(new Insets(15, 10, 15, 10));
         formContainer = new VBox();
         formContainer.setSpacing(15);
-        formContainer.getChildren().add(createAddStateForm());
+        //formContainer.getChildren().add(createAddStateForm());
+        formContainer.getChildren().add(FormCreator.createNotFilledFormRow(formContainer));
+        //formContainer.getChildren().addAll(FormCreator.createStateEditorFormFromConfig())
+
+        // create default field for first state
+        stateEditorContainer.setCenter(formContainer);
+    }
+
+    @Override
+    public void setStateFlowConfiguration(StateFlowConfiguration stateFlowConfiguration) {
+        this.stateFlowConfiguration = stateFlowConfiguration;
+        //ObservableList<GridPane> createdFormRows = FormCreator.createStateEditorFormFromConfig(stateFlowConfiguration);
+        //formRows.addAll(createdFormRows);
+        //formContainer.getChildren().setAll(formRows);
+        VBox createdForm = FormCreator.createStateEditorFormFromConfig(stateFlowConfiguration);
+        createdForm.setSpacing(15);
+        formContainer = createdForm;
         // create default field for first state
         stateEditorContainer.setCenter(formContainer);
     }
@@ -200,9 +230,23 @@ public class StateEditorController implements Initializable {
         warnAlert.showAndWait();
     }
 
+    /**
+     * Handling 'Cancel' button.
+     */
      public void handleCancel() {
-         Navigator.setCustomStates(configuration.loadLastStatFlow());
-         Navigator.nextState();
+         StateFlowConfiguration stateFlowConfiguration = Config.getInstance()
+                 .getStateFlowConfiguration();
+         if (stateFlowConfiguration == null) {
+             Alert confirmationDialog = new Alert(Alert.AlertType.ERROR);
+             confirmationDialog.setHeaderText(ResourceBundle.getBundle("locale.locale")
+                     .getString("NoStateFlowWarnAlert.HeaderText"));
+             confirmationDialog.setContentText(ResourceBundle.getBundle("locale.locale")
+                     .getString("NoStateFlowWarnAlert.ContentText"));
+             confirmationDialog.show();
+         } else {
+             Navigator.setCustomStates(stateFlowConfiguration.getStates());
+             Navigator.nextState();
+         }
      }
 
     public void handleSave() {
@@ -246,7 +290,8 @@ public class StateEditorController implements Initializable {
 
     private boolean isFormValid() {
         boolean isValid = true;
-        for (GridPane formRow : formRows) {
+        for (Node formRowContainer : formContainer.getChildren()) {
+            GridPane formRow = (GridPane) formRowContainer;
             ComboBox<StateType> stateTypeComboBox = (ComboBox) getNodeFromGridPane(formRow, 0, 0);
             StateType stateType = stateTypeComboBox.getValue();
 
@@ -271,14 +316,30 @@ public class StateEditorController implements Initializable {
         return null;
     }
 
-    private void saveStatesDefinitions() {
-        formRows.forEach(formRow -> {
+    private void saveStatesDefinitions(){
+        formContainer.getChildren().forEach(formRow -> {
             StateDef stateDefinition = new StateDef();
-            Node stateTypeComboBox = getNodeFromGridPane(formRow, 0, 0);
+            Node stateTypeComboBox = getNodeFromGridPane((GridPane) formRow, 0, 0);
             saveLabelAndFxmlPath(stateTypeComboBox, stateDefinition);
-            saveAnimationPath(getNodeFromGridPane(formRow, 1, 0), stateTypeComboBox, stateDefinition);
+            saveAnimationPath(getNodeFromGridPane((GridPane) formRow, 1, 0), stateTypeComboBox, stateDefinition);
             customStates.add(stateDefinition);
         });
+        // save stateflow to file
+        StateFlowConfiguration stateFlowConfiguration = new StateFlowConfiguration();
+        stateFlowConfiguration.setStates(customStates);
+        Path configPath = Paths.get("/photoBooth/stateFlows/config.xml");
+        File config = null;
+        if (Files.exists(configPath)) {
+            logger.info("Config file exists and will be overwritten");
+            config = configPath.toFile();
+        } else {
+            try {
+                config = Files.createFile(configPath).toFile();
+            } catch (IOException e) {
+                logger.error("Error creating state flow configuration for path: " + configPath, e);
+            }
+        }
+        JAXB.marshal(stateFlowConfiguration, config);
 
         configuration.saveStateFlow(customStates);
         Navigator.setCustomStates(customStates);
@@ -297,11 +358,12 @@ public class StateEditorController implements Initializable {
             CheckComboBox<String> comboBox = (CheckComboBox) node;
             List<String> selected = comboBox.getCheckModel().getCheckedItems();
             if (selected != null) {
-                List<String> animations = new ArrayList<>();
+                List<Media> animations = new ArrayList<>();
                 String animationPath = ConfigurationUtil.initConfiguration().getAnimationPath();
 
                 for (String animation : selected) {
-                    animations.add(animationPath + animation);
+                    Media media = new Media(animationPath + animation);
+                    animations.add(media);
                 }
                 stateDefinition.setAnimationPaths(animations);
             }

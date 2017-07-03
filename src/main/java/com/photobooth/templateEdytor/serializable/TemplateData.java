@@ -54,7 +54,7 @@ public class TemplateData implements Serializable{
         this.height = height;
     }
 
-    public Integer getWight() {
+    public Integer getWidht() {
         return wight;
     }
 

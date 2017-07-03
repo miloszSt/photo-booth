@@ -35,13 +35,13 @@ public class ConfigurationUtil {
             }
         }else {
             return new Configuration("/photoBooth/animation/",
-                    "/photoBooth/templates/",
-                    "/photoBooth/currentPhotos/",
-                    "/photoBooth/archivePhotos",
-                    "/photoBooth/templateImages/",
-                    "/photoBooth/temp/",
-                    "/photoBooth/stateFlows",
-                    "/photoBooth/beforePhoto");
+                    "c:/photoBooth/templates/",
+                    "c:/photoBooth/currentPhotos/",
+                    "c:/photoBooth/archivePhotos",
+                    "c:/photoBooth/templateImages/",
+                    "c:/photoBooth/temp/",
+                    "c:/photoBooth/stateFlows",
+                    "c:/photoBooth/beforePhoto");
         }
         return null;
     }

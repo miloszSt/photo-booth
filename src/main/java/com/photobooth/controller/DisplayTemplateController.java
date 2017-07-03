@@ -25,6 +25,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import org.apache.log4j.Logger;
 
@@ -45,6 +46,12 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
     private List<File> photos;
     private Double scaleFactor;
     private Color signatureColor = Color.BLACK;
+    private Orientation orientation;
+    public enum Orientation{
+        VERTICAL,HORIZONTAL;
+    }
+
+
     Canvas canvas;
     @FXML
     BorderPane borderPane;
@@ -92,16 +99,32 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         this.signatureColor = Color.BLACK;
     }
 
+    private Orientation getOrientation(TemplateData templateData){
+         if(templateData.getWidht() > templateData.getHeight()){
+            return Orientation.HORIZONTAL;
+        }
+        return Orientation.VERTICAL;
+    }
     public Pane createPaneWithPhotos() {
         if (finalViewPane.getChildren().size() > 0) finalViewPane.getChildren().clear();
-        scaleFactor = 1080.0 / templateData.getWight();
-        Double scaleFactor2 = templateData.getHeight() / 900.0;
+
+        this.orientation = getOrientation(templateData);
+
+        scaleFactor = 1080.0 / templateData.getWidht();
+        Double scaleFactor2 = 1080.0 / templateData.getWidht();
 
 
-        final Scale scale = new Scale(scaleFactor, scaleFactor);
+        final Scale scale;
+        if(orientation == Orientation.VERTICAL ) {
+            scale = new Scale(scaleFactor, scaleFactor);
+        }else {
+            scale = new Scale(scaleFactor2, scaleFactor2);
+        }
+
+
         if (!photos.isEmpty()) {
             List<File> photosToUse = new ArrayList<>(photos);
-            Rectangle background = new Rectangle(templateData.getWight(), templateData.getHeight(), Color.GREEN);
+            Rectangle background = new Rectangle(templateData.getWidht(), templateData.getHeight(), Color.GREEN);
 //
             finalViewPane.getChildren().add(background);
             List<SerializableTemplateInterface> templateInterfaceList = templateData.getTemplateInterfaceList();
@@ -121,15 +144,16 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
             }
 
-            System.out.println("w " + templateData.getWight() + "  H : " + templateData.getHeight());
-            System.out.println("wF " + templateData.getWight() * scaleFactor + "  HF : " + templateData.getHeight() * scaleFactor);
-//            System.out.println("wF2 " + templateData.getWight() * scaleFactor2 + "  HF2 : " + templateData.getHeight() * scaleFactor2 );
+            System.out.println("w " + templateData.getWidht() + "  H : " + templateData.getHeight());
+            System.out.println("wF " + templateData.getWidht() * scaleFactor + "  HF : " + templateData.getHeight() * scaleFactor);
+//            System.out.println("wF2 " + templateData.getWidht() * scaleFactor2 + "  HF2 : " + templateData.getHeight() * scaleFactor2 );
 
 
             borderPane.setCenter(stackPane);
 //            stackPane.setBackground(new Background(new BackgroundFill(ColorUtils.parseStringToColor(templateData.getBackgroundColor()), null, null)));
-            borderPane.setBackground(new Background(new BackgroundFill(ColorUtils.parseStringToColor(templateData.getBackgroundColor()), null, null)));
-            borderPane.setMaxWidth(templateData.getWight());
+//            borderPane.setBackground(new Background(new BackgroundFill(ColorUtils.parseStringToColor(templateData.getBackgroundColor()), null, null)));
+            borderPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+            borderPane.setMaxWidth(templateData.getWidht());
             borderPane.setMaxHeight(templateData.getHeight());
 //            stackPane.setAlignment(Pos.CENTER);
 
@@ -199,17 +223,25 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
         finalViewPane.setBackground(null);
         SnapshotParameters params = new SnapshotParameters();
-        params.setViewport(new Rectangle2D(0, 0, 1200, 1800));
+
+        if(orientation == Orientation.HORIZONTAL) {
+            params.setViewport(new Rectangle2D(0, 0, 1800, 1200));
+        }
+        if(orientation == Orientation.VERTICAL) {
+//            params.setTransform(new Rotate(90));
+            params.setViewport(new Rectangle2D(0, 0, 1200, 1800));
+        }
         WritableImage image = finalViewPane.snapshot(params, null);
+
         DateTimeFormatter yyyymmdd_hHmm = DateTimeFormatter.ofPattern("MMdd_HHmm");
         LocalDateTime now = LocalDateTime.now();
         String fileName = now.format(yyyymmdd_hHmm);
-        File file = new File("c:/" + ConfigurationUtil.initConfiguration().getTempPath() + fileName + ".png");
+        File file = new File(ConfigurationUtil.initConfiguration().getTempPath() + fileName + ".png");
 
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
 
-            PrintHelper.print(file.getPath(), copies);
+            PrintHelper.print(file.getPath(), copies, orientation);
             Navigator.nextState();
         } catch (IOException e) {
             // TODO: handle exception here

@@ -1,5 +1,6 @@
 package com.photobooth.util;
 
+import com.photobooth.controller.DisplayTemplateController;
 import javafx.print.*;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 public class PrintHelper {
     final static Logger logger = Logger.getLogger(PrintHelper.class);
 
-    public static void print(String filePath, Integer copies) throws InterruptedException {
+    public static void print(String filePath, Integer copies, DisplayTemplateController.Orientation orientation) throws InterruptedException {
         Image image = null;
         try {
             image = new Image(Files.newInputStream(Paths.get(filePath)));
@@ -23,7 +24,7 @@ public class PrintHelper {
             logger.error(e);
         }
         ImageView imageView = new ImageView(image);
-        Thread thread = new Thread(() -> printImage(imageView, copies));
+        Thread thread = new Thread(() -> printImage(imageView, copies, orientation));
 //        Thread thread = new Thread(() -> dummyPrint(imageView, copies));
         thread.start();
     }
@@ -31,12 +32,17 @@ public class PrintHelper {
 
     }
 
-    private static void printImage(Node node, Integer copies) {
+    private static void printImage(Node node, Integer copies, DisplayTemplateController.Orientation orientation) {
 
         Printer printer = Printer.getDefaultPrinter();
         printer.getPrinterAttributes().getSupportedPapers();
         Paper paper = new ArrayList<>(printer.getPrinterAttributes().getSupportedPapers()).get(3);
-        PageLayout pageLayout = printer.createPageLayout(paper, PageOrientation.PORTRAIT, Printer.MarginType.HARDWARE_MINIMUM);
+        PageLayout pageLayout;
+        if(orientation == DisplayTemplateController.Orientation.HORIZONTAL) {
+            pageLayout = printer.createPageLayout(paper, PageOrientation.LANDSCAPE, Printer.MarginType.HARDWARE_MINIMUM);
+        }else {
+            pageLayout = printer.createPageLayout(paper, PageOrientation.PORTRAIT, Printer.MarginType.HARDWARE_MINIMUM);
+        }
         logger.debug("PageLayout: " + pageLayout);
 
 

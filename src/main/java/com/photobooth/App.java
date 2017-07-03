@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
  *
  * @author mst
  */
-public class App extends Application {
+public class    App extends Application {
 
     private final static Logger logger = Logger.getLogger(App.class);
 
@@ -34,6 +34,8 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Navigator.moveTempPhotosToArchive();
+
         logger.info("Uruchomiono aplikację");
 
         if (ConfigReader.hasStateFlowConfigurationDefined()) {

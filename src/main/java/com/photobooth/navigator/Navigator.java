@@ -128,7 +128,7 @@ public class Navigator {
         moveTempPhotosToArchive();
     }
 
-    private static void moveTempPhotosToArchive(){
+    public static void moveTempPhotosToArchive(){
         Configuration configuration = ConfigurationUtil.initConfiguration();
         Path currentPhotoPath = Paths.get(configuration.getCurrentPhotosPath());
         Path archivePhotos = Paths.get(configuration.getArchivePhotosPath());
@@ -167,7 +167,7 @@ public class Navigator {
         try {
             Configuration configuration = ConfigurationUtil.initConfiguration();
 
-            data1 = TemplateImporter.importTemplateFromDSLRBooth(templateName);
+            data1 = TemplateImporter.importTemplateFromDSLRBooth(configuration.getTemplatePath()+templateName);
         } catch (ParserConfigurationException e) {
             logger.error(e);
         } catch (IOException e) {

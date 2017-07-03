@@ -6,6 +6,7 @@ import com.photobooth.model.StateType;
 import com.photobooth.navigator.Navigator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.ColumnConstraints;
@@ -58,6 +59,34 @@ public class FormCreator {
         stateTypesComboBox.getSelectionModel().select(getStateTypeIndex(stateDef.getLabel()));
         formRowContainer.add(stateTypesComboBox, 0, 0);
 
+        stateTypesComboBox.setOnAction(actionEvent -> {
+            StateType selected = stateTypesComboBox.getSelectionModel().getSelectedItem();
+            if (formRowContainer.getChildren().size() == 4 ) {
+                System.out.println("Jest cos do usuniecia");
+                int counter = 0;
+                for (Node node : formRowContainer.getChildren()) {
+                    if (GridPane.getColumnIndex(node) == 1 && GridPane.getRowIndex(node) == 0) {
+                        formRowContainer.getChildren().remove(counter);
+                        break;
+                    }
+                    else {
+                        counter++;
+                    }
+                }
+            }
+
+            if (selected.shouldContainTemplate()) {
+                ComboBox<String> templateComboBox = new ComboBox<>();
+                templateComboBox.setItems(FXCollections.observableArrayList(getListOfMedia(configuration.getTemplatePath())));
+                formRowContainer.add(templateComboBox, 1, 0);
+            }
+            else if (selected.shouldContainAnimation()) {
+                CheckComboBox<String> animationsComboBox = new CheckComboBox<>();
+                animationsComboBox.getItems().setAll(getListOfMedia(configuration.getAnimationPath()));
+                formRowContainer.add(animationsComboBox, 1, 0);
+            }
+        });
+
         // cmbMedia
         if (stateDef.getAnimationPaths() != null) {
             CheckComboBox<String> animationsComboBox = new CheckComboBox<>();
@@ -72,7 +101,7 @@ public class FormCreator {
             ComboBox<String> templateComboBox = new ComboBox<>();
             String[] templates = getListOfMedia(configuration.getTemplatePath());
             templateComboBox.setItems(FXCollections.observableArrayList(templates));
-            Arrays.stream(getShouldBeCheckedIndexes(templates, stateDef.getMediaPaths()))
+            Arrays.stream(getShouldBeCheckedIndexes(templates, Arrays.asList(stateDef.getTemplateName())))
                     .forEach(index -> templateComboBox.getSelectionModel().select(index));
             formRowContainer.add(templateComboBox, 1, 0);
         }

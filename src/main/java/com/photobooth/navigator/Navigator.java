@@ -198,7 +198,7 @@ public class Navigator {
                     && loader.getController() instanceof StateFlowConfigurationInitializable) {
                 ((StateFlowConfigurationInitializable) loader.getController()).setStateFlowConfiguration(Config.getInstance().getStateFlowConfiguration());
             }
-        } catch (IOException | NullPointerException e) {
+        } catch (IOException e) {
             logger.error(e);
         }
     }

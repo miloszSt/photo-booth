@@ -22,34 +22,39 @@
                 <ToggleGroup fx:id="toggleGroup1"/>
             </fx:define>
 
-            <ToggleButton fx:id="greenButton" text="      "
-                          GridPane.columnIndex="4" GridPane.rowIndex="0"
-                          toggleGroup="$toggleGroup1"
-                          styleClass="greenButton"
-                          onMouseClicked="#setColorGreen">
-            </ToggleButton>
-            <ToggleButton fx:id="blueButton" text="      "
-                          GridPane.columnIndex="4" GridPane.rowIndex="1"
-                          toggleGroup="$toggleGroup1"
-                          styleClass="blueButton"
-                          onMouseClicked="#setColorBlue">
-            </ToggleButton>
-
-            <ToggleButton fx:id="redButton" text="      "
-                          GridPane.columnIndex="5" GridPane.rowIndex="0"
-                          toggleGroup="$toggleGroup1"
-                          styleClass="redButton"
-                          onMouseClicked="#setColorRed">
-            </ToggleButton>
             <ToggleButton fx:id="blackButton" text="      "
-                          GridPane.columnIndex="5" GridPane.rowIndex="1"
+                          GridPane.columnIndex="2" GridPane.rowIndex="0"
                           toggleGroup="$toggleGroup1"
                           styleClass="blackButton"
                           onMouseClicked="#setColorBlack">
             </ToggleButton>
 
+            <ToggleButton fx:id="blueButton" text="      "
+                          GridPane.columnIndex="3" GridPane.rowIndex="0"
+                          toggleGroup="$toggleGroup1"
+                          styleClass="blueButton"
+                          onMouseClicked="#setColorBlue">
+            </ToggleButton>
+
+
+
+            <ToggleButton fx:id="redButton" text="      "
+                          GridPane.columnIndex="4" GridPane.rowIndex="0"
+                          toggleGroup="$toggleGroup1"
+                          styleClass="redButton"
+                          onMouseClicked="#setColorRed">
+            </ToggleButton>
+
+            <ToggleButton fx:id="greenButton" text="      "
+                          GridPane.columnIndex="5" GridPane.rowIndex="0"
+                          toggleGroup="$toggleGroup1"
+                          styleClass="greenButton"
+                          onMouseClicked="#setColorGreen">
+            </ToggleButton>
+
+
             <Button fx:id="cleanButton" text="Wyczyść"
-                    GridPane.columnIndex="6" GridPane.rowIndex="0"
+                    GridPane.columnIndex="3" GridPane.rowIndex="1" GridPane.columnSpan="4"
                     styleClass="optionButton"
                     onMouseClicked="#clearSignature">
                 <font>
@@ -57,32 +62,38 @@
                 </font>
             </Button>
 
-            <Button fx:id="resetButton" text="Zacznij od nowa"
-                    GridPane.columnIndex="6" GridPane.rowIndex="1"
-                    styleClass="optionButton"
-                    onMouseClicked="#reset">
-                <font>
-                    <Font size="30.0"/>
-                </font>
-            </Button>
 
             <Button fx:id="print1Button" text="Drukuj 1"
-                    GridPane.columnIndex="8" GridPane.rowIndex="0"
+                    GridPane.columnIndex="6" GridPane.rowIndex="0"
                     styleClass="optionButton"
-            onMouseClicked="#print1">
+                    onMouseClicked="#print1">
                 <font>
                     <Font size="30.0"/>
                 </font>
             </Button>
 
             <Button fx:id="print2Button" text="Drukuj 2"
-                    GridPane.columnIndex="8" GridPane.rowIndex="1"
+                    GridPane.columnIndex="8" GridPane.rowIndex="0"
                     styleClass="optionButton"
                     onMouseClicked="#print2">
                 <font>
                     <Font size="30.0"/>
                 </font>
             </Button>
+
+
+
+
+            <!--<Button fx:id="resetButton" text="Zacznij od nowa"-->
+                    <!--GridPane.columnIndex="6" GridPane.rowIndex="1"-->
+                    <!--styleClass="optionButton"-->
+                    <!--onMouseClicked="#reset">-->
+                <!--<font>-->
+                    <!--<Font size="30.0"/>-->
+                <!--</font>-->
+            <!--</Button>-->
+
+
 
         </GridPane>
 

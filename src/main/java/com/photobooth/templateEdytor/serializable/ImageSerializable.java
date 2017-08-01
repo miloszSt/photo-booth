@@ -31,7 +31,7 @@ public class ImageSerializable implements Serializable, SerializableTemplateInte
         this.name = imageElement.getName();
     }
 
-    public ImageSerializable(Integer top, Integer left, Integer width, Integer height, String name, String imageUrl, Integer thickness, String strokeColor) {
+    public ImageSerializable(Integer top, Integer left, Integer width, Integer height, String name, String imageUrl, Integer thickness, String strokeColor, Integer rotation) {
         this.top = top;
         this.left = left;
         this.width = width;
@@ -40,6 +40,7 @@ public class ImageSerializable implements Serializable, SerializableTemplateInte
         this.imageUrl = imageUrl;
         this.thickness = thickness;
         this.strokeColor = strokeColor;
+        this.rotation = rotation;
     }
 
     public ImageElement toElement(){
@@ -52,6 +53,7 @@ public class ImageSerializable implements Serializable, SerializableTemplateInte
         imageElement.setImageAbsolutePath(imageUrl);
         imageElement.setImage();
         imageElement.setStroke(ColorUtils.parseStringToColor(strokeColor), thickness);
+        imageElement.setRotate(rotation);
         return imageElement;
     }
 }

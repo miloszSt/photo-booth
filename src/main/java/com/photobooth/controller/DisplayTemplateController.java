@@ -2,6 +2,7 @@ package com.photobooth.controller;
 
 import com.photobooth.controller.spec.TemplateAndPhotoInitializable;
 import com.photobooth.navigator.Navigator;
+import com.photobooth.templateEdytor.elements.ImageElement;
 import com.photobooth.templateEdytor.elements.PhotoElement;
 import com.photobooth.templateEdytor.elements.TemplateElementInterface;
 import com.photobooth.templateEdytor.serializable.SerializableTemplateInterface;
@@ -138,14 +139,25 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
                     ((PhotoElement) templateElementInterface).getChildren().remove(1);
                 }
 
+                if(templateElementInterface instanceof ImageElement){
+                    double height = templateElementInterface.getElementHeight();
+
+                    double elementTop = templateElementInterface.getElementTop();
+                    double rotate = ((ImageElement) templateElementInterface).getRotate();
+                    double elementRotation = templateElementInterface.getElementRotation();
+                    if( ( height + elementTop ) > templateData.getHeight()){
+                        ((ImageElement) templateElementInterface).setHeight((int) (templateData.getHeight() - elementTop));
+                    }
+                }
+
                 finalViewPane.getChildren().add((Node) templateElementInterface);
 
                 finalViewPane.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
 
             }
 
-            System.out.println("w " + templateData.getWidht() + "  H : " + templateData.getHeight());
-            System.out.println("wF " + templateData.getWidht() * scaleFactor + "  HF : " + templateData.getHeight() * scaleFactor);
+//            System.out.println("w " + templateData.getWidht() + "  H : " + templateData.getHeight());
+//            System.out.println("wF " + templateData.getWidht() * scaleFactor + "  HF : " + templateData.getHeight() * scaleFactor);
 //            System.out.println("wF2 " + templateData.getWidht() * scaleFactor2 + "  HF2 : " + templateData.getHeight() * scaleFactor2 );
 
 
@@ -252,3 +264,4 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
 
 }
+

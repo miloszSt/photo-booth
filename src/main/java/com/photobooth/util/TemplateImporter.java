@@ -184,8 +184,12 @@ public class TemplateImporter {
         Integer thickness = Integer.valueOf(node.getAttributes().getNamedItem("Thickness").getNodeValue());
         String keepAspect = node.getAttributes().getNamedItem("KeepAspect").getNodeValue();
 
+        Integer rotation = 0;
+        if (node.getAttributes().getNamedItem("Rotation") != null) {
+            rotation = Integer.valueOf(node.getAttributes().getNamedItem("Rotation").getNodeValue());
+        }
 
-        ImageSerializable imageSerializable = new ImageSerializable(top, left, width, height, name, imagePath, thickness, strokeColor);
+        ImageSerializable imageSerializable = new ImageSerializable(top, left, width, height, name, imagePath, thickness, strokeColor, rotation);
 
 
         return imageSerializable;

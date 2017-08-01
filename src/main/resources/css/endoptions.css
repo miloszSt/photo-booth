@@ -52,7 +52,9 @@ ToggleButton:selected{
     -fx-padding: 12 30 12 30;
     -fx-text-fill: white;
     -fx-font-size: 25px;
+    -fx-indent: 100px;
 }
+
 .optionButton Text {
     -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.8), 0, 0.0, 0, 1);
 }
@@ -61,6 +63,32 @@ ToggleButton:selected{
     -fx-background-insets: 2 0 0 0,2 0 3 0, 2 0 4 0, 2 0 5 0;
 }
 
+
+
+
+.resetButton {
+    -fx-max-width: 400px;
+    -fx-min-width: 400px;
+    -fx-background-color:
+            #000000,
+            linear-gradient(#7ebcea, #2f4b8f),
+            linear-gradient(#426ab7, #263e75),
+            linear-gradient(#395cab, #223768);
+    -fx-background-insets: 0,1,2,30;
+    -fx-background-radius: 3,2,2,2;
+    -fx-padding: 12 30 12 30;
+    -fx-text-fill: white;
+    -fx-font-size: 25px;
+
+}
+
+.resetButton Text {
+    -fx-effect: dropshadow(one-pass-box, rgba(0, 0, 0, 0.8), 0, 0.0, 0, 1);
+}
+.resetButton:pressed {
+    -fx-padding: 10 15 13 15;
+    -fx-background-insets: 2 0 0 0,2 0 3 0, 2 0 4 0, 2 0 5 0;
+}
 
 
 

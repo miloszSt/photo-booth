@@ -25,7 +25,7 @@ public class TemplateEdytor extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        TemplateMainView templateMainView = new TemplateMainView(primaryStage);
+//        TemplateMainView templateMainView = new TemplateMainView(primaryStage);
     }
 
     public static void main(String[] args) {

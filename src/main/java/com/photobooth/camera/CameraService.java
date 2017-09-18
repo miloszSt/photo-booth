@@ -14,7 +14,7 @@ public class CameraService {
         this.cameraDAO = new CameraDAO();
     }
 
-    public String takeImage() throws IOException, InterruptedException {
+    public String takeImage() {
         return cameraDAO.captureImageForUser();
     }
 }

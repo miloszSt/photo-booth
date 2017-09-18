@@ -86,7 +86,6 @@ public class ImageElement extends StackPane implements TemplateElementInterface{
 
     public void setImage(){
         if(imageAbsolutePath != null) {
-
             Image dbimage = new Image(String.valueOf(new File(imageAbsolutePath).toURI()) );
             ImageView dbImageView = new ImageView();
             dbImageView.setImage(dbimage);

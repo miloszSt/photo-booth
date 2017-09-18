@@ -57,7 +57,7 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
 
     @Override
     public void initAnimations(List<String> animationPaths) {
-        takePhoto();
+
         this.animationPaths = animationPaths;
         MediaPlayer mediaPlayer = initMediaPlayer();
         mediaView.setMediaPlayer(mediaPlayer);
@@ -66,6 +66,10 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
             Rotate rotationTransform = new Rotate(90, 0, 0);
             Translate translationTransform = new Translate(0, -mediaHeight);
             mediaView.getTransforms().addAll(rotationTransform, translationTransform);
+        });
+        mediaPlayer.setOnEndOfMedia(() -> {
+            String photoFilePath = new CameraService().takeImage();
+            Navigator.goToPreview(photoFilePath);
         });
         //addFadeInTransition(mediaView);
     }
@@ -91,69 +95,6 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
         fadeIn.setFromValue(0.0);
         fadeIn.setToValue(1.0);
         fadeIn.play();
-    }
-
-    private void takePhoto() {
-        Task<String> takePhotoTask = new Task<String>() {
-            @Override
-            protected String call() throws Exception {
-                System.out.println("Wywolany " + new Date());
-                Thread.sleep(2500);
-                System.out.println("pospane" + new Date());
-
-                return new CameraService().takeImage();
-            }
-        };
-        takePhotoTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                String photoFilePath = takePhotoTask.getValue();
-                if (isPhotoFileExist(photoFilePath)) {
-                    Navigator.goToPreview(photoFilePath);
-                } else {
-                    try {
-                        WatchService watcher = FileSystems.getDefault().newWatchService();
-                        Path dir = Paths.get("C:" + configuration.getCurrentPhotosPath());
-                        logger.info("Register dir: " + dir.toString() + " to watch for files");
-                        dir.register(watcher, ENTRY_CREATE);
-                        while (true) {
-                            WatchKey key;
-                            try {
-                                key = watcher.take();
-                            } catch (InterruptedException e) {
-                                logger.info("Error during file watching (on method WatcherService.take()): " + e.getMessage());
-                                return;
-                            }
-
-                            for (WatchEvent<?> watchEvent : key.pollEvents()) {
-                                WatchEvent.Kind<?> kind = watchEvent.kind();
-                                if (kind == OVERFLOW) continue;
-
-                                if (kind == ENTRY_CREATE) {
-                                    WatchEvent<Path> ev = (WatchEvent<Path>) event;
-                                    Path filename = ev.context();
-                                    System.out.format("Emailing file %s%n", filename);
-                                    Navigator.goToPreview(filename.toString());
-                                }
-                            }
-
-                            // Reset the key
-                            boolean valid = key.reset();
-                            if (!valid) {
-                                break;
-                            }
-                        }
-
-                    } catch (IOException exception) {
-                        logger.info("Error during file watching: " + exception.getMessage());
-                    }
-
-                }
-            }
-        });
-        Thread thread = new Thread(takePhotoTask);
-        thread.setDaemon(true);
-        thread.start();
     }
 
     private boolean isPhotoFileExist(String photoFilePath) {

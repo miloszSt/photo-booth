@@ -34,7 +34,7 @@ public class    App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Navigator.moveTempPhotosToArchive();
+        Navigator.moveTempPhotosToArchive(0);
 
         logger.info("Uruchomiono aplikację");
 

@@ -35,6 +35,12 @@
             <version>1.35.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.bitplan</groupId>
+            <artifactId>edsdk4j</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
 
 
     </dependencies>

@@ -1,5 +1,6 @@
 package com.photobooth.controller;
 
+import com.google.common.collect.FluentIterable;
 import com.photobooth.controller.spec.TemplateAndPhotoInitializable;
 import com.photobooth.navigator.Navigator;
 import com.photobooth.templateEdytor.elements.ImageElement;
@@ -28,6 +29,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
@@ -37,8 +39,10 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 
 public class DisplayTemplateController implements Initializable, TemplateAndPhotoInitializable {
     final static Logger logger = Logger.getLogger(DisplayTemplateController.class);
@@ -125,17 +129,32 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
         if (!photos.isEmpty()) {
             List<File> photosToUse = new ArrayList<>(photos);
+
+
             Rectangle background = new Rectangle(templateData.getWidht(), templateData.getHeight(), Color.GREEN);
 //
             finalViewPane.getChildren().add(background);
             List<SerializableTemplateInterface> templateInterfaceList = templateData.getTemplateInterfaceList();
+
+            int highestPhotoCounter = 0 ;
+            for(SerializableTemplateInterface element : templateInterfaceList){
+                TemplateElementInterface templateElementInterface = element.toElement();
+                if(templateElementInterface instanceof PhotoElement){
+                    if(highestPhotoCounter < ((PhotoElement) templateElementInterface).getCounter()){
+                        highestPhotoCounter = ((PhotoElement) templateElementInterface).getCounter();
+                    }
+                }
+            }
+            while(highestPhotoCounter < photosToUse.size()){
+                photosToUse.remove(0);
+            }
 
             for (SerializableTemplateInterface element : templateInterfaceList) {
                 TemplateElementInterface templateElementInterface = element.toElement();
 
                 if (templateElementInterface instanceof PhotoElement) {
                     Integer counter = ((PhotoElement) templateElementInterface).getCounter();
-                    ((PhotoElement) templateElementInterface).setPhoto(photosToUse.get(counter - 1));
+                        ((PhotoElement) templateElementInterface).setPhoto(photosToUse.get(counter - 1));
                     ((PhotoElement) templateElementInterface).getChildren().remove(1);
                 }
 
@@ -148,6 +167,8 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
                     if( ( height + elementTop ) > templateData.getHeight()){
                         ((ImageElement) templateElementInterface).setHeight((int) (templateData.getHeight() - elementTop));
                     }
+
+                    System.out.println(((ImageElement) templateElementInterface).getImageAbsolutePath());
                 }
 
                 finalViewPane.getChildren().add((Node) templateElementInterface);
@@ -177,7 +198,9 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
             stackPane.getChildren().add(finalViewPane);
 
             stackPane.getTransforms().add(scale);
+
         }
+        System.out.println("poszlo");
         return finalViewPane;
     }
 
@@ -226,10 +249,21 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
     @FXML
     private void reset(){
+        getSnapshot();
         Navigator.start();
     }
 
     private void print(Integer copies) {
+        File file = getSnapshot();
+
+        try {
+            PrintHelper.print(file.getPath(), copies, orientation);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private File getSnapshot() {
         stackPane.setMaxHeight(10);
         stackPane.setMaxWidth(1080);
 
@@ -252,14 +286,11 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-
-            PrintHelper.print(file.getPath(), copies, orientation);
             Navigator.nextState();
         } catch (IOException e) {
             // TODO: handle exception here
-        } catch (InterruptedException e) {
-            logger.error(e);
         }
+        return file;
     }
 
 

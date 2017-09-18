@@ -2,8 +2,11 @@ package com.photobooth.camera;
 
 import com.photobooth.util.Configuration;
 import com.photobooth.util.ConfigurationUtil;
+import edsdk.api.CanonCamera;
+import edsdk.utils.CanonConstants;
 import org.apache.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,32 +19,25 @@ public class CameraDAO {
     public static final String CAPTURE_PHOTO_ARG = " /capture";
     public static final String PHOTO_EXTENSION = ".jpg";
 
-    public String captureImageForUser() throws IOException, InterruptedException {
+    public String captureImageForUser() {
         Configuration configuration = ConfigurationUtil.initConfiguration(); // TODO mst use configuration not hardcoded paths
         logger.info("About to take a photo " + LocalDateTime.now());
-        Runtime rt = Runtime.getRuntime();
 
-        DateTimeFormatter yyyymmdd_hHmm = DateTimeFormatter.ofPattern("YYYYMMdd_HHmmSS");
+        DateTimeFormatter yyyymmdd_hHmm = DateTimeFormatter.ofPattern("YYYYMMdd_HHmmss");
         LocalDateTime now = LocalDateTime.now();
-        String fileName = now.format(yyyymmdd_hHmm);
-        logger.info("Sent command " + LocalDateTime.now());
-        Process pr = rt.exec(createCommandForTakingPhoto("C:\\photoBooth\\currentPhotos\\", fileName));
-        pr.waitFor();
-        logger.info("Photo taken "  + LocalDateTime.now() + " as " + fileName);
-
-        return getPhotoFilePath(fileName);
+        String fileName = now.format(yyyymmdd_hHmm) + ".jpg";
+        File photo = takePhoto("C:\\photoBooth\\currentPhotos\\", fileName);
+        return photo.getAbsolutePath();
     }
 
-    private String createCommandForTakingPhoto(String currentPhotosFolderPath, String fileName) {
-        String command = COMMAND_LINE_CAMERA_DRIVER
-                + PHOTO_SAVE_FILENAME_ARG + currentPhotosFolderPath + fileName + PHOTO_EXTENSION
-                + CAPTURE_PHOTO_ARG;
-        logger.info("Command: " + command);
-        return command;
+    public File takePhoto(String directory, String fileName){
+        CanonCamera slr = new CanonCamera();
+        slr.openSession();
+        CanonConstants.EdsAFMode autoFocusMode = slr.getAutoFocusMode();
+        File photo = slr.shoot(CanonConstants.EdsSaveTo.kEdsSaveTo_Host,10, new File(directory + fileName))[0];
+        slr.closeSession();
+
+        return photo;
     }
 
-    // TODO mst add path from configuration
-    private String getPhotoFilePath(String fileName) {
-        return "C:\\photoBooth\\currentPhotos\\" + fileName + PHOTO_EXTENSION;
-    }
 }

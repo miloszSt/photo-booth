@@ -14,6 +14,10 @@ public class CameraService {
         this.cameraDAO = new CameraDAO();
     }
 
+    public void tearDownCamera(){
+        this.cameraDAO.tearDown();
+    }
+
     public String takeImage() {
         return cameraDAO.captureImageForUser();
     }

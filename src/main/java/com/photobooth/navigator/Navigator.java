@@ -117,7 +117,7 @@ public class Navigator {
                 controller.initPhoto(photoFilePath);
             }
         } catch (IOException exception) {
-            System.out.println("Error loading preview view: \n" + exception.getMessage());
+            logger.error("Error loading preview view: \n" + exception.getMessage());
         }
     }
 

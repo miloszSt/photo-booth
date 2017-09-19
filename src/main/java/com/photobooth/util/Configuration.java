@@ -50,7 +50,7 @@ public class Configuration implements Serializable {
             oos = new ObjectOutputStream(fout);
             oos.writeObject(customStates);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error(ex);
         } finally {
             if (fout != null) {
                 try {
@@ -79,7 +79,7 @@ public class Configuration implements Serializable {
             return (List<StateDef>) ois.readObject();
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error(ex);
         } finally {
             if (fin != null) {
                 try {

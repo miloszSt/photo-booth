@@ -1,5 +1,6 @@
 package com.photobooth;
 
+import com.photobooth.camera.CameraService;
 import com.photobooth.config.Config;
 import com.photobooth.config.ConfigReader;
 import com.photobooth.controller.AppController;
@@ -26,16 +27,18 @@ import java.util.ResourceBundle;
  *
  * @author mst
  */
-public class    App extends Application {
+public class App extends Application {
 
     private final static Logger logger = Logger.getLogger(App.class);
 
     private static final String FULL_SCREEN_HINT = "";
 
+
+    private static final CameraService cameraService = new CameraService();
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         Navigator.moveTempPhotosToArchive(0);
-
         logger.info("Uruchomiono aplikację");
 
         if (ConfigReader.hasStateFlowConfigurationDefined()) {
@@ -60,6 +63,11 @@ public class    App extends Application {
         } else {
             setUp(primaryStage);
         }
+    }
+
+
+    public static CameraService getCameraService() {
+        return cameraService;
     }
 
     private void setUp(Stage primaryStage) {
@@ -105,5 +113,6 @@ public class    App extends Application {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         launch(args);
+        cameraService.tearDownCamera();
     }
 }

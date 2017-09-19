@@ -19,8 +19,16 @@ public class CameraDAO {
     public static final String CAPTURE_PHOTO_ARG = " /capture";
     public static final String PHOTO_EXTENSION = ".jpg";
 
+
+    private final CanonCamera canonCamera;
+
+    public CameraDAO(){
+        canonCamera = new CanonCamera();
+        canonCamera.openSession();
+
+    }
     public String captureImageForUser() {
-        Configuration configuration = ConfigurationUtil.initConfiguration(); // TODO mst use configuration not hardcoded paths
+
         logger.info("About to take a photo " + LocalDateTime.now());
 
         DateTimeFormatter yyyymmdd_hHmm = DateTimeFormatter.ofPattern("YYYYMMdd_HHmmss");
@@ -31,13 +39,15 @@ public class CameraDAO {
     }
 
     public File takePhoto(String directory, String fileName){
-        CanonCamera slr = new CanonCamera();
-        slr.openSession();
-        CanonConstants.EdsAFMode autoFocusMode = slr.getAutoFocusMode();
-        File photo = slr.shoot(CanonConstants.EdsSaveTo.kEdsSaveTo_Host,10, new File(directory + fileName))[0];
-        slr.closeSession();
+//        CanonCamera slr = new CanonCamera();
+//        slr.openSession();
+        CanonConstants.EdsAFMode autoFocusMode = canonCamera.getAutoFocusMode();
+        File photo = canonCamera.shoot(CanonConstants.EdsSaveTo.kEdsSaveTo_Host,10, new File(directory + fileName))[0];
 
         return photo;
     }
 
+    public void tearDown() {
+        canonCamera.closeSession();
+    }
 }

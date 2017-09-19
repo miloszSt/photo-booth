@@ -255,11 +255,10 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
     private void print(Integer copies) {
         File file = getSnapshot();
-
         try {
             PrintHelper.print(file.getPath(), copies, orientation);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 
@@ -288,7 +287,7 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
             Navigator.nextState();
         } catch (IOException e) {
-            // TODO: handle exception here
+            logger.error(e);
         }
         return file;
     }

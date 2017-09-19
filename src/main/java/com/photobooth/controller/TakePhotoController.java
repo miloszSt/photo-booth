@@ -1,5 +1,6 @@
 package com.photobooth.controller;
 
+import com.photobooth.App;
 import com.photobooth.camera.CameraService;
 import com.photobooth.controller.spec.AnimationEndTransition;
 import com.photobooth.controller.spec.AnimationInitializable;
@@ -49,6 +50,8 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
 
     private Configuration configuration;
 
+    private CameraService cameraService = App.getCameraService();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         configuration = ConfigurationUtil.initConfiguration();
@@ -68,7 +71,8 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
             mediaView.getTransforms().addAll(rotationTransform, translationTransform);
         });
         mediaPlayer.setOnEndOfMedia(() -> {
-            String photoFilePath = new CameraService().takeImage();
+
+            String photoFilePath = cameraService.takeImage();
             Navigator.goToPreview(photoFilePath);
         });
         //addFadeInTransition(mediaView);

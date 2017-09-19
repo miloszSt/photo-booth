@@ -196,7 +196,7 @@ public class TopPanel extends HBox {
             templateMainView.getCenterPanel().setOrientation(data.getOrientation());
             templateMainView.getCenterPanel().setPageSize(data.getPaper());
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error(ex);
         }
 
     }

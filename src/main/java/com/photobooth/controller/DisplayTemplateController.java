@@ -52,12 +52,13 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
     private Double scaleFactor;
     private Color signatureColor = Color.BLACK;
     private Orientation orientation;
-    public enum Orientation{
-        VERTICAL,HORIZONTAL;
+
+    public enum Orientation {
+        VERTICAL, HORIZONTAL;
     }
 
+    private Canvas canvas;
 
-    Canvas canvas;
     @FXML
     BorderPane borderPane;
 
@@ -73,7 +74,7 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("DisplayTemplate");
+        logger.debug("DisplayTemplate");
     }
 
     @Override
@@ -104,12 +105,13 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         this.signatureColor = Color.BLACK;
     }
 
-    private Orientation getOrientation(TemplateData templateData){
-         if(templateData.getWidht() > templateData.getHeight()){
+    private Orientation getOrientation(TemplateData templateData) {
+        if (templateData.getWidht() > templateData.getHeight()) {
             return Orientation.HORIZONTAL;
         }
         return Orientation.VERTICAL;
     }
+
     public Pane createPaneWithPhotos() {
         if (finalViewPane.getChildren().size() > 0) finalViewPane.getChildren().clear();
 
@@ -120,32 +122,27 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
 
         final Scale scale;
-        if(orientation == Orientation.VERTICAL ) {
+        if (orientation == Orientation.VERTICAL) {
             scale = new Scale(scaleFactor, scaleFactor);
-        }else {
+        } else {
             scale = new Scale(scaleFactor2, scaleFactor2);
         }
-
-
         if (!photos.isEmpty()) {
             List<File> photosToUse = new ArrayList<>(photos);
-
-
             Rectangle background = new Rectangle(templateData.getWidht(), templateData.getHeight(), Color.GREEN);
-//
             finalViewPane.getChildren().add(background);
             List<SerializableTemplateInterface> templateInterfaceList = templateData.getTemplateInterfaceList();
 
-            int highestPhotoCounter = 0 ;
-            for(SerializableTemplateInterface element : templateInterfaceList){
+            int highestPhotoCounter = 0;
+            for (SerializableTemplateInterface element : templateInterfaceList) {
                 TemplateElementInterface templateElementInterface = element.toElement();
-                if(templateElementInterface instanceof PhotoElement){
-                    if(highestPhotoCounter < ((PhotoElement) templateElementInterface).getCounter()){
+                if (templateElementInterface instanceof PhotoElement) {
+                    if (highestPhotoCounter < ((PhotoElement) templateElementInterface).getCounter()) {
                         highestPhotoCounter = ((PhotoElement) templateElementInterface).getCounter();
                     }
                 }
             }
-            while(highestPhotoCounter < photosToUse.size()){
+            while (highestPhotoCounter < photosToUse.size()) {
                 photosToUse.remove(0);
             }
 
@@ -154,53 +151,32 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
 
                 if (templateElementInterface instanceof PhotoElement) {
                     Integer counter = ((PhotoElement) templateElementInterface).getCounter();
-                        ((PhotoElement) templateElementInterface).setPhoto(photosToUse.get(counter - 1));
+                    ((PhotoElement) templateElementInterface).setPhoto(photosToUse.get(counter - 1));
                     ((PhotoElement) templateElementInterface).getChildren().remove(1);
                 }
 
-                if(templateElementInterface instanceof ImageElement){
+                if (templateElementInterface instanceof ImageElement) {
                     double height = templateElementInterface.getElementHeight();
 
                     double elementTop = templateElementInterface.getElementTop();
-                    double rotate = ((ImageElement) templateElementInterface).getRotate();
-                    double elementRotation = templateElementInterface.getElementRotation();
-                    if( ( height + elementTop ) > templateData.getHeight()){
+                    if ((height + elementTop) > templateData.getHeight()) {
                         ((ImageElement) templateElementInterface).setHeight((int) (templateData.getHeight() - elementTop));
                     }
-
-                    System.out.println(((ImageElement) templateElementInterface).getImageAbsolutePath());
                 }
 
                 finalViewPane.getChildren().add((Node) templateElementInterface);
-
                 finalViewPane.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
 
             }
-
-//            System.out.println("w " + templateData.getWidht() + "  H : " + templateData.getHeight());
-//            System.out.println("wF " + templateData.getWidht() * scaleFactor + "  HF : " + templateData.getHeight() * scaleFactor);
-//            System.out.println("wF2 " + templateData.getWidht() * scaleFactor2 + "  HF2 : " + templateData.getHeight() * scaleFactor2 );
-
-
             borderPane.setCenter(stackPane);
-//            stackPane.setBackground(new Background(new BackgroundFill(ColorUtils.parseStringToColor(templateData.getBackgroundColor()), null, null)));
-//            borderPane.setBackground(new Background(new BackgroundFill(ColorUtils.parseStringToColor(templateData.getBackgroundColor()), null, null)));
             borderPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
             borderPane.setMaxWidth(templateData.getWidht());
             borderPane.setMaxHeight(templateData.getHeight());
-//            stackPane.setAlignment(Pos.CENTER);
 
-
-//            stackPane.setMaxHeight(10);
-//            stackPane.setMaxWidth(1080);
-
-//            ((GridPane)borderPane.getTop()).setBackground(new Background(new BackgroundFill(Color.BLACK,null, null)));
             stackPane.getChildren().add(finalViewPane);
-
             stackPane.getTransforms().add(scale);
 
         }
-        System.out.println("poszlo");
         return finalViewPane;
     }
 
@@ -248,7 +224,7 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
     }
 
     @FXML
-    private void reset(){
+    private void reset() {
         getSnapshot();
         Navigator.start();
     }
@@ -269,11 +245,10 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         finalViewPane.setBackground(null);
         SnapshotParameters params = new SnapshotParameters();
 
-        if(orientation == Orientation.HORIZONTAL) {
+        if (orientation == Orientation.HORIZONTAL) {
             params.setViewport(new Rectangle2D(0, 0, 1800, 1200));
         }
-        if(orientation == Orientation.VERTICAL) {
-//            params.setTransform(new Rotate(90));
+        if (orientation == Orientation.VERTICAL) {
             params.setViewport(new Rectangle2D(0, 0, 1200, 1800));
         }
         WritableImage image = finalViewPane.snapshot(params, null);

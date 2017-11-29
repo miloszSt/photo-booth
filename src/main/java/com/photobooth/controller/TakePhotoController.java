@@ -73,6 +73,7 @@ public class TakePhotoController implements Initializable, AnimationInitializabl
         mediaPlayer.setOnEndOfMedia(() -> {
 
             String photoFilePath = cameraService.takeImage();
+            mediaPlayer.dispose();
             Navigator.goToPreview(photoFilePath);
         });
         //addFadeInTransition(mediaView);

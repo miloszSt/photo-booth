@@ -93,6 +93,8 @@ public class EncouragementController implements Initializable, AnimationInitiali
 
         mediaPlayer.setOnEndOfMedia(() -> {
             fadeIn.stop();
+            mediaPlayer.dispose();
+
         });
     }
 
@@ -103,6 +105,7 @@ public class EncouragementController implements Initializable, AnimationInitiali
         fadeOut.setToValue(0.0);
         fadeOut.statusProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == Animation.Status.STOPPED) {
+
                 Navigator.nextState();
             }
         });

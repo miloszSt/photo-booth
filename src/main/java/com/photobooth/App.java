@@ -28,19 +28,13 @@ import java.util.ResourceBundle;
  * @author mst
  */
 public class App extends Application {
-
     private final static Logger logger = Logger.getLogger(App.class);
-
     private static final String FULL_SCREEN_HINT = "";
-
-
     private static final CameraService cameraService = new CameraService();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Navigator.moveTempPhotosToArchive(0);
         logger.info("Uruchomiono aplikację");
-
         if (ConfigReader.hasStateFlowConfigurationDefined()) {
             logger.info("Czytam konfiguracje przepływu stanów");
             Task<StateFlowConfiguration> getStateFlowConfigTask = new Task<StateFlowConfiguration>() {

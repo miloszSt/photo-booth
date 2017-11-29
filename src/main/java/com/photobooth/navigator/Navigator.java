@@ -125,55 +125,6 @@ public class Navigator {
     private static void reset() {
         int errorCount = 0;
         iterator = hasCustomStatesConfiguration() ? customAppStates.listIterator() : DEFAULT_APP_STATES.listIterator();
-        moveTempPhotosToArchive(0);
-    }
-
-    public static void moveTempPhotosToArchive(int i){
-        Configuration configuration = ConfigurationUtil.initConfiguration();
-        Path currentPhotoPath = Paths.get(configuration.getCurrentPhotosPath());
-        Path archivePhotos = Paths.get(configuration.getArchivePhotosPath());
-
-        List<File> files = Arrays.asList(currentPhotoPath.toFile().listFiles());
-
-        for(File currentFile : files){
-            try {
-                Files.move(currentFile.toPath(), Paths.get(archivePhotos.toString(), currentFile.getName()), StandardCopyOption.ATOMIC_MOVE);
-            } catch (IOException e) {
-                logger.error(e);
-            }
-        }
-//        try {
-//            Stream<Path> list = Files.list(currentPhotoPath);
-//            list.forEach(new Consumer<Path>() {
-//                @Override
-//                public void accept(Path path) {
-//                    try {
-//
-//                        int index = 1;
-//                        Path archivedPhotoPath = Paths.get(archivePhotos.toString(), path.getFileName().toString());
-//                        if(Files.exists(archivedPhotoPath)){
-//                            archivedPhotoPath = Paths.get(archivePhotos.toString(), path.getFileName().toString().toUpperCase().replace(".JPG", "("+index+").JPG"));
-//                        };
-//
-//                        while (Files.exists(archivedPhotoPath)){
-//                            index++;
-//                            archivedPhotoPath = Paths.get(archivePhotos.toString(), path.getFileName().toString().toUpperCase().replace("JPG", "("+index+").JPG"));
-//                        }
-//
-//                        Files.move(path, archivedPhotoPath, StandardCopyOption.ATOMIC_MOVE);
-//                    } catch (IOException e) {
-//                        int i1 = i;
-//                        logger.error("Zjebalo sie, poraz : "+ (++ i1) + "  probuje jeszcze raz",e);
-//
-//                        moveTempPhotosToArchive(++i1);
-//                        logger.error(e);
-//                    }
-//                }
-//            });
-//        } catch (IOException e) {
-//
-//            logger.error(e);
-//        }
     }
 
     private static TemplateData getTemplateDateFromName(String templateName){

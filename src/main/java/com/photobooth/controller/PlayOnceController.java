@@ -57,7 +57,11 @@ public class PlayOnceController implements Initializable, AnimationInitializable
         player.setCycleCount(1);
         player.play();
 
-        player.setOnEndOfMedia(() -> Navigator.nextState());
+        player.setOnEndOfMedia(() -> {
+            Navigator.nextState();
+            player.dispose();
+        });
+
         return player;
     }
 

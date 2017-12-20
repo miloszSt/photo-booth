@@ -177,8 +177,79 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
             stackPane.getTransforms().add(scale);
 
         }
+
+
         return finalViewPane;
     }
+
+    public WritableImage createImage() {
+        if (finalViewPane.getChildren().size() > 0) finalViewPane.getChildren().clear();
+
+        this.orientation = getOrientation(templateData);
+
+        scaleFactor = 1080.0 / templateData.getWidht();
+        Double scaleFactor2 = 1080.0 / templateData.getWidht();
+
+
+        final Scale scale;
+        if (orientation == Orientation.VERTICAL) {
+            scale = new Scale(scaleFactor, scaleFactor);
+        } else {
+            scale = new Scale(scaleFactor2, scaleFactor2);
+        }
+        if (!photos.isEmpty()) {
+            List<File> photosToUse = new ArrayList<>(photos);
+            Rectangle background = new Rectangle(templateData.getWidht(), templateData.getHeight(), Color.GREEN);
+            finalViewPane.getChildren().add(background);
+            List<SerializableTemplateInterface> templateInterfaceList = templateData.getTemplateInterfaceList();
+
+            int highestPhotoCounter = 0;
+            for (SerializableTemplateInterface element : templateInterfaceList) {
+                TemplateElementInterface templateElementInterface = element.toElement();
+                if (templateElementInterface instanceof PhotoElement) {
+                    if (highestPhotoCounter < ((PhotoElement) templateElementInterface).getCounter()) {
+                        highestPhotoCounter = ((PhotoElement) templateElementInterface).getCounter();
+                    }
+                }
+            }
+            while (highestPhotoCounter < photosToUse.size()) {
+                photosToUse.remove(0);
+            }
+
+            for (SerializableTemplateInterface element : templateInterfaceList) {
+                TemplateElementInterface templateElementInterface = element.toElement();
+
+                if (templateElementInterface instanceof PhotoElement) {
+                    Integer counter = ((PhotoElement) templateElementInterface).getCounter();
+                    ((PhotoElement) templateElementInterface).setPhoto(photosToUse.get(counter - 1));
+                    ((PhotoElement) templateElementInterface).getChildren().remove(1);
+                }
+
+                if (templateElementInterface instanceof ImageElement) {
+                    double height = templateElementInterface.getElementHeight();
+
+                    double elementTop = templateElementInterface.getElementTop();
+                    if ((height + elementTop) > templateData.getHeight()) {
+                        ((ImageElement) templateElementInterface).setHeight((int) (templateData.getHeight() - elementTop));
+                    }
+                }
+
+                finalViewPane.getChildren().add((Node) templateElementInterface);
+                finalViewPane.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
+
+            }
+            borderPane.setCenter(stackPane);
+            borderPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+            borderPane.setMaxWidth(templateData.getWidht());
+            borderPane.setMaxHeight(templateData.getHeight());
+
+            stackPane.getChildren().add(finalViewPane);
+            stackPane.getTransforms().add(scale);
+
+        }
+        return getWritableImage();
+    }
+
 
     @FXML
     public void clearSignature() {
@@ -226,7 +297,20 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
     @FXML
     private void reset() {
         getSnapshot();
+        goNext();
+    }
+
+    private void goNext(){
+        tryToCleanUpEverything();
         Navigator.start();
+    }
+    private void tryToCleanUpEverything() {
+        finalViewPane.getChildren().clear();
+        stackPane.getChildren().clear();
+        borderPane.getChildren().clear();
+        templateData = null;
+        photos = null;
+
     }
 
     private void print(Integer copies) {
@@ -239,6 +323,24 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
     }
 
     private File getSnapshot() {
+        WritableImage image = getWritableImage();
+
+        DateTimeFormatter yyyymmdd_hHmm = DateTimeFormatter.ofPattern("MMdd_HHmm");
+        LocalDateTime now = LocalDateTime.now();
+        String fileName = now.format(yyyymmdd_hHmm);
+        File file = new File(ConfigurationUtil.initConfiguration().getTempPath() + fileName + ".png");
+
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+            goNext();
+            Navigator.nextState();
+        } catch (IOException e) {
+            logger.error(e);
+        }
+        return file;
+    }
+
+    private WritableImage getWritableImage() {
         stackPane.setMaxHeight(10);
         stackPane.setMaxWidth(1080);
 
@@ -251,20 +353,7 @@ public class DisplayTemplateController implements Initializable, TemplateAndPhot
         if (orientation == Orientation.VERTICAL) {
             params.setViewport(new Rectangle2D(0, 0, 1200, 1800));
         }
-        WritableImage image = finalViewPane.snapshot(params, null);
-
-        DateTimeFormatter yyyymmdd_hHmm = DateTimeFormatter.ofPattern("MMdd_HHmm");
-        LocalDateTime now = LocalDateTime.now();
-        String fileName = now.format(yyyymmdd_hHmm);
-        File file = new File(ConfigurationUtil.initConfiguration().getTempPath() + fileName + ".png");
-
-        try {
-            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-            Navigator.nextState();
-        } catch (IOException e) {
-            logger.error(e);
-        }
-        return file;
+        return finalViewPane.snapshot(params, null);
     }
 
 
